@@ -4,13 +4,14 @@ import Header from '../common/Header';
 import Footer from '../common/Footer';
 
 interface MainLayoutProps {
+    minimalist?: boolean;
     children: React.ReactNode;
 }
 
-const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+const MainLayout: React.FC<MainLayoutProps> = ({minimalist, children }) => {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <Header />
+            <Header minimalist={minimalist} />
             <Box component="main" sx={{ flexGrow: 1, py: 4 }}>
                 {children}
             </Box>
