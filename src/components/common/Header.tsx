@@ -5,7 +5,11 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import SearchIcon from '@mui/icons-material/Search';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+    minimalist?: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({minimalist}) => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState<string>('');
 
@@ -42,51 +46,55 @@ const Header: React.FC = () => {
                     E-COMMERCE
                 </Typography>
 
-                <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-                    <Box
-                        sx={{
-                            position: 'relative',
-                            borderRadius: 1,
-                            bgcolor: 'rgba(255, 255, 255, 0.15)',
-                            '&:hover': {
-                                bgcolor: 'rgba(255, 255, 255, 0.25)',
-                            },
-                            mr: 2,
-                            width: '100%',
-                            maxWidth: 600,
-                            display: 'flex',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <IconButton
-                            onClick={handleSearch}
-                            size="large"
-                            color="inherit"
-                            aria-label="search"
-                            sx={{ p: '0 12px' }}
-                        >
-                            <SearchIcon />
-                        </IconButton>
+                {!minimalist && (
+                    <>
+                        <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+                            <Box
+                                sx={{
+                                    position: 'relative',
+                                    borderRadius: 1,
+                                    bgcolor: 'rgba(255, 255, 255, 0.15)',
+                                    '&:hover': {
+                                        bgcolor: 'rgba(255, 255, 255, 0.25)',
+                                    },
+                                    mr: 2,
+                                    width: '100%',
+                                    maxWidth: 600,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                }}
+                            >
+                                <IconButton
+                                    onClick={handleSearch}
+                                    size="large"
+                                    color="inherit"
+                                    aria-label="search"
+                                    sx={{ p: '0 12px' }}
+                                >
+                                    <SearchIcon />
+                                </IconButton>
 
-                        <InputBase
-                            placeholder="Szukaj produktów..."
-                            inputProps={{ 'aria-label': 'search' }}
-                            sx={{ color: 'inherit', p: '8px 8px 8px 0', width: '100%' }}
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                        />
-                    </Box>
-                </Box>
+                                <InputBase
+                                    placeholder="Szukaj produktów..."
+                                    inputProps={{ 'aria-label': 'search' }}
+                                    sx={{ color: 'inherit', p: '8px 8px 8px 0', width: '100%' }}
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    onKeyDown={handleKeyDown}
+                                />
+                            </Box>
+                        </Box>
+                        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                            <IconButton size="large" aria-label="panel użytkownika" color="inherit" onClick={() => navigate('/login')}>
+                                <AccountCircle />
+                            </IconButton>
+                            <IconButton size="large" aria-label="koszyk" color="inherit" onClick={() => navigate('/cart')}>
+                                <ShoppingCartIcon />
+                            </IconButton>
+                        </Box>
+                    </>
+                )}
 
-                <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                    <IconButton size="large" aria-label="panel użytkownika" color="inherit" onClick={() => navigate('/login')}>
-                        <AccountCircle />
-                    </IconButton>
-                    <IconButton size="large" aria-label="koszyk" color="inherit" onClick={() => navigate('/cart')}>
-                        <ShoppingCartIcon />
-                    </IconButton>
-                </Box>
             </Toolbar>
         </AppBar>
     );
