@@ -1,13 +1,6 @@
 import React from "react";
 import MainLayout from "../components/layout/MainLayout.tsx";
-import {
-  Typography,
-  Container,
-  Grid,
-  Card,
-  CardContent,
-  CardMedia,
-} from "@mui/material";
+import { Typography, Container, Grid, Card, CardContent, CardMedia } from "@mui/material";
 
 const categories = [
   {
@@ -75,9 +68,7 @@ const HomePage: React.FC = () => {
                     transform: "translateY(-2px)",
                   },
                 }}
-                onClick={() =>
-                  console.log(`Przejdź do kategorii: ${category.name}`)
-                }
+                onClick={() => console.log(`Przejdź do kategorii: ${category.name}`)}
               >
                 <CardMedia
                   component="img"
@@ -87,12 +78,7 @@ const HomePage: React.FC = () => {
                   sx={{ objectFit: "cover" }}
                 />
                 <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography
-                    gutterBottom
-                    variant="h5"
-                    component="div"
-                    align="center"
-                  >
+                  <Typography gutterBottom variant="h5" component="div" align="center">
                     {category.name}
                   </Typography>
                 </CardContent>
