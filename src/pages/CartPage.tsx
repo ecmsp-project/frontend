@@ -130,7 +130,7 @@ const CartPage: React.FC = () => {
         <Divider sx={{ mb: 4 }} />
 
         <Grid container spacing={4}>
-          <Grid item xs={12} md={8} {...({ component: "div" } as any)}>
+          <Grid size={{ xs: 12, md: 8 }}>
             <Typography variant="h5" gutterBottom sx={{ mb: 2 }}>
               Produkty w Koszyku ({mockCartItems.length})
             </Typography>
@@ -155,7 +155,7 @@ const CartPage: React.FC = () => {
             )}
           </Grid>
 
-          <Grid item xs={12} md={4} {...({ component: "div" } as any)}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Card variant="outlined" sx={{ p: 3, position: "sticky", top: 20 }}>
               <Typography variant="h5" gutterBottom fontWeight={500}>
                 Podsumowanie Zamówienia
