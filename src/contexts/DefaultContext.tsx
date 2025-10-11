@@ -6,7 +6,6 @@ interface DefaultContextType {
 
 export const DefaultContext = createContext<DefaultContextType | undefined>(undefined);
 
-
 export function useDefaultContext() {
   const context = useContext(DefaultContext);
   if (!context) {

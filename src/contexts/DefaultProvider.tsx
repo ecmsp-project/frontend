@@ -2,7 +2,6 @@ import { type ReactNode, useCallback } from "react";
 import { DefaultContext } from "./DefaultContext";
 
 export default function ArchiveProvider({ children }: { children: ReactNode }) {
-
   const defaultAction = useCallback(() => {
     console.log("elo");
   }, []);
@@ -10,7 +9,7 @@ export default function ArchiveProvider({ children }: { children: ReactNode }) {
   return (
     <DefaultContext.Provider
       value={{
-        defaultAction
+        defaultAction,
       }}
     >
       {children}
