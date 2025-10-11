@@ -121,7 +121,7 @@ const SearchPage: React.FC = () => {
         </Typography>
 
         <Grid container spacing={3}>
-          <Grid item xs={12} md={3} {...({ component: "div" } as any)}>
+          <Grid size={{ xs: 12, md: 3 }}>
             <Paper sx={{ p: 2 }}>
               <Typography variant="h6" gutterBottom>
                 Filtry
@@ -147,7 +147,7 @@ const SearchPage: React.FC = () => {
               </Typography>
             </Paper>
           </Grid>
-          <Grid item xs={12} md={9} {...({ component: "div" } as any)}>
+          <Grid size={{ xs: 12, md: 9 }}>
             <Typography variant="subtitle1" gutterBottom color="text.secondary">
               Znaleziono {mockProducts.length} produkty
             </Typography>

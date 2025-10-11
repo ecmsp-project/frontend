@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
     <Box sx={{ bgcolor: "background.paper", p: 6, mt: "auto" }} component="footer">
       <Container maxWidth="lg">
         <Grid container spacing={4} justifyContent="space-evenly">
-          <Grid item xs={12} sm={4} {...({ component: "div" } as any)}>
+          <Grid size={{ xs: 12, sm: 4 }}>
             <Typography variant="h6" color="text.primary" gutterBottom>
               O Sklepie
             </Typography>
@@ -15,7 +15,7 @@ const Footer: React.FC = () => {
             </Typography>
           </Grid>
 
-          <Grid item xs={6} sm={2} {...({ component: "div" } as any)}>
+          <Grid size={{ xs: 6, sm: 2 }}>
             <Typography variant="h6" color="text.primary" gutterBottom>
               Linki
             </Typography>
@@ -30,7 +30,7 @@ const Footer: React.FC = () => {
             </Link>
           </Grid>
 
-          <Grid item xs={6} sm={2} {...({ component: "div" } as any)}>
+          <Grid size={{ xs: 6, sm: 2 }}>
             <Typography variant="h6" color="text.primary" gutterBottom>
               Konto
             </Typography>

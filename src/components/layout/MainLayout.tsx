@@ -12,7 +12,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ minimalist, children }) => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Header minimalist={minimalist} />
-      <Box component="main" sx={{ flexGrow: 1, py: 4 }}>
+      <Box component="main" sx={{ flexGrow: 1 }}>
         {children}
       </Box>
       <Footer />
