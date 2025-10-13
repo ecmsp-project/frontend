@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { login } from "../api/auth-service.ts";
 import MainLayout from "../components/layout/MainLayout.tsx";
 import GoogleIcon from "@mui/icons-material/Google";
 import {
@@ -16,9 +17,24 @@ import { useNavigate } from "react-router-dom";
 const Login: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Logowanie standardowe...");
+
+    if (!email || !password) {
+      console.error("Login and password required");
+      return;
+    }
+
+    try {
+      const loginData = await login(email, password);
+      localStorage.setItem("token", loginData.token);
+      console.log(loginData);
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
 
   return (
@@ -61,6 +77,8 @@ const Login: React.FC = () => {
               autoFocus
               variant="outlined"
               size="small"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               margin="normal"
@@ -74,6 +92,8 @@ const Login: React.FC = () => {
               variant="outlined"
               size="small"
               sx={{ mb: 3 }}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
 
             <Button type="submit" fullWidth variant="contained" size="large" sx={{ mb: 2 }}>
