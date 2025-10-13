@@ -1,4 +1,5 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
+import { login } from "../api/auth-service.ts";
 import MainLayout from "../components/layout/MainLayout.tsx";
 import GoogleIcon from "@mui/icons-material/Google";
 import {
@@ -12,28 +13,27 @@ import {
   Link as MuiLink,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import {login} from "../api/auth-service.ts";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email || !password) {
-      console.error('Login and password required');
+      console.error("Login and password required");
       return;
     }
 
     try {
       const loginData = await login(email, password);
-      localStorage.setItem('token', loginData.token);
+      localStorage.setItem("token", loginData.token);
       console.log(loginData);
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
     }
   };
 
