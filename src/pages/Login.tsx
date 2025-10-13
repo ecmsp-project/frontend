@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import MainLayout from "../components/layout/MainLayout.tsx";
 import GoogleIcon from "@mui/icons-material/Google";
 import {
@@ -12,6 +12,7 @@ import {
   Link as MuiLink,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import {login} from "../api/auth-service.ts";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -76,6 +77,8 @@ const Login: React.FC = () => {
               autoFocus
               variant="outlined"
               size="small"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               margin="normal"
@@ -89,6 +92,8 @@ const Login: React.FC = () => {
               variant="outlined"
               size="small"
               sx={{ mb: 3 }}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
 
             <Button type="submit" fullWidth variant="contained" size="large" sx={{ mb: 2 }}>
