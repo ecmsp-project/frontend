@@ -1,4 +1,5 @@
 import CartPage from "./pages/CartPage.tsx";
+import Contact from "./pages/Contact.tsx";
 import Faq from "./pages/Faq.tsx";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login.tsx";
@@ -34,6 +35,7 @@ export default function App() {
               <Route path="/cart" element={<CartPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="/faq" element={<Faq />} />
               <Route path="*" element={<div>404 Not Found</div>} />
             </Routes>
