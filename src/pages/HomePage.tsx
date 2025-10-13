@@ -44,7 +44,7 @@ const HomePage: React.FC = () => {
           component="h1"
           gutterBottom
           align="center"
-          sx={{ mb: 4, fontWeight: 300 }}
+          sx={{ mt: 4, mb: 4, fontWeight: 300 }}
         >
           Witaj w Naszym Sklepie!
         </Typography>
@@ -55,15 +55,7 @@ const HomePage: React.FC = () => {
 
         <Grid container spacing={3}>
           {categories.map((category) => (
-            <Grid
-              item
-              xs={12}
-              sm={6}
-              md={4}
-              lg={3}
-              key={category.id}
-              {...({ component: "div" } as any)}
-            >
+            <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={category.id}>
               <Card
                 sx={{
                   height: "100%",

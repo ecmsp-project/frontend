@@ -52,7 +52,7 @@ const Register: React.FC = () => {
 
           <Box component="form" onSubmit={handleRegister} sx={{ mt: 1 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6} {...({ component: "div" } as any)}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   required
                   fullWidth
@@ -64,7 +64,7 @@ const Register: React.FC = () => {
                   size="small"
                 />
               </Grid>
-              <Grid item xs={12} sm={6} {...({ component: "div" } as any)}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   required
                   fullWidth
@@ -75,7 +75,7 @@ const Register: React.FC = () => {
                   size="small"
                 />
               </Grid>
-              <Grid item xs={12} {...({ component: "div" } as any)}>
+              <Grid size={12}>
                 <TextField
                   required
                   fullWidth
@@ -87,7 +87,7 @@ const Register: React.FC = () => {
                   size="small"
                 />
               </Grid>
-              <Grid item xs={12} {...({ component: "div" } as any)}>
+              <Grid size={12}>
                 <TextField
                   required
                   fullWidth
