@@ -46,7 +46,7 @@ const Footer: React.FC = () => {
           <Typography variant="body2" color="text.secondary" align="center">
             {"Copyright © "}
             <Link color="inherit" href="/">
-              Twoja Nazwa Sklepu
+              E-COMMERCE
             </Link>{" "}
             {new Date().getFullYear()}
             {"."}
