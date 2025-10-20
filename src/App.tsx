@@ -6,6 +6,7 @@ import Login from "./pages/Login.tsx";
 import ProductPage from "./pages/ProductPage.tsx";
 import Register from "./pages/Register.tsx";
 import SearchPage from "./pages/SearchPage";
+import UserOrdersPage from "./pages/UserOrdersPage.tsx";
 import theme from "./utils/theme.ts";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -37,6 +38,7 @@ export default function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/faq" element={<Faq />} />
+              <Route path="/orders" element={<UserOrdersPage />} />
               <Route path="*" element={<div>404 Not Found</div>} />
             </Routes>
           </Box>
