@@ -1,5 +1,7 @@
 import CartPage from "./pages/CartPage.tsx";
 import Contact from "./pages/Contact.tsx";
+import CreateProductPage from "./pages/CreateProductPage.tsx";
+import CreateVariantPage from "./pages/CreateVariantPage.tsx";
 import Faq from "./pages/Faq.tsx";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login.tsx";
@@ -12,8 +14,6 @@ import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import CreateProductPage from "./pages/CreateProductPage.tsx";
-import CreateVariantPage from "./pages/CreateVariantPage.tsx";
 
 export default function App() {
   return (

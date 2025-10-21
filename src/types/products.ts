@@ -9,27 +9,27 @@ export interface Product {
 }
 
 export interface ProductCreateRequestDTO {
-    name: string;
-    categoryId: string;
-    approximatePrice: number;
-    deliveryPrice: number;
-    description: string;
-    info: Record<string, any>;
+  name: string;
+  categoryId: string;
+  approximatePrice: number;
+  deliveryPrice: number;
+  description: string;
+  info: Record<string, any>;
 }
 
 export interface ProductCreateResponseDTO {
-    id: string;
+  id: string;
 }
 
 export interface VariantCreateRequestDTO {
-    productId: string;
-    price: number;
-    stockQuantity: number;
-    imageUrl: string;
-    additionalProperties: Record<string, any>;
-    description: string;
+  productId: string;
+  price: number;
+  stockQuantity: number;
+  imageUrl: string;
+  additionalProperties: Record<string, any>;
+  description: string;
 }
 
 export interface VariantCreateResponseDTO {
-    id: string;
+  id: string;
 }
