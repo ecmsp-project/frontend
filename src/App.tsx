@@ -12,6 +12,8 @@ import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import DashboardPage from "./pages/admin/DashboardPage.tsx";
+import UserManagementPage from "./pages/admin/UserManagementPage.tsx";
 
 export default function App() {
   return (
@@ -39,6 +41,8 @@ export default function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/faq" element={<Faq />} />
               <Route path="/orders" element={<UserOrdersPage />} />
+              <Route path="/admin" element={<DashboardPage />} />
+              <Route path="/admin/users" element={<UserManagementPage />} />
               <Route path="*" element={<div>404 Not Found</div>} />
             </Routes>
           </Box>
