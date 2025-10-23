@@ -7,13 +7,13 @@ import ProductPage from "./pages/ProductPage.tsx";
 import Register from "./pages/Register.tsx";
 import SearchPage from "./pages/SearchPage";
 import UserOrdersPage from "./pages/UserOrdersPage.tsx";
+import DashboardPage from "./pages/admin/DashboardPage.tsx";
+import UserManagementPage from "./pages/admin/UserManagementPage.tsx";
 import theme from "./utils/theme.ts";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import DashboardPage from "./pages/admin/DashboardPage.tsx";
-import UserManagementPage from "./pages/admin/UserManagementPage.tsx";
 
 export default function App() {
   return (
