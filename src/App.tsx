@@ -10,6 +10,7 @@ import Register from "./pages/Register.tsx";
 import SearchPage from "./pages/SearchPage";
 import UserOrdersPage from "./pages/UserOrdersPage.tsx";
 import DashboardPage from "./pages/admin/DashboardPage.tsx";
+import OrderManagementPage from "./pages/admin/OrderManagmentPage.tsx";
 import UserManagementPage from "./pages/admin/UserManagementPage.tsx";
 import theme from "./utils/theme.ts";
 import Box from "@mui/material/Box";
@@ -47,6 +48,7 @@ export default function App() {
               <Route path="/cv" element={<CreateVariantPage />} />
               <Route path="/admin" element={<DashboardPage />} />
               <Route path="/admin/users" element={<UserManagementPage />} />
+              <Route path="/admin/orders" element={<OrderManagementPage />} />
               <Route path="*" element={<div>404 Not Found</div>} />
             </Routes>
           </Box>
