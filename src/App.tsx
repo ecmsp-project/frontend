@@ -1,5 +1,7 @@
 import CartPage from "./pages/CartPage.tsx";
 import Contact from "./pages/Contact.tsx";
+import CreateProductPage from "./pages/CreateProductPage.tsx";
+import CreateVariantPage from "./pages/CreateVariantPage.tsx";
 import Faq from "./pages/Faq.tsx";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login.tsx";
@@ -41,6 +43,8 @@ export default function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/faq" element={<Faq />} />
               <Route path="/orders" element={<UserOrdersPage />} />
+              <Route path="/cp" element={<CreateProductPage />} />
+              <Route path="/cv" element={<CreateVariantPage />} />
               <Route path="/admin" element={<DashboardPage />} />
               <Route path="/admin/users" element={<UserManagementPage />} />
               <Route path="*" element={<div>404 Not Found</div>} />
