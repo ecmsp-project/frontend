@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MainLayout from "../components/layout/MainLayout.tsx";
+import { useCartContext, type CartItem } from "../contexts/CartContext";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -15,111 +16,155 @@ import {
   Divider,
   IconButton,
   TextField,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
-
-const mockCartItems: CartItem[] = [
-  {
-    id: 101,
-    name: "Słuchawki Bezprzewodowe PRO",
-    price: 599.99,
-    quantity: 1,
-    image: "https://via.placeholder.com/100x100?text=Słuchawki",
-  },
-  {
-    id: 102,
-    name: "Smartwatch V3",
-    price: 999.0,
-    quantity: 2,
-    image: "https://via.placeholder.com/100x100?text=Smartwatch",
-  },
-  {
-    id: 103,
-    name: "T-Shirt Bawełniany (M)",
-    price: 79.5,
-    quantity: 1,
-    image: "https://via.placeholder.com/100x100?text=T-shirt",
-  },
-];
 
 const SHIPPING_COST = 19.99;
 const FREE_SHIPPING_THRESHOLD = 500;
 
-const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => (
-  <Card
-    sx={{
-      display: "flex",
-      mb: 2,
-      boxShadow: 1,
-      transition: "0.2s",
-      "&:hover": { boxShadow: 4 },
-    }}
-  >
-    <CardMedia
-      component="img"
-      sx={{ width: 100, height: 100, objectFit: "cover" }}
-      image={item.image}
-      alt={item.name}
-    />
-    <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
-      <CardContent
-        sx={{
-          flex: "1 0 auto",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          py: 1,
-        }}
-      >
-        <Box sx={{ minWidth: 200 }}>
-          <Typography component="div" variant="subtitle1" fontWeight={600}>
-            {item.name}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {item.price.toFixed(2)} PLN / szt.
-          </Typography>
-        </Box>
+const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
+  const { updateProductQuantity, overwriteProductQuantity, removeProduct } = useCartContext();
 
-        <Box sx={{ display: "flex", alignItems: "center", mx: 2 }}>
-          <IconButton size="small" aria-label="decrease quantity" disabled={item.quantity <= 1}>
-            <RemoveIcon fontSize="inherit" />
-          </IconButton>
-          <TextField
-            value={item.quantity}
-            size="small"
-            variant="outlined"
-            sx={{ width: 50, mx: 0.5 }}
-            inputProps={{ style: { textAlign: "center", padding: "4px" } }}
-          />
-          <IconButton size="small" aria-label="increase quantity">
-            <AddIcon fontSize="inherit" />
-          </IconButton>
-        </Box>
+  const [localQuantity, setLocalQuantity] = useState(String(item.quantity));
 
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Typography variant="h6" sx={{ minWidth: 90, textAlign: "right", fontWeight: 700 }}>
-            {(item.price * item.quantity).toFixed(2)} PLN
-          </Typography>
-          <IconButton aria-label="delete" color="error" sx={{ ml: 2 }}>
-            <DeleteIcon />
-          </IconButton>
-        </Box>
-      </CardContent>
-    </Box>
-  </Card>
-);
+  useEffect(() => {
+    setLocalQuantity(String(item.quantity));
+  }, [item.quantity]);
+
+  const handleQuantityChange = async (delta: number) => {
+    try {
+      await updateProductQuantity(item.id, item.quantity, delta);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleLocalChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalQuantity(event.target.value);
+  };
+
+  const handleQuantityOverwrite = async (event: React.FocusEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    const newQuantity = parseInt(value, 10);
+    try {
+      await overwriteProductQuantity(item.id, newQuantity);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await removeProduct(item.id);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  return (
+    <Card
+      sx={{
+        display: "flex",
+        mb: 2,
+        boxShadow: 1,
+        transition: "0.2s",
+        "&:hover": { boxShadow: 4 },
+      }}
+    >
+      <CardMedia
+        component="img"
+        sx={{ width: 100, height: 100, objectFit: "cover" }}
+        image={item.image}
+        alt={item.name}
+      />
+      <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
+        <CardContent
+          sx={{
+            flex: "1 0 auto",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            py: 1,
+          }}
+        >
+          <Box sx={{ minWidth: 200 }}>
+            <Typography component="div" variant="subtitle1" fontWeight={600}>
+              {item.name}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {item.price.toFixed(2)} PLN / szt.
+            </Typography>
+          </Box>
+
+          <Box sx={{ display: "flex", alignItems: "center", mx: 2 }}>
+            <IconButton
+              size="small"
+              aria-label="decrease quantity"
+              disabled={item.quantity <= 1}
+              onClick={() => handleQuantityChange(-1)}
+            >
+              <RemoveIcon fontSize="inherit" />
+            </IconButton>
+            <TextField
+              value={localQuantity}
+              size="small"
+              variant="outlined"
+              sx={{ width: 50, mx: 0.5 }}
+              inputProps={{ style: { textAlign: "center", padding: "4px" } }}
+              onChange={handleLocalChange}
+              onBlur={handleQuantityOverwrite}
+            />
+            <IconButton
+              size="small"
+              aria-label="increase quantity"
+              onClick={() => handleQuantityChange(1)}
+            >
+              <AddIcon fontSize="inherit" />
+            </IconButton>
+          </Box>
+
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Typography variant="h6" sx={{ minWidth: 90, textAlign: "right", fontWeight: 700 }}>
+              {(item.price * item.quantity).toFixed(2)} PLN
+            </Typography>
+            <IconButton aria-label="delete" color="error" sx={{ ml: 2 }} onClick={handleDelete}>
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+        </CardContent>
+      </Box>
+    </Card>
+  );
+};
 
 const CartPage: React.FC = () => {
-  const subtotal = mockCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const { cartItems, loading, error } = useCartContext();
+
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
   const total = subtotal + shipping;
+
+  if (loading) {
+    return (
+      <MainLayout>
+        <Container maxWidth="lg" sx={{ py: 4, textAlign: "center" }}>
+          <CircularProgress />
+          <Typography sx={{ mt: 2 }}>Ładowanie koszyka...</Typography>
+        </Container>
+      </MainLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <MainLayout>
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+          <Alert severity="error">{error}</Alert>
+        </Container>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
@@ -132,11 +177,17 @@ const CartPage: React.FC = () => {
         <Grid container spacing={4}>
           <Grid size={{ xs: 12, md: 8 }}>
             <Typography variant="h5" gutterBottom sx={{ mb: 2 }}>
-              Produkty w Koszyku ({mockCartItems.length})
+              Produkty w Koszyku ({cartItems.length})
             </Typography>
-            {mockCartItems.map((item) => (
-              <CartProductCard key={item.id} item={item} />
-            ))}
+            {cartItems.length > 0 ? (
+              cartItems.map((item) => <CartProductCard key={item.id} item={item} />)
+            ) : (
+              <Box sx={{ p: 3, bgcolor: "grey.50", borderRadius: 1, textAlign: "center" }}>
+                <Typography variant="h6" color="text.secondary">
+                  Twój koszyk jest pusty.
+                </Typography>
+              </Box>
+            )}
 
             {FREE_SHIPPING_THRESHOLD - subtotal > 0 && (
               <Box
