@@ -1,0 +1,82 @@
+import React, { useState } from "react";
+import { usePermissionContext } from "../../contexts/PermissionContext";
+import type { Role } from "../../types/users";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  Checkbox,
+  FormControlLabel,
+  CircularProgress,
+} from "@mui/material";
+
+interface PermissionModalProps {
+  role: Role;
+  open: boolean;
+  onClose: () => void;
+  onSave: (role: Role) => Promise<void>;
+  loadingSave: boolean;
+}
+
+export const PermissionModal: React.FC<PermissionModalProps> = ({
+  role,
+  open,
+  onClose,
+  onSave,
+  loadingSave,
+}) => {
+  const { allPermissions, loadingPermissions } = usePermissionContext();
+  const [currentPermissions, setCurrentPermissions] = useState(role.permissions || []);
+
+  React.useEffect(() => {
+    setCurrentPermissions(role.permissions || []);
+  }, [role.permissions, open]);
+
+  const handleTogglePermission = (permission: string) => {
+    setCurrentPermissions((prev) =>
+      prev.includes(permission) ? prev.filter((p) => p !== permission) : [...prev, permission],
+    );
+  };
+
+  const handleSave = async () => {
+    await onSave({ ...role, permissions: currentPermissions });
+  };
+
+  return (
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <DialogTitle>Zarządzanie uprawnieniami dla roli: {role.name}</DialogTitle>
+      <DialogContent dividers>
+        {loadingPermissions ? (
+          <CircularProgress />
+        ) : (
+          <Grid container spacing={1}>
+            {allPermissions.map((permission) => (
+              <Grid size={{ xs: 12, md: 5 }} key={permission}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={currentPermissions.includes(permission)}
+                      onChange={() => handleTogglePermission(permission)}
+                    />
+                  }
+                  label={permission}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        )}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} disabled={loadingSave}>
+          Anuluj
+        </Button>
+        <Button onClick={handleSave} color="primary" variant="contained" disabled={loadingSave}>
+          {loadingSave ? <CircularProgress size={24} /> : "Zapisz uprawnienia"}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};

@@ -25,6 +25,7 @@ const drawerWidth = 240;
 const menuItems = [
   { text: "Pulpit", icon: <DashboardIcon />, path: "/admin" },
   { text: "Zarządzanie Użytkownikami", icon: <PeopleIcon />, path: "/admin/users" },
+  { text: "Zarządzanie Rolami", icon: <PeopleIcon />, path: "/admin/roles" },
   { text: "Zamówienia", icon: <ShoppingBagIcon />, path: "/admin/orders" },
   { text: "Dodaj Produkt", icon: <AddCircleOutlineIcon />, path: "/admin/products/add" },
 ];
