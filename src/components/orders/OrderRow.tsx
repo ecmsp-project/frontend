@@ -1,9 +1,6 @@
-import React, { useState } from "react";
-import {
-  getStatusColor,
-  type OrderDetailsResponse,
-  type OrderItemDetails,
-} from "../../types/orders.ts";
+import { useState } from "react";
+import { type OrderDetailsResponse, type OrderItemDetails } from "../../types/orders.ts";
+import { getStatusColor, getStatusLabel } from "../../types/orders.ts";
 import { formatDate } from "../../utils/string.ts";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -21,10 +18,17 @@ import {
   Typography,
 } from "@mui/material";
 
-const OrderRow: React.FC<{ order: OrderDetailsResponse }> = ({ order }) => {
-  const [open, setOpen] = useState(false);
+const calculateTotalPrice = (items: OrderItemDetails[]): number => {
+  return items.reduce((sum, item) => sum + item.quantity * item.price, 0);
+};
 
-  const getMockItemName = (itemId: string) => `Produkt #${itemId.substring(0, 8)}`;
+interface OrderRowProps {
+  order: OrderDetailsResponse;
+  hideUserId?: boolean;
+}
+
+export const OrderRow: React.FC<OrderRowProps> = ({ order, hideUserId }) => {
+  const [open, setOpen] = useState(false);
 
   return (
     <>
@@ -34,47 +38,70 @@ const OrderRow: React.FC<{ order: OrderDetailsResponse }> = ({ order }) => {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">
-          {order.orderId.substring(0, 16)}...
-        </TableCell>
+        <TableCell>{order.orderId}</TableCell>
+        {!hideUserId && <TableCell>{order.clientId}</TableCell>}
         <TableCell align="right">{formatDate(order.date)}</TableCell>
-        <TableCell align="right">
+        <TableCell align="center">
           <Chip
-            label={order.orderStatus}
+            label={getStatusLabel(order.orderStatus)}
             size="small"
             color={getStatusColor(order.orderStatus)}
             sx={{ textTransform: "uppercase", fontWeight: 600 }}
           />
         </TableCell>
-        <TableCell align="right">
-          {order.items.reduce((sum, item) => sum + item.quantity * 100, 0).toFixed(2)} zł
-        </TableCell>
-        <TableCell align="right">
-          <Button variant="outlined" size="small">
-            Faktura
-          </Button>
-        </TableCell>
+        <TableCell align="right">{calculateTotalPrice(order.items).toFixed(2)} zł</TableCell>
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1, p: 2, bgcolor: "#f9f9f9", borderRadius: 1 }}>
+            <Box sx={{ margin: 1, p: 2, borderRadius: 1 }}>
               <Typography variant="h6" gutterBottom component="div" fontWeight={600}>
-                Szczegóły Produktów ({order.items.length})
+                Szczegóły Zamówienia
+              </Typography>
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="body2" color="text.secondary">
+                  <strong>ID Klienta:</strong> {order.clientId}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  <strong>Liczba produktów:</strong> {order.items.length}
+                </Typography>
+              </Box>
+              <Typography variant="subtitle2" gutterBottom fontWeight={600}>
+                Produkty ({order.items.length})
               </Typography>
               <List dense>
-                {order.items.map((item: OrderItemDetails) => (
-                  <ListItem key={item.itemId} disablePadding>
-                    <ListItemText
-                      primary={`${getMockItemName(item.itemId)}`}
-                      secondary={`ID: ${item.itemId.substring(0, 8)}...`}
-                    />
-                    <Typography variant="body2" fontWeight={600}>
-                      Ilość: {item.quantity}
-                    </Typography>
-                  </ListItem>
-                ))}
+                {order.items.map((item) => {
+                  return (
+                    <ListItem key={item.itemId}>
+                      <ListItemText
+                        primary={`ID Produktu: ${item.itemId} | ID Wariantu ${item.variantId}`}
+                        secondary={`Cena: ${item.price} zł | Możliwość zwrotu: ${item.isReturnable ? "Tak" : "Nie"} | Ilość: ${item.quantity}`}
+                      />
+                      <Typography variant="body2" fontWeight={600}>
+                        Opis: {item.description}
+                      </Typography>
+                    </ListItem>
+                  );
+                })}
               </List>
+              <Box sx={{ mt: 2, pt: 2, borderTop: "1px solid #e0e0e0" }}>
+                <Typography variant="h6" fontWeight={600}>
+                  Suma: {calculateTotalPrice(order.items).toFixed(2)} zł
+                </Typography>
+              </Box>
+              <Box sx={{ mt: 2, display: "flex", gap: 1 }}>
+                <Button variant="outlined" size="small">
+                  Wygeneruj Fakturę
+                </Button>
+                <Button variant="outlined" size="small" color="info">
+                  Szczegóły Śledzenia
+                </Button>
+                {getStatusColor(order.orderStatus) === "error" && (
+                  <Button variant="outlined" size="small" color="warning">
+                    Zarządzaj Zwrotem
+                  </Button>
+                )}
+              </Box>
             </Box>
           </Collapse>
         </TableCell>
@@ -82,5 +109,3 @@ const OrderRow: React.FC<{ order: OrderDetailsResponse }> = ({ order }) => {
     </>
   );
 };
-
-export default OrderRow;

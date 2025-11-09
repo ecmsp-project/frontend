@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchAllOrders } from "../../api/order-service";
 import AdminLayout from "../../components/layout/AdminLayout";
-import { ExpandableOrderRow } from "../../components/orders/ExpandableOrderRow";
+import { OrderRow } from "../../components/orders/OrderRow";
 import { type OrderDetailsResponse } from "../../types/orders";
 import {
   Typography,
@@ -70,12 +70,12 @@ const OrderManagementPage: React.FC = () => {
                   <TableCell>ID Klienta</TableCell>
                   <TableCell align="right">Data</TableCell>
                   <TableCell align="center">Status</TableCell>
-                  <TableCell align="right">Wartość</TableCell>
+                  <TableCell align="right">Łączna kwota</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {orders.map((order) => (
-                  <ExpandableOrderRow key={order.orderId} order={order} />
+                  <OrderRow key={order.orderId} order={order} />
                 ))}
               </TableBody>
             </Table>

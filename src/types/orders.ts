@@ -16,30 +16,57 @@ export interface OrderDetailsResponse {
   items: OrderItemDetails[];
 }
 
-type StatusColor = "default" | "primary" | "secondary" | "error" | "success" | "warning";
+export const getStatusLabel = (status: string): string => {
+  return STATUS_LABELS[status as OrderStatus] || status;
+};
 
 export const getStatusColor = (status: string): StatusColor => {
-  switch (status) {
-    case "ORDER_STATUS_PAID":
-    case "ORDER_STATUS_DELIVERED":
-      return "success";
+  return STATUS_COLORS[status as OrderStatus] || "default";
+};
 
-    case "ORDER_STATUS_PENDING":
-    case "ORDER_STATUS_PROCESSING":
-    case "ORDER_STATUS_SHIPPED":
-      return "primary";
+export const isValidOrderStatus = (status: string): status is OrderStatus => {
+  return status in STATUS_LABELS;
+};
 
-    case "ORDER_STATUS_RETURN_REQUESTED":
-    case "ORDER_STATUS_RETURN_PROCESSING":
-      return "warning";
+export type OrderStatus =
+  | "ORDER_STATUS_PAID"
+  | "ORDER_STATUS_DELIVERED"
+  | "ORDER_STATUS_PENDING"
+  | "ORDER_STATUS_PROCESSING"
+  | "ORDER_STATUS_SHIPPED"
+  | "ORDER_STATUS_RETURN_REQUESTED"
+  | "ORDER_STATUS_RETURN_PROCESSING"
+  | "ORDER_STATUS_FAILED"
+  | "ORDER_STATUS_CANCELLED"
+  | "ORDER_STATUS_RETURNED"
+  | "ORDER_STATUS_UNSPECIFIED";
 
-    case "ORDER_STATUS_FAILED":
-    case "ORDER_STATUS_CANCELLED":
-    case "ORDER_STATUS_RETURNED":
-      return "error";
+const STATUS_LABELS: Record<OrderStatus, string> = {
+  ORDER_STATUS_PAID: "Opłacone",
+  ORDER_STATUS_DELIVERED: "Dostarczone",
+  ORDER_STATUS_PENDING: "Oczekujące",
+  ORDER_STATUS_PROCESSING: "W trakcie realizacji",
+  ORDER_STATUS_SHIPPED: "Wysłane",
+  ORDER_STATUS_RETURN_REQUESTED: "Zwrot zgłoszony",
+  ORDER_STATUS_RETURN_PROCESSING: "Zwrot w trakcie",
+  ORDER_STATUS_FAILED: "Nieudane",
+  ORDER_STATUS_CANCELLED: "Anulowane",
+  ORDER_STATUS_RETURNED: "Zwrócone",
+  ORDER_STATUS_UNSPECIFIED: "Nieokreślone",
+};
 
-    case "ORDER_STATUS_UNSPECIFIED":
-    default:
-      return "default";
-  }
+export type StatusColor = "default" | "primary" | "secondary" | "error" | "success" | "warning";
+
+const STATUS_COLORS: Record<OrderStatus, StatusColor> = {
+  ORDER_STATUS_PAID: "success",
+  ORDER_STATUS_DELIVERED: "success",
+  ORDER_STATUS_PENDING: "primary",
+  ORDER_STATUS_PROCESSING: "primary",
+  ORDER_STATUS_SHIPPED: "primary",
+  ORDER_STATUS_RETURN_REQUESTED: "warning",
+  ORDER_STATUS_RETURN_PROCESSING: "warning",
+  ORDER_STATUS_FAILED: "error",
+  ORDER_STATUS_CANCELLED: "error",
+  ORDER_STATUS_RETURNED: "error",
+  ORDER_STATUS_UNSPECIFIED: "default",
 };
