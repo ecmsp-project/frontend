@@ -1,4 +1,7 @@
 import CartProvider from "./contexts/CartProvider.tsx";
+import { PermissionProvider } from "./contexts/PermissionProvider.tsx";
+import { RoleProvider } from "./contexts/RoleProvider.tsx";
+import UserProvider from "./contexts/UserProvider.tsx";
 import CartPage from "./pages/CartPage.tsx";
 import Contact from "./pages/Contact.tsx";
 import CreateProductPage from "./pages/CreateProductPage.tsx";
@@ -12,6 +15,7 @@ import SearchPage from "./pages/SearchPage";
 import UserOrdersPage from "./pages/UserOrdersPage.tsx";
 import DashboardPage from "./pages/admin/DashboardPage.tsx";
 import OrderManagementPage from "./pages/admin/OrderManagmentPage.tsx";
+import RoleManagementPage from "./pages/admin/RoleManagementPage.tsx";
 import UserManagementPage from "./pages/admin/UserManagementPage.tsx";
 import theme from "./utils/theme.ts";
 import Box from "@mui/material/Box";
@@ -24,38 +28,45 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
-        <CartProvider>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              minHeight: "100vh",
-              width: "100%",
-              bgcolor: "background.default",
-            }}
-          >
-            <Box component="main" sx={{ flexGrow: 1 }}>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/search" element={<SearchPage />} />
-                <Route path="/category/:slug" element={<SearchPage />} />
-                <Route path="/product/:id" element={<ProductPage />} />
-                <Route path="/cart" element={<CartPage />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/faq" element={<Faq />} />
-                <Route path="/orders" element={<UserOrdersPage />} />
-                <Route path="/cp" element={<CreateProductPage />} />
-                <Route path="/cv" element={<CreateVariantPage />} />
-                <Route path="/admin" element={<DashboardPage />} />
-                <Route path="/admin/users" element={<UserManagementPage />} />
-                <Route path="/admin/orders" element={<OrderManagementPage />} />
-                <Route path="*" element={<div>404 Not Found</div>} />
-              </Routes>
-            </Box>
-          </Box>
-        </CartProvider>
+        <UserProvider>
+          <RoleProvider>
+            <PermissionProvider>
+              <CartProvider>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    minHeight: "100vh",
+                    width: "100%",
+                    bgcolor: "background.default",
+                  }}
+                >
+                  <Box component="main" sx={{ flexGrow: 1 }}>
+                    <Routes>
+                      <Route path="/" element={<HomePage />} />
+                      <Route path="/search" element={<SearchPage />} />
+                      <Route path="/category/:slug" element={<SearchPage />} />
+                      <Route path="/product/:id" element={<ProductPage />} />
+                      <Route path="/cart" element={<CartPage />} />
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/register" element={<Register />} />
+                      <Route path="/contact" element={<Contact />} />
+                      <Route path="/faq" element={<Faq />} />
+                      <Route path="/orders" element={<UserOrdersPage />} />
+                      <Route path="/cp" element={<CreateProductPage />} />
+                      <Route path="/cv" element={<CreateVariantPage />} />
+                      <Route path="/admin" element={<DashboardPage />} />
+                      <Route path="/admin/users" element={<UserManagementPage />} />
+                      <Route path="/admin/roles" element={<RoleManagementPage />} />
+                      <Route path="/admin/orders" element={<OrderManagementPage />} />
+                      <Route path="*" element={<div>404 Not Found</div>} />
+                    </Routes>
+                  </Box>
+                </Box>
+              </CartProvider>
+            </PermissionProvider>
+          </RoleProvider>
+        </UserProvider>
       </BrowserRouter>
     </ThemeProvider>
   );
