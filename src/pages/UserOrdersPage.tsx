@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchUserOrders } from "../api/order-service";
 import MainLayout from "../components/layout/MainLayout";
-import OrderRow from "../components/orders/OrderRow.tsx";
+import { OrderRow } from "../components/orders/OrderRow";
 import { type OrderDetailsResponse } from "../types/orders";
 import {
   Box,
@@ -78,12 +78,11 @@ const UserOrdersPage: React.FC = () => {
               <TableCell align="right">Data</TableCell>
               <TableCell align="right">Status</TableCell>
               <TableCell align="right">Łączna kwota</TableCell>
-              <TableCell align="right">Akcje</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {orders.map((order) => (
-              <OrderRow key={order.orderId} order={order} />
+              <OrderRow key={order.orderId} order={order} hideUserId={true} />
             ))}
           </TableBody>
         </Table>
