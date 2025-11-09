@@ -1,6 +1,11 @@
 export interface OrderItemDetails {
   itemId: string;
+  variantId: string;
   quantity: number;
+  price: number;
+  imageUrl: string;
+  description: string;
+  isReturnable: boolean;
 }
 
 export interface OrderDetailsResponse {
@@ -15,25 +20,25 @@ type StatusColor = "default" | "primary" | "secondary" | "error" | "success" | "
 
 export const getStatusColor = (status: string): StatusColor => {
   switch (status) {
-    case "PAID":
-    case "DELIVERED":
+    case "ORDER_STATUS_PAID":
+    case "ORDER_STATUS_DELIVERED":
       return "success";
 
-    case "PENDING":
-    case "PROCESSING":
-    case "SHIPPED":
+    case "ORDER_STATUS_PENDING":
+    case "ORDER_STATUS_PROCESSING":
+    case "ORDER_STATUS_SHIPPED":
       return "primary";
 
-    case "RETURN_REQUESTED":
-    case "RETURN_PROCESSING":
+    case "ORDER_STATUS_RETURN_REQUESTED":
+    case "ORDER_STATUS_RETURN_PROCESSING":
       return "warning";
 
-    case "FAILED":
-    case "CANCELLED":
-    case "RETURNED":
+    case "ORDER_STATUS_FAILED":
+    case "ORDER_STATUS_CANCELLED":
+    case "ORDER_STATUS_RETURNED":
       return "error";
 
-    case "UNSPECIFIED":
+    case "ORDER_STATUS_UNSPECIFIED":
     default:
       return "default";
   }

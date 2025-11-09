@@ -18,3 +18,17 @@ export function formatPhone(value: string): string {
 export function formatNIP(value: string): string {
   return value.replace(/\D/g, "").slice(0, 10);
 }
+
+export function formatDate(dateString: string): string {
+  try {
+    return new Date(dateString).toLocaleDateString("pl-PL", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return dateString;
+  }
+}

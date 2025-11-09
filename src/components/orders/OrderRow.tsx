@@ -4,6 +4,7 @@ import {
   type OrderDetailsResponse,
   type OrderItemDetails,
 } from "../../types/orders.ts";
+import { formatDate } from "../../utils/string.ts";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
@@ -19,20 +20,6 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-
-const formatDate = (dateString: string) => {
-  try {
-    return new Date(dateString).toLocaleDateString("pl-PL", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  } catch {
-    return dateString;
-  }
-};
 
 const OrderRow: React.FC<{ order: OrderDetailsResponse }> = ({ order }) => {
   const [open, setOpen] = useState(false);
