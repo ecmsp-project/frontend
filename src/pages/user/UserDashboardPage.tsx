@@ -38,39 +38,119 @@ const UserDashboardPage: React.FC = () => {
 
   return (
     <UserLayout>
-      <Typography variant="h4" gutterBottom>
-        Moje konto
-      </Typography>
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h4" gutterBottom fontWeight={700}>
+          Moje konto
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Witaj ponownie! Oto Twoje informacje
+        </Typography>
+      </Box>
+
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 6 }}>
-          <Paper elevation={3} sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
+          <Paper
+            elevation={0}
+            sx={{
+              p: 4,
+              borderRadius: 3,
+              border: "1px solid",
+              borderColor: "divider",
+              background: (theme) =>
+                `linear-gradient(135deg, ${theme.palette.background.paper} 0%, ${theme.palette.action.hover} 100%)`,
+              transition: "all 0.3s",
+              "&:hover": {
+                transform: "translateY(-4px)",
+                boxShadow: 4,
+              },
+            }}
+          >
+            <Typography variant="h6" gutterBottom fontWeight={600} color="primary.main">
               Informacje o koncie
             </Typography>
-            <Typography variant="body1" sx={{ mb: 1 }}>
-              <strong>Login:</strong> {currentUser.login}
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 1 }}>
-              <strong>ID użytkownika:</strong> {currentUser.id}
-            </Typography>
-            <Typography variant="body1" sx={{ mb: 1 }}>
-              <strong>Role:</strong>{" "}
-              {currentUser.roles.length > 0
-                ? currentUser.roles.map((role) => role.name).join(", ")
-                : "Brak przypisanych ról"}
-            </Typography>
+            <Box sx={{ mt: 3 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  mb: 2,
+                  p: 2,
+                  bgcolor: "background.paper",
+                  borderRadius: 2,
+                }}
+              >
+                <Typography variant="body2" color="text.secondary" sx={{ minWidth: 120 }}>
+                  Login:
+                </Typography>
+                <Typography variant="body1" fontWeight={600}>
+                  {currentUser.login}
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  mb: 2,
+                  p: 2,
+                  bgcolor: "background.paper",
+                  borderRadius: 2,
+                }}
+              >
+                <Typography variant="body2" color="text.secondary" sx={{ minWidth: 120 }}>
+                  ID użytkownika:
+                </Typography>
+                <Typography variant="body1" fontWeight={600}>
+                  {currentUser.id}
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  p: 2,
+                  bgcolor: "background.paper",
+                  borderRadius: 2,
+                }}
+              >
+                <Typography variant="body2" color="text.secondary" sx={{ minWidth: 120 }}>
+                  Role:
+                </Typography>
+                <Typography variant="body1" fontWeight={600}>
+                  {currentUser.roles.length > 0
+                    ? currentUser.roles.map((role) => role.name).join(", ")
+                    : "Brak przypisanych ról"}
+                </Typography>
+              </Box>
+            </Box>
           </Paper>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <Paper elevation={3} sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
+          <Paper
+            elevation={0}
+            sx={{
+              p: 4,
+              borderRadius: 3,
+              border: "1px solid",
+              borderColor: "divider",
+              background: (theme) =>
+                `linear-gradient(135deg, ${theme.palette.primary.light}15 0%, ${theme.palette.primary.main}15 100%)`,
+              transition: "all 0.3s",
+              "&:hover": {
+                transform: "translateY(-4px)",
+                boxShadow: 4,
+              },
+            }}
+          >
+            <Typography variant="h6" gutterBottom fontWeight={600} color="primary.main">
               Uprawnienia
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {currentUser.roles.flatMap((role) => role.permissions).length > 0
-                ? currentUser.roles.flatMap((role) => role.permissions).join(", ")
-                : "Brak specjalnych uprawnień"}
-            </Typography>
+            <Box sx={{ mt: 3 }}>
+              <Typography variant="body2" color="text.secondary">
+                {currentUser.roles.flatMap((role) => role.permissions).length > 0
+                  ? currentUser.roles.flatMap((role) => role.permissions).join(", ")
+                  : "Brak specjalnych uprawnień"}
+              </Typography>
+            </Box>
           </Paper>
         </Grid>
       </Grid>

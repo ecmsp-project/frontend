@@ -29,6 +29,7 @@ import {
   DialogContent,
   DialogActions,
   Tooltip,
+  Chip,
 } from "@mui/material";
 
 const RoleManagementPage: React.FC = () => {
@@ -124,20 +125,49 @@ const RoleManagementPage: React.FC = () => {
           </Tooltip>
         </Box>
 
-        <TableContainer component={Paper} elevation={3}>
+        <TableContainer
+          component={Paper}
+          elevation={0}
+          sx={{
+            borderRadius: 2,
+            overflow: "hidden",
+            border: "1px solid",
+            borderColor: "divider",
+          }}
+        >
           <Table aria-label="role management table">
-            <TableHead sx={{ bgcolor: "grey.100" }}>
+            <TableHead
+              sx={{
+                bgcolor: (theme) => theme.palette.primary.main,
+              }}
+            >
               <TableRow>
-                <TableCell>Nazwa Roli</TableCell>
-                <TableCell>Liczba Uprawnień</TableCell>
-                <TableCell>Akcje</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: 600 }}>Nazwa Roli</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: 600 }}>Liczba Uprawnień</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: 600 }}>Akcje</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {roles.map((role) => (
-                <TableRow key={role.name} hover>
-                  <TableCell sx={{ fontWeight: "bold" }}>{role.name}</TableCell>
-                  <TableCell>{role.permissions?.length || 0}</TableCell>
+                <TableRow
+                  key={role.name}
+                  hover
+                  sx={{
+                    "&:hover": {
+                      bgcolor: (theme) => theme.palette.action.hover,
+                    },
+                    transition: "background-color 0.2s",
+                  }}
+                >
+                  <TableCell sx={{ fontWeight: 700, color: "primary.main" }}>{role.name}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={role.permissions?.length || 0}
+                      size="small"
+                      color="primary"
+                      sx={{ fontWeight: 600 }}
+                    />
+                  </TableCell>
                   <TableCell>
                     <Tooltip
                       title={
