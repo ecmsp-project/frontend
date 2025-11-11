@@ -1,5 +1,6 @@
 import React, { useState, useCallback, type KeyboardEvent } from "react";
 import { useIndividualUser } from "../../contexts/IndividualUserContext";
+import { useCartContext } from "../../contexts/CartContext";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import CategoryIcon from "@mui/icons-material/Category";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -7,6 +8,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import SettingsIcon from "@mui/icons-material/Settings";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import WorkIcon from "@mui/icons-material/Work";
 import {
   AppBar,
   Toolbar,
@@ -24,6 +26,7 @@ import {
   Menu,
   MenuItem,
   ListItemIcon,
+  Badge,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -169,11 +172,15 @@ const mockCategories: Category[] = [
 
 const Header: React.FC<HeaderProps> = ({ minimalist }) => {
   const navigate = useNavigate();
-  const { logout } = useIndividualUser();
+  const { logout, permissions } = useIndividualUser();
+  const { cartItems } = useCartContext();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [categoriesOpen, setCategoriesOpen] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(Boolean(localStorage.getItem("token")));
   const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(null);
+
+  // Oblicz całkowitą liczbę produktów w koszyku
+  const cartItemsCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   // Sprawdź token przy każdej zmianie w localStorage
   React.useEffect(() => {
@@ -349,7 +356,9 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                       color="inherit"
                       onClick={() => navigate("/cart")}
                     >
-                      <ShoppingCartIcon />
+                      <Badge badgeContent={cartItemsCount} color="error">
+                        <ShoppingCartIcon />
+                      </Badge>
                     </IconButton>
                   </>
                 ) : (
@@ -415,6 +424,17 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
           </ListItemIcon>
           <ListItemText>Ustawienia</ListItemText>
         </MenuItem>
+        {permissions.length > 0 && (
+          <>
+            <Divider />
+            <MenuItem onClick={() => handleMenuItemClick("/admin")}>
+              <ListItemIcon>
+                <WorkIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Panel pracownika</ListItemText>
+            </MenuItem>
+          </>
+        )}
         <Divider />
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
