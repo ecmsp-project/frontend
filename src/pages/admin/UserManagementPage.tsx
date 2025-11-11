@@ -161,14 +161,29 @@ const UserManagementPage: React.FC = () => {
           />
         </Box>
 
-        <TableContainer component={Paper} elevation={3}>
+        <TableContainer
+          component={Paper}
+          elevation={0}
+          sx={{
+            borderRadius: 2,
+            overflow: "hidden",
+            border: "1px solid",
+            borderColor: "divider",
+          }}
+        >
           <Table aria-label="user roles table">
-            <TableHead sx={{ bgcolor: "grey.100" }}>
+            <TableHead
+              sx={{
+                bgcolor: (theme) => theme.palette.primary.main,
+              }}
+            >
               <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Login</TableCell>
-                <TableCell>Rola</TableCell>
-                <TableCell>Usuń Użytkownika</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: 600 }}>ID</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: 600 }}>Login</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: 600 }}>Rola</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: 600 }}>
+                  Usuń Użytkownika
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -177,9 +192,20 @@ const UserManagementPage: React.FC = () => {
                 const rolesToDisplay = userRoles.length > 0 ? userRoles : [defaultUser];
 
                 return (
-                  <TableRow key={user.id} hover>
-                    <TableCell>{user.id}</TableCell>
-                    <TableCell>{user.login}</TableCell>
+                  <TableRow
+                    key={user.id}
+                    hover
+                    sx={{
+                      "&:hover": {
+                        bgcolor: (theme) => theme.palette.action.hover,
+                      },
+                      transition: "background-color 0.2s",
+                    }}
+                  >
+                    <TableCell sx={{ fontWeight: 500 }}>{user.id}</TableCell>
+                    <TableCell sx={{ fontWeight: 600, color: "primary.main" }}>
+                      {user.login}
+                    </TableCell>
                     <TableCell>
                       <Box display="flex" flexWrap="wrap" alignItems="center">
                         {rolesToDisplay.map((roleName) => (
