@@ -19,6 +19,7 @@ interface AddRoleModalProps {
   onClose: () => void;
   onSave: (userId: string, roleName: string) => Promise<void>;
   userCurrentRoles: string[];
+  readOnly?: boolean;
 }
 
 const AddRoleModal: React.FC<AddRoleModalProps> = ({
@@ -28,6 +29,7 @@ const AddRoleModal: React.FC<AddRoleModalProps> = ({
   onClose,
   onSave,
   userCurrentRoles,
+  readOnly = false,
 }) => {
   const { roles } = useRoleContext();
   const [selectedRoleName, setSelectedRoleName] = useState("");
@@ -37,7 +39,7 @@ const AddRoleModal: React.FC<AddRoleModalProps> = ({
   const availableRoles = roles.filter((role) => !userCurrentRoles.includes(role.name));
 
   const handleSave = async () => {
-    if (!selectedRoleName) return;
+    if (!selectedRoleName || readOnly) return;
 
     setIsSaving(true);
     setSaveError(null);
@@ -61,7 +63,9 @@ const AddRoleModal: React.FC<AddRoleModalProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
-      <DialogTitle>Dodaj rolę dla użytkownika: **{userName}**</DialogTitle>
+      <DialogTitle>
+        {readOnly ? "Podgląd ról użytkownika" : "Dodaj rolę dla użytkownika"}: **{userName}**
+      </DialogTitle>
       <DialogContent dividers>
         {availableRoles.length === 0 ? (
           <Alert severity="info">Wszystkie role zostały już przypisane temu użytkownikowi.</Alert>
@@ -72,12 +76,17 @@ const AddRoleModal: React.FC<AddRoleModalProps> = ({
                 {saveError}
               </Alert>
             )}
+            {readOnly && (
+              <Alert severity="warning" sx={{ mb: 2 }}>
+                Brak uprawnień do dodawania ról użytkownikom.
+              </Alert>
+            )}
             <Select
               value={selectedRoleName}
               onChange={(e) => setSelectedRoleName(e.target.value as string)}
               fullWidth
               displayEmpty
-              disabled={isSaving}
+              disabled={isSaving || readOnly}
             >
               <MenuItem value="" disabled>
                 Wybierz nową rolę
@@ -93,16 +102,18 @@ const AddRoleModal: React.FC<AddRoleModalProps> = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={isSaving}>
-          Anuluj
+          {readOnly ? "Zamknij" : "Anuluj"}
         </Button>
-        <Button
-          onClick={handleSave}
-          color="primary"
-          variant="contained"
-          disabled={isSaving || !selectedRoleName || availableRoles.length === 0}
-        >
-          {isSaving ? <CircularProgress size={24} /> : "Dodaj Rolę"}
-        </Button>
+        {!readOnly && (
+          <Button
+            onClick={handleSave}
+            color="primary"
+            variant="contained"
+            disabled={isSaving || !selectedRoleName || availableRoles.length === 0}
+          >
+            {isSaving ? <CircularProgress size={24} /> : "Dodaj Rolę"}
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );

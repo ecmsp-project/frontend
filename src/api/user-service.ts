@@ -1,7 +1,7 @@
 import type { User } from "../types/users.ts";
 import { API_BASE_URL, apiCall } from "./utils";
 
-export const fetchUsers = async (): Promise<User[]> => {
+export const fetchUsers = async (filterLogin?: string): Promise<User[]> => {
   const jwtToken = localStorage.getItem("token");
 
   if (!jwtToken) {
@@ -9,7 +9,12 @@ export const fetchUsers = async (): Promise<User[]> => {
   }
 
   try {
-    const response = await apiCall(`${API_BASE_URL}/api/users`, {
+    const url = new URL(`${API_BASE_URL}/api/users`);
+    if (filterLogin && filterLogin.trim()) {
+      url.searchParams.append("filterLogin", filterLogin.trim());
+    }
+
+    const response = await apiCall(url.toString(), {
       method: "GET",
       headers: {
         Authorization: `Bearer ${jwtToken}`,

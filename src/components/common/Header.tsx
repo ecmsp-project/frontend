@@ -89,7 +89,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                 size="large"
                 aria-label="panel użytkownika"
                 color="inherit"
-                onClick={() => navigate("/login")}
+                onClick={() => navigate("/user")}
               >
                 <AccountCircle />
               </IconButton>

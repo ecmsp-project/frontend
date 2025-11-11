@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { login } from "../api/auth-service.ts";
 import MainLayout from "../components/layout/MainLayout.tsx";
+import { useIndividualUser } from "../contexts/IndividualUserContext";
 import GoogleIcon from "@mui/icons-material/Google";
 import {
   Box,
@@ -11,29 +12,34 @@ import {
   Card,
   Divider,
   Link as MuiLink,
+  Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const { refreshCurrentUser } = useIndividualUser();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email || !password) {
-      console.error("Login and password required");
+      setError("Login i hasło są wymagane");
       return;
     }
 
     try {
       const loginData = await login(email, password);
       localStorage.setItem("token", loginData.token);
-      console.log(loginData);
+      await refreshCurrentUser();
+      navigate("/user");
     } catch (error) {
       console.error("Login failed:", error);
+      setError("Logowanie nie powiodło się. Sprawdź login i hasło.");
     }
   };
 
@@ -64,6 +70,12 @@ const Login: React.FC = () => {
               lub
             </Typography>
           </Divider>
+
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
 
           <Box component="form" onSubmit={handleLogin} sx={{ mt: 1 }}>
             <TextField

@@ -5,7 +5,7 @@ interface UserContextType {
   users: User[];
   loading: boolean;
   error: string | null;
-  refetchUsers: () => Promise<void>;
+  refetchUsers: (filterLogin?: string) => Promise<void>;
   addRoleToUser: (userId: string, roleName: string) => Promise<void>;
   removeRoleFromUser: (userId: string, roleName: string) => Promise<void>;
   deleteUser: (userId: string) => Promise<void>;
