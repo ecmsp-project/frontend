@@ -36,7 +36,7 @@ const Login: React.FC = () => {
       const loginData = await login(email, password);
       localStorage.setItem("token", loginData.token);
       await refreshCurrentUser();
-      navigate("/user");
+      navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
       setError("Logowanie nie powiodło się. Sprawdź login i hasło.");
