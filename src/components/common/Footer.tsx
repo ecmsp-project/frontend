@@ -1,56 +1,413 @@
 import React from "react";
-import { Box, Typography, Container, Grid, Link } from "@mui/material";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import TwitterIcon from "@mui/icons-material/Twitter";
+import { Box, Typography, Container, Grid, Link, IconButton, Divider } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const Footer: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+  };
+
   return (
-    <Box sx={{ bgcolor: "background.paper", p: 6, mt: "auto" }} component="footer">
+    <Box
+      sx={{
+        bgcolor: "primary.main",
+        color: "white",
+        pt: 6,
+        pb: 3,
+        mt: "auto",
+      }}
+      component="footer"
+    >
       <Container maxWidth="lg">
-        <Grid container spacing={4} justifyContent="space-evenly">
-          <Grid size={{ xs: 12, sm: 4 }}>
-            <Typography variant="h6" color="text.primary" gutterBottom>
-              O Sklepie
+        <Grid container spacing={4}>
+          {/* About Section */}
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Typography
+              variant="h6"
+              gutterBottom
+              fontWeight={700}
+              sx={{
+                fontFamily: "monospace",
+                letterSpacing: ".1rem",
+                mb: 2,
+              }}
+            >
+              E-COMMERCE
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Wszystko co potrzebujesz w jednym miejscu. Jakość i niskie ceny.
+            <Typography variant="body2" sx={{ mb: 2, opacity: 0.9, lineHeight: 1.7 }}>
+              Wszystko co potrzebujesz w jednym miejscu. Jakość, niskie ceny i szybka dostawa. Twoje
+              zakupy, nasza pasja.
             </Typography>
+            <Box sx={{ display: "flex", gap: 1, mt: 3 }}>
+              <IconButton
+                size="small"
+                sx={{
+                  color: "white",
+                  bgcolor: "rgba(255,255,255,0.1)",
+                  "&:hover": {
+                    bgcolor: "rgba(255,255,255,0.2)",
+                    transform: "translateY(-2px)",
+                  },
+                  transition: "all 0.3s",
+                }}
+                aria-label="Facebook"
+              >
+                <FacebookIcon fontSize="small" />
+              </IconButton>
+              <IconButton
+                size="small"
+                sx={{
+                  color: "white",
+                  bgcolor: "rgba(255,255,255,0.1)",
+                  "&:hover": {
+                    bgcolor: "rgba(255,255,255,0.2)",
+                    transform: "translateY(-2px)",
+                  },
+                  transition: "all 0.3s",
+                }}
+                aria-label="Twitter"
+              >
+                <TwitterIcon fontSize="small" />
+              </IconButton>
+              <IconButton
+                size="small"
+                sx={{
+                  color: "white",
+                  bgcolor: "rgba(255,255,255,0.1)",
+                  "&:hover": {
+                    bgcolor: "rgba(255,255,255,0.2)",
+                    transform: "translateY(-2px)",
+                  },
+                  transition: "all 0.3s",
+                }}
+                aria-label="Instagram"
+              >
+                <InstagramIcon fontSize="small" />
+              </IconButton>
+              <IconButton
+                size="small"
+                sx={{
+                  color: "white",
+                  bgcolor: "rgba(255,255,255,0.1)",
+                  "&:hover": {
+                    bgcolor: "rgba(255,255,255,0.2)",
+                    transform: "translateY(-2px)",
+                  },
+                  transition: "all 0.3s",
+                }}
+                aria-label="LinkedIn"
+              >
+                <LinkedInIcon fontSize="small" />
+              </IconButton>
+            </Box>
           </Grid>
 
-          <Grid size={{ xs: 6, sm: 2 }}>
-            <Typography variant="h6" color="text.primary" gutterBottom>
-              Linki
+          {/* Shop Links */}
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+            <Typography variant="h6" gutterBottom fontWeight={600} sx={{ mb: 2 }}>
+              Sklep
             </Typography>
-            <Link href="/about" variant="body2" color="text.secondary" display="block">
-              O Nas
+            <Link
+              component="button"
+              onClick={() => handleNavigation("/")}
+              variant="body2"
+              sx={{
+                color: "white",
+                opacity: 0.9,
+                display: "block",
+                mb: 1,
+                textAlign: "left",
+                cursor: "pointer",
+                textDecoration: "none",
+                "&:hover": {
+                  opacity: 1,
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              Strona główna
             </Link>
-            <Link href="/contact" variant="body2" color="text.secondary" display="block">
-              Kontakt
+            <Link
+              component="button"
+              onClick={() => handleNavigation("/search")}
+              variant="body2"
+              sx={{
+                color: "white",
+                opacity: 0.9,
+                display: "block",
+                mb: 1,
+                textAlign: "left",
+                cursor: "pointer",
+                textDecoration: "none",
+                "&:hover": {
+                  opacity: 1,
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              Kategorie
             </Link>
-            <Link href="/faq" variant="body2" color="text.secondary" display="block">
-              FAQ
+            <Link
+              component="button"
+              onClick={() => handleNavigation("/cart")}
+              variant="body2"
+              sx={{
+                color: "white",
+                opacity: 0.9,
+                display: "block",
+                mb: 1,
+                textAlign: "left",
+                cursor: "pointer",
+                textDecoration: "none",
+                "&:hover": {
+                  opacity: 1,
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              Koszyk
             </Link>
           </Grid>
 
-          <Grid size={{ xs: 6, sm: 2 }}>
-            <Typography variant="h6" color="text.primary" gutterBottom>
+          {/* Account Links */}
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+            <Typography variant="h6" gutterBottom fontWeight={600} sx={{ mb: 2 }}>
               Konto
             </Typography>
-            <Link href="/login" variant="body2" color="text.secondary" display="block">
+            <Link
+              component="button"
+              onClick={() => handleNavigation("/user")}
+              variant="body2"
+              sx={{
+                color: "white",
+                opacity: 0.9,
+                display: "block",
+                mb: 1,
+                textAlign: "left",
+                cursor: "pointer",
+                textDecoration: "none",
+                "&:hover": {
+                  opacity: 1,
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              Moje konto
+            </Link>
+            <Link
+              component="button"
+              onClick={() => handleNavigation("/user/orders")}
+              variant="body2"
+              sx={{
+                color: "white",
+                opacity: 0.9,
+                display: "block",
+                mb: 1,
+                textAlign: "left",
+                cursor: "pointer",
+                textDecoration: "none",
+                "&:hover": {
+                  opacity: 1,
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              Moje zamówienia
+            </Link>
+            <Link
+              component="button"
+              onClick={() => handleNavigation("/login")}
+              variant="body2"
+              sx={{
+                color: "white",
+                opacity: 0.9,
+                display: "block",
+                mb: 1,
+                textAlign: "left",
+                cursor: "pointer",
+                textDecoration: "none",
+                "&:hover": {
+                  opacity: 1,
+                  textDecoration: "underline",
+                },
+              }}
+            >
               Zaloguj się
             </Link>
-            <Link href="/register" variant="body2" color="text.secondary" display="block">
-              Zarejestruj
+            <Link
+              component="button"
+              onClick={() => handleNavigation("/register")}
+              variant="body2"
+              sx={{
+                color: "white",
+                opacity: 0.9,
+                display: "block",
+                mb: 1,
+                textAlign: "left",
+                cursor: "pointer",
+                textDecoration: "none",
+                "&:hover": {
+                  opacity: 1,
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              Zarejestruj się
             </Link>
           </Grid>
+
+          {/* Info Links */}
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+            <Typography variant="h6" gutterBottom fontWeight={600} sx={{ mb: 2 }}>
+              Informacje
+            </Typography>
+            <Link
+              component="button"
+              onClick={() => handleNavigation("/contact")}
+              variant="body2"
+              sx={{
+                color: "white",
+                opacity: 0.9,
+                display: "block",
+                mb: 1,
+                textAlign: "left",
+                cursor: "pointer",
+                textDecoration: "none",
+                "&:hover": {
+                  opacity: 1,
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              Kontakt
+            </Link>
+            <Link
+              component="button"
+              onClick={() => handleNavigation("/faq")}
+              variant="body2"
+              sx={{
+                color: "white",
+                opacity: 0.9,
+                display: "block",
+                mb: 1,
+                textAlign: "left",
+                cursor: "pointer",
+                textDecoration: "none",
+                "&:hover": {
+                  opacity: 1,
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              FAQ
+            </Link>
+            <Link
+              component="button"
+              onClick={() => handleNavigation("/privacy")}
+              variant="body2"
+              sx={{
+                color: "white",
+                opacity: 0.9,
+                display: "block",
+                mb: 1,
+                textAlign: "left",
+                cursor: "pointer",
+                textDecoration: "none",
+                "&:hover": {
+                  opacity: 1,
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              Polityka prywatności
+            </Link>
+            <Link
+              component="button"
+              onClick={() => handleNavigation("/terms")}
+              variant="body2"
+              sx={{
+                color: "white",
+                opacity: 0.9,
+                display: "block",
+                mb: 1,
+                textAlign: "left",
+                cursor: "pointer",
+                textDecoration: "none",
+                "&:hover": {
+                  opacity: 1,
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              Regulamin
+            </Link>
+          </Grid>
+
+          {/* Customer Service */}
+          <Grid size={{ xs: 12, sm: 6, md: 2 }}>
+            <Typography variant="h6" gutterBottom fontWeight={600} sx={{ mb: 2 }}>
+              Obsługa klienta
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 1, opacity: 0.9 }}>
+              Pon-Pt: 8:00 - 20:00
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 1, opacity: 0.9 }}>
+              Sob: 9:00 - 17:00
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 2, opacity: 0.9 }}>
+              Tel: +48 123 456 789
+            </Typography>
+          </Grid>
         </Grid>
-        <Box mt={5}>
-          <Typography variant="body2" color="text.secondary" align="center">
-            {"Copyright © "}
-            <Link color="inherit" href="/">
-              E-COMMERCE
-            </Link>{" "}
-            {new Date().getFullYear()}
-            {"."}
+
+        <Divider sx={{ my: 3, bgcolor: "rgba(255,255,255,0.2)" }} />
+
+        <Box sx={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 2 }}>
+          <Typography variant="body2" sx={{ opacity: 0.9 }}>
+            © {new Date().getFullYear()} E-COMMERCE. Wszelkie prawa zastrzeżone.
           </Typography>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Link
+              component="button"
+              onClick={() => handleNavigation("/privacy")}
+              variant="body2"
+              sx={{
+                color: "white",
+                opacity: 0.9,
+                cursor: "pointer",
+                textDecoration: "none",
+                "&:hover": {
+                  opacity: 1,
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              Prywatność
+            </Link>
+            <Link
+              component="button"
+              onClick={() => handleNavigation("/terms")}
+              variant="body2"
+              sx={{
+                color: "white",
+                opacity: 0.9,
+                cursor: "pointer",
+                textDecoration: "none",
+                "&:hover": {
+                  opacity: 1,
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              Warunki
+            </Link>
+          </Box>
         </Box>
       </Container>
     </Box>
