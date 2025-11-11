@@ -1,8 +1,9 @@
 import React, { useState, useCallback, type KeyboardEvent } from "react";
+import { useIndividualUser } from "../../contexts/IndividualUserContext";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { AppBar, Toolbar, Typography, IconButton, InputBase, Box } from "@mui/material";
+import { AppBar, Toolbar, Typography, IconButton, InputBase, Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
@@ -11,6 +12,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ minimalist }) => {
   const navigate = useNavigate();
+  const { currentUser } = useIndividualUser();
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const handleSearch = useCallback(() => {
@@ -84,23 +86,45 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                 />
               </Box>
             </Box>
-            <Box sx={{ display: { xs: "none", md: "flex" } }}>
-              <IconButton
-                size="large"
-                aria-label="panel użytkownika"
-                color="inherit"
-                onClick={() => navigate("/user")}
-              >
-                <AccountCircle />
-              </IconButton>
-              <IconButton
-                size="large"
-                aria-label="koszyk"
-                color="inherit"
-                onClick={() => navigate("/cart")}
-              >
-                <ShoppingCartIcon />
-              </IconButton>
+            <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", gap: 1 }}>
+              {currentUser ? (
+                <>
+                  <IconButton
+                    size="large"
+                    aria-label="panel użytkownika"
+                    color="inherit"
+                    onClick={() => navigate("/user")}
+                  >
+                    <AccountCircle />
+                  </IconButton>
+                  <IconButton
+                    size="large"
+                    aria-label="koszyk"
+                    color="inherit"
+                    onClick={() => navigate("/cart")}
+                  >
+                    <ShoppingCartIcon />
+                  </IconButton>
+                </>
+              ) : (
+                <>
+                  <Button
+                    color="inherit"
+                    onClick={() => navigate("/login")}
+                    sx={{ textTransform: "none" }}
+                  >
+                    Zaloguj się
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="inherit"
+                    onClick={() => navigate("/register")}
+                    sx={{ textTransform: "none" }}
+                  >
+                    Zarejestruj się
+                  </Button>
+                </>
+              )}
             </Box>
           </>
         )}
