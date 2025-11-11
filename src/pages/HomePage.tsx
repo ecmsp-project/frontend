@@ -14,7 +14,6 @@ import {
   Container,
   Grid,
   Card,
-  CardContent,
   CardMedia,
   Box,
   Button,
