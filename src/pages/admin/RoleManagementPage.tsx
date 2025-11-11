@@ -143,9 +143,7 @@ const RoleManagementPage: React.FC = () => {
             >
               <TableRow>
                 <TableCell sx={{ color: "white", fontWeight: 600 }}>Nazwa Roli</TableCell>
-                <TableCell sx={{ color: "white", fontWeight: 600 }}>
-                  Liczba Uprawnień
-                </TableCell>
+                <TableCell sx={{ color: "white", fontWeight: 600 }}>Liczba Uprawnień</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: 600 }}>Akcje</TableCell>
               </TableRow>
             </TableHead>
@@ -161,9 +159,7 @@ const RoleManagementPage: React.FC = () => {
                     transition: "background-color 0.2s",
                   }}
                 >
-                  <TableCell sx={{ fontWeight: 700, color: "primary.main" }}>
-                    {role.name}
-                  </TableCell>
+                  <TableCell sx={{ fontWeight: 700, color: "primary.main" }}>{role.name}</TableCell>
                   <TableCell>
                     <Chip
                       label={role.permissions?.length || 0}

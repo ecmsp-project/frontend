@@ -181,9 +181,7 @@ const UserManagementPage: React.FC = () => {
                 <TableCell sx={{ color: "white", fontWeight: 600 }}>ID</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: 600 }}>Login</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: 600 }}>Rola</TableCell>
-                <TableCell sx={{ color: "white", fontWeight: 600 }}>
-                  Usuń Użytkownika
-                </TableCell>
+                <TableCell sx={{ color: "white", fontWeight: 600 }}>Usuń Użytkownika</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

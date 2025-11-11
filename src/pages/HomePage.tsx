@@ -1,5 +1,14 @@
 import React from "react";
 import MainLayout from "../components/layout/MainLayout.tsx";
+import CheckroomIcon from "@mui/icons-material/Checkroom";
+import HomeIcon from "@mui/icons-material/Home";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
+import SpaIcon from "@mui/icons-material/Spa";
+import SportsBasketballIcon from "@mui/icons-material/SportsBasketball";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import {
   Typography,
   Container,
@@ -12,15 +21,6 @@ import {
   Chip,
   alpha,
 } from "@mui/material";
-import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
-import CheckroomIcon from "@mui/icons-material/Checkroom";
-import SpaIcon from "@mui/icons-material/Spa";
-import HomeIcon from "@mui/icons-material/Home";
-import SportsBasketballIcon from "@mui/icons-material/SportsBasketball";
-import MenuBookIcon from "@mui/icons-material/MenuBook";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 
 const categories = [
   {
@@ -231,13 +231,7 @@ const HomePage: React.FC = () => {
 
         {/* Categories Section */}
         <Box sx={{ mb: 4 }}>
-          <Typography
-            variant="h4"
-            component="h2"
-            gutterBottom
-            fontWeight={700}
-            sx={{ mb: 1 }}
-          >
+          <Typography variant="h4" component="h2" gutterBottom fontWeight={700} sx={{ mb: 1 }}>
             Popularne Kategorie
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
@@ -339,12 +333,7 @@ const HomePage: React.FC = () => {
                       backdropFilter: "blur(10px)",
                     }}
                   >
-                    <Typography
-                      variant="h6"
-                      color="white"
-                      fontWeight={600}
-                      align="center"
-                    >
+                    <Typography variant="h6" color="white" fontWeight={600} align="center">
                       {category.name}
                     </Typography>
                   </Box>

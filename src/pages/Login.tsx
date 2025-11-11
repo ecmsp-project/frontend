@@ -116,11 +116,7 @@ const Login: React.FC = () => {
             </Button>
 
             <Divider sx={{ my: 3 }}>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ px: 2, fontWeight: 500 }}
-              >
+              <Typography variant="body2" color="text.secondary" sx={{ px: 2, fontWeight: 500 }}>
                 lub
               </Typography>
             </Divider>
