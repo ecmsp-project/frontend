@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
+import { useIndividualUser } from "../../contexts/IndividualUserContext";
 import { useRoleContext } from "../../contexts/RoleContext";
+import { PERMISSIONS } from "../../types/permissions";
 import type { Role } from "../../types/users";
 import { PermissionModal } from "./PermissionModal";
 import AddIcon from "@mui/icons-material/Add";
@@ -26,10 +28,13 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Tooltip,
 } from "@mui/material";
 
 const RoleManagementPage: React.FC = () => {
   const { roles, addRole, updateRole, deleteRole } = useRoleContext();
+  const { hasPermission } = useIndividualUser();
+  const canManageRoles = hasPermission(PERMISSIONS.MANAGE_ROLES);
 
   const [isPermissionModalOpen, setIsPermissionModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -86,15 +91,37 @@ const RoleManagementPage: React.FC = () => {
           Zarządzanie Rolami i Uprawnieniami
         </Typography>
 
-        <Box mb={2} display="flex" justifyContent="flex-end">
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={() => setIsAddModalOpen(true)}
+        {!canManageRoles && (
+          <Box
+            sx={{
+              mb: 2,
+              p: 2,
+              bgcolor: "warning.light",
+              borderRadius: 1,
+            }}
           >
-            Dodaj nową rolę
-          </Button>
+            <Typography variant="body2" color="text.secondary">
+              Masz uprawnienia tylko do przeglądania. Aby zarządzać rolami, wymagane jest
+              uprawnienie MANAGE_ROLES.
+            </Typography>
+          </Box>
+        )}
+
+        <Box mb={2} display="flex" justifyContent="flex-end">
+          <Tooltip title={!canManageRoles ? "Brak uprawnień do dodawania ról" : "Dodaj nową rolę"}>
+            <span>
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddIcon />}
+                onClick={() => setIsAddModalOpen(true)}
+                disabled={!canManageRoles}
+                sx={{ opacity: !canManageRoles ? 0.5 : 1 }}
+              >
+                Dodaj nową rolę
+              </Button>
+            </span>
+          </Tooltip>
         </Box>
 
         <TableContainer component={Paper} elevation={3}>
@@ -112,16 +139,39 @@ const RoleManagementPage: React.FC = () => {
                   <TableCell sx={{ fontWeight: "bold" }}>{role.name}</TableCell>
                   <TableCell>{role.permissions?.length || 0}</TableCell>
                   <TableCell>
-                    <IconButton size="small" onClick={() => handleOpenPermissionModal(role)}>
-                      <LockIcon fontSize="small" color="primary" />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      color="error"
-                      onClick={() => handleDeleteRole(role.name)}
+                    <Tooltip
+                      title={
+                        !canManageRoles
+                          ? "Brak uprawnień do edycji uprawnień"
+                          : "Edytuj uprawnienia"
+                      }
                     >
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
+                      <span>
+                        <IconButton
+                          size="small"
+                          onClick={() => handleOpenPermissionModal(role)}
+                          disabled={!canManageRoles}
+                          sx={{ opacity: !canManageRoles ? 0.5 : 1 }}
+                        >
+                          <LockIcon fontSize="small" color="primary" />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
+                    <Tooltip
+                      title={!canManageRoles ? "Brak uprawnień do usuwania ról" : "Usuń rolę"}
+                    >
+                      <span>
+                        <IconButton
+                          size="small"
+                          color="error"
+                          onClick={() => handleDeleteRole(role.name)}
+                          disabled={!canManageRoles}
+                          sx={{ opacity: !canManageRoles ? 0.5 : 1 }}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </span>
+                    </Tooltip>
                   </TableCell>
                 </TableRow>
               ))}
@@ -137,6 +187,7 @@ const RoleManagementPage: React.FC = () => {
           onClose={() => setIsPermissionModalOpen(false)}
           onSave={handleSavePermissions}
           loadingSave={loadingSave}
+          readOnly={!canManageRoles}
         />
       )}
 

@@ -19,6 +19,7 @@ interface PermissionModalProps {
   onClose: () => void;
   onSave: (role: Role) => Promise<void>;
   loadingSave: boolean;
+  readOnly?: boolean;
 }
 
 export const PermissionModal: React.FC<PermissionModalProps> = ({
@@ -27,6 +28,7 @@ export const PermissionModal: React.FC<PermissionModalProps> = ({
   onClose,
   onSave,
   loadingSave,
+  readOnly = false,
 }) => {
   const { allPermissions, loadingPermissions } = usePermissionContext();
   const [currentPermissions, setCurrentPermissions] = useState(role.permissions || []);
@@ -36,6 +38,7 @@ export const PermissionModal: React.FC<PermissionModalProps> = ({
   }, [role.permissions, open]);
 
   const handleTogglePermission = (permission: string) => {
+    if (readOnly) return;
     setCurrentPermissions((prev) =>
       prev.includes(permission) ? prev.filter((p) => p !== permission) : [...prev, permission],
     );
@@ -47,7 +50,10 @@ export const PermissionModal: React.FC<PermissionModalProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Zarządzanie uprawnieniami dla roli: {role.name}</DialogTitle>
+      <DialogTitle>
+        {readOnly ? "Podgląd uprawnień dla roli" : "Zarządzanie uprawnieniami dla roli"}:{" "}
+        {role.name}
+      </DialogTitle>
       <DialogContent dividers>
         {loadingPermissions ? (
           <CircularProgress />
@@ -60,9 +66,11 @@ export const PermissionModal: React.FC<PermissionModalProps> = ({
                     <Checkbox
                       checked={currentPermissions.includes(permission)}
                       onChange={() => handleTogglePermission(permission)}
+                      disabled={readOnly}
                     />
                   }
                   label={permission}
+                  sx={{ opacity: readOnly ? 0.7 : 1 }}
                 />
               </Grid>
             ))}
@@ -71,11 +79,13 @@ export const PermissionModal: React.FC<PermissionModalProps> = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={loadingSave}>
-          Anuluj
+          {readOnly ? "Zamknij" : "Anuluj"}
         </Button>
-        <Button onClick={handleSave} color="primary" variant="contained" disabled={loadingSave}>
-          {loadingSave ? <CircularProgress size={24} /> : "Zapisz uprawnienia"}
-        </Button>
+        {!readOnly && (
+          <Button onClick={handleSave} color="primary" variant="contained" disabled={loadingSave}>
+            {loadingSave ? <CircularProgress size={24} /> : "Zapisz uprawnienia"}
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );

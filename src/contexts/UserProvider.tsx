@@ -9,10 +9,10 @@ export default function UserProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const refetchUsers = useCallback(async () => {
+  const refetchUsers = useCallback(async (filterLogin?: string) => {
     setLoading(true);
     try {
-      const fetchedUsers = await fetchUsers();
+      const fetchedUsers = await fetchUsers(filterLogin);
       setUsers(fetchedUsers);
       setError(null);
     } catch (err) {

@@ -1,11 +1,8 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useIndividualUser } from "../../contexts/IndividualUserContext";
-import { PERMISSIONS } from "../../types/permissions";
-import type { Permission } from "../../types/permissions";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import DashboardIcon from "@mui/icons-material/Dashboard";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
-import PeopleIcon from "@mui/icons-material/People";
+import SettingsIcon from "@mui/icons-material/Settings";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import {
   AppBar,
@@ -25,75 +22,35 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
 
-interface MenuItem {
-  text: string;
-  icon: React.ReactNode;
-  path: string;
-  requiredPermissions?: Permission[];
-}
-
-const allMenuItems: MenuItem[] = [
-  { text: "Pulpit", icon: <DashboardIcon />, path: "/admin" },
-  {
-    text: "Zarządzanie Użytkownikami",
-    icon: <PeopleIcon />,
-    path: "/admin/users",
-    requiredPermissions: [PERMISSIONS.READ_USERS, PERMISSIONS.MANAGE_USERS],
-  },
-  {
-    text: "Zarządzanie Rolami",
-    icon: <PeopleIcon />,
-    path: "/admin/roles",
-    requiredPermissions: [PERMISSIONS.MANAGE_ROLES],
-  },
-  {
-    text: "Zamówienia",
-    icon: <ShoppingBagIcon />,
-    path: "/admin/orders",
-    requiredPermissions: [PERMISSIONS.READ_ORDERS, PERMISSIONS.WRITE_ORDERS],
-  },
-  {
-    text: "Dodaj Produkt",
-    icon: <AddCircleOutlineIcon />,
-    path: "/admin/products/add",
-    requiredPermissions: [PERMISSIONS.WRITE_PRODUCTS],
-  },
+const menuItems = [
+  { text: "Moje konto", icon: <AccountCircleIcon />, path: "/user" },
+  { text: "Moje zamówienia", icon: <ShoppingBagIcon />, path: "/user/orders" },
+  { text: "Ustawienia", icon: <SettingsIcon />, path: "/user/settings" },
 ];
 
-interface AdminLayoutProps {
+interface UserLayoutProps {
   children?: React.ReactNode;
 }
 
-const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
+const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
-  const { currentUser, logout, hasAnyPermission } = useIndividualUser();
+  const { currentUser, logout } = useIndividualUser();
 
   const handleLogout = () => {
     logout();
     navigate("/");
   };
 
-  const visibleMenuItems = useMemo(() => {
-    return allMenuItems.filter((item) => {
-      // Pulpit jest dostępny dla wszystkich
-      if (!item.requiredPermissions) {
-        return true;
-      }
-      // Sprawdź czy użytkownik ma przynajmniej jedno z wymaganych uprawnień
-      return hasAnyPermission(item.requiredPermissions);
-    });
-  }, [hasAnyPermission]);
-
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar
         position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, bgcolor: "primary.dark" }}
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, bgcolor: "primary.main" }}
       >
         <Toolbar>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            Panel Administracyjny E-COMMERCE
+            Panel Użytkownika E-COMMERCE
             {currentUser && (
               <Typography component="span" variant="body2" sx={{ ml: 2, opacity: 0.8 }}>
                 ({currentUser.login})
@@ -120,7 +77,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         <Toolbar />
         <Box sx={{ overflow: "auto" }}>
           <List>
-            {visibleMenuItems.map((item) => (
+            {menuItems.map((item) => (
               <ListItem key={item.text} disablePadding>
                 <ListItemButton component={NavLink} to={item.path}>
                   <ListItemIcon>{item.icon}</ListItemIcon>
@@ -138,4 +95,4 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   );
 };
 
-export default AdminLayout;
+export default UserLayout;

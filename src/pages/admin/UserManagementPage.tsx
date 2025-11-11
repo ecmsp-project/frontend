@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
+import { useIndividualUser } from "../../contexts/IndividualUserContext";
 import { useUserContext } from "../../contexts/UserContext";
+import { PERMISSIONS } from "../../types/permissions";
 import AddRoleModal from "./AddRoleModal";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Typography,
   Paper,
@@ -18,14 +21,18 @@ import {
   Container,
   IconButton,
   Box,
+  Tooltip,
+  TextField,
+  InputAdornment,
 } from "@mui/material";
 
 const defaultUser = "User";
 
-const RoleChip: React.FC<{ roleName: string; onDelete?: () => void }> = ({
-  roleName,
-  onDelete,
-}) => {
+const RoleChip: React.FC<{
+  roleName: string;
+  onDelete?: () => void;
+  disabled?: boolean;
+}> = ({ roleName, onDelete, disabled }) => {
   const isDeletable = roleName !== defaultUser;
 
   let color: "primary" | "default";
@@ -40,16 +47,24 @@ const RoleChip: React.FC<{ roleName: string; onDelete?: () => void }> = ({
       label={roleName}
       color={color}
       size="small"
-      sx={{ mr: 0.5, mb: 0.5 }}
+      sx={{
+        mr: 0.5,
+        mb: 0.5,
+        opacity: disabled ? 0.5 : 1,
+        pointerEvents: disabled ? "none" : "auto",
+      }}
       deleteIcon={isDeletable ? <RemoveCircleIcon /> : undefined}
-      onDelete={onDelete && isDeletable ? onDelete : undefined}
+      onDelete={onDelete && isDeletable && !disabled ? onDelete : undefined}
     />
   );
 };
 
 const UserManagementPage: React.FC = () => {
-  const { users, addRoleToUser, removeRoleFromUser, deleteUser } = useUserContext();
+  const { users, addRoleToUser, removeRoleFromUser, deleteUser, refetchUsers } = useUserContext();
+  const { hasPermission } = useIndividualUser();
+  const canManageUsers = hasPermission(PERMISSIONS.MANAGE_USERS);
 
+  const [searchTerm, setSearchTerm] = useState("");
   const [modalState, setModalState] = useState<{
     open: boolean;
     userId: string;
@@ -61,6 +76,15 @@ const UserManagementPage: React.FC = () => {
     userName: "",
     currentRoles: [],
   });
+
+  // Debounce search - wywołaj refetchUsers po 500ms od ostatniej zmiany
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      refetchUsers(searchTerm || undefined);
+    }, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [searchTerm, refetchUsers]);
 
   const handleRemoveRole = async (userId: string, roleName: string) => {
     if (!window.confirm(`Czy na pewno usunąć rolę ${roleName} użytkownikowi?`)) return;
@@ -104,6 +128,39 @@ const UserManagementPage: React.FC = () => {
           Zarządzanie Użytkownikami i Rolami
         </Typography>
 
+        {!canManageUsers && (
+          <Box
+            sx={{
+              mb: 2,
+              p: 2,
+              bgcolor: "warning.light",
+              borderRadius: 1,
+            }}
+          >
+            <Typography variant="body2" color="text.secondary">
+              Masz uprawnienia tylko do przeglądania. Aby zarządzać użytkownikami, wymagane jest
+              uprawnienie MANAGE_USERS.
+            </Typography>
+          </Box>
+        )}
+
+        <Box sx={{ mb: 3 }}>
+          <TextField
+            fullWidth
+            variant="outlined"
+            placeholder="Wyszukaj użytkownika po loginie..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+
         <TableContainer component={Paper} elevation={3}>
           <Table aria-label="user roles table">
             <TableHead sx={{ bgcolor: "grey.100" }}>
@@ -130,22 +187,48 @@ const UserManagementPage: React.FC = () => {
                             key={roleName}
                             roleName={roleName}
                             onDelete={() => handleRemoveRole(user.id, roleName)}
+                            disabled={!canManageUsers}
                           />
                         ))}
-                        <IconButton
-                          size="small"
-                          color="primary"
-                          onClick={() => handleOpenAddRoleModal(user)}
-                          sx={{ ml: 1 }}
+                        <Tooltip
+                          title={
+                            !canManageUsers
+                              ? "Brak uprawnień do zarządzania rolami użytkowników"
+                              : "Dodaj rolę"
+                          }
                         >
-                          <AddCircleIcon fontSize="small" />
-                        </IconButton>
+                          <span>
+                            <IconButton
+                              size="small"
+                              color="primary"
+                              onClick={() => handleOpenAddRoleModal(user)}
+                              sx={{
+                                ml: 1,
+                                opacity: !canManageUsers ? 0.5 : 1,
+                              }}
+                              disabled={!canManageUsers}
+                            >
+                              <AddCircleIcon fontSize="small" />
+                            </IconButton>
+                          </span>
+                        </Tooltip>
                       </Box>
                     </TableCell>
                     <TableCell>
-                      <IconButton color="error" onClick={() => handleDeleteUser(user.id)}>
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
+                      <Tooltip
+                        title={!canManageUsers ? "Brak uprawnień do usuwania użytkowników" : "Usuń"}
+                      >
+                        <span>
+                          <IconButton
+                            color="error"
+                            onClick={() => handleDeleteUser(user.id)}
+                            sx={{ opacity: !canManageUsers ? 0.5 : 1 }}
+                            disabled={!canManageUsers}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </span>
+                      </Tooltip>
                     </TableCell>
                   </TableRow>
                 );
@@ -162,6 +245,7 @@ const UserManagementPage: React.FC = () => {
           onClose={handleCloseAddRoleModal}
           onSave={addRoleToUser}
           userCurrentRoles={modalState.currentRoles}
+          readOnly={!canManageUsers}
         />
       )}
     </AdminLayout>
