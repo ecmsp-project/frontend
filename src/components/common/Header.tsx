@@ -4,6 +4,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import CategoryIcon from "@mui/icons-material/Category";
 import CloseIcon from "@mui/icons-material/Close";
+import LogoutIcon from "@mui/icons-material/Logout";
+import SettingsIcon from "@mui/icons-material/Settings";
+import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import {
   AppBar,
   Toolbar,
@@ -18,6 +21,9 @@ import {
   ListItem,
   ListItemText,
   Divider,
+  Menu,
+  MenuItem,
+  ListItemIcon,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useIndividualUser } from "../../contexts/IndividualUserContext";
@@ -164,11 +170,13 @@ const mockCategories: Category[] = [
 
 const Header: React.FC<HeaderProps> = ({ minimalist }) => {
   const navigate = useNavigate();
+  const { logout } = useIndividualUser();
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [categoriesOpen, setCategoriesOpen] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(
     Boolean(localStorage.getItem("token")),
   );
+  const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(null);
 
   // Sprawdź token przy każdej zmianie w localStorage
   React.useEffect(() => {
@@ -239,6 +247,26 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
   const handleCategoryClick = (categoryId: number) => {
     setCategoriesOpen(false);
     navigate(`/category/${categoryId}`);
+  };
+
+  const handleUserMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setUserMenuAnchor(event.currentTarget);
+  };
+
+  const handleUserMenuClose = () => {
+    setUserMenuAnchor(null);
+  };
+
+  const handleLogout = () => {
+    logout();
+    setIsLoggedIn(false);
+    handleUserMenuClose();
+    navigate("/");
+  };
+
+  const handleMenuItemClick = (path: string) => {
+    handleUserMenuClose();
+    navigate(path);
   };
 
   return (
@@ -316,7 +344,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                     size="large"
                     aria-label="panel użytkownika"
                     color="inherit"
-                    onClick={() => navigate("/user")}
+                    onClick={handleUserMenuOpen}
                   >
                     <AccountCircle />
                   </IconButton>
@@ -353,6 +381,53 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
         )}
       </Toolbar>
     </AppBar>
+
+    {/* Menu użytkownika */}
+    <Menu
+      anchorEl={userMenuAnchor}
+      open={Boolean(userMenuAnchor)}
+      onClose={handleUserMenuClose}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "right",
+      }}
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      PaperProps={{
+        sx: {
+          mt: 1.5,
+          minWidth: 200,
+        },
+      }}
+    >
+      <MenuItem onClick={() => handleMenuItemClick("/user")}>
+        <ListItemIcon>
+          <AccountCircle fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>Moje konto</ListItemText>
+      </MenuItem>
+      <MenuItem onClick={() => handleMenuItemClick("/user/orders")}>
+        <ListItemIcon>
+          <ShoppingBagIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>Moje zamówienia</ListItemText>
+      </MenuItem>
+      <MenuItem onClick={() => handleMenuItemClick("/user/settings")}>
+        <ListItemIcon>
+          <SettingsIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>Ustawienia</ListItemText>
+      </MenuItem>
+      <Divider />
+      <MenuItem onClick={handleLogout}>
+        <ListItemIcon>
+          <LogoutIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>Wyloguj się</ListItemText>
+      </MenuItem>
+    </Menu>
 
     {/* Drawer z kategoriami */}
     <Drawer
