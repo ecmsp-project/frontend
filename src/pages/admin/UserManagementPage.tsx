@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
+import Breadcrumbs from "../../components/common/Breadcrumbs";
 import { useIndividualUser } from "../../contexts/IndividualUserContext";
 import { useUserContext } from "../../contexts/UserContext";
 import { PERMISSIONS } from "../../types/permissions";
@@ -124,6 +125,12 @@ const UserManagementPage: React.FC = () => {
   return (
     <AdminLayout>
       <Container maxWidth="lg" sx={{ py: 3 }}>
+        <Breadcrumbs
+          items={[
+            { label: "Panel administracyjny", path: "/admin" },
+            { label: "Zarządzanie użytkownikami" },
+          ]}
+        />
         <Typography variant="h4" gutterBottom>
           Zarządzanie Użytkownikami i Rolami
         </Typography>

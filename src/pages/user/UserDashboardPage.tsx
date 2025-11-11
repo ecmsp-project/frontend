@@ -1,5 +1,6 @@
 import React from "react";
 import UserLayout from "../../components/layout/UserLayout";
+import Breadcrumbs from "../../components/common/Breadcrumbs";
 import { useIndividualUser } from "../../contexts/IndividualUserContext";
 import { Typography, Paper, Grid, CircularProgress, Alert, Box } from "@mui/material";
 
@@ -38,6 +39,7 @@ const UserDashboardPage: React.FC = () => {
 
   return (
     <UserLayout>
+      <Breadcrumbs items={[{ label: "Moje konto" }]} />
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" gutterBottom fontWeight={700}>
           Moje konto

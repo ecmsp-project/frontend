@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
+import Breadcrumbs from "../../components/common/Breadcrumbs";
 import { useIndividualUser } from "../../contexts/IndividualUserContext";
 import { useRoleContext } from "../../contexts/RoleContext";
 import { PERMISSIONS } from "../../types/permissions";
@@ -88,6 +89,12 @@ const RoleManagementPage: React.FC = () => {
   return (
     <AdminLayout>
       <Container maxWidth="lg" sx={{ py: 3 }}>
+        <Breadcrumbs
+          items={[
+            { label: "Panel administracyjny", path: "/admin" },
+            { label: "Zarządzanie rolami" },
+          ]}
+        />
         <Typography variant="h4" gutterBottom>
           Zarządzanie Rolami i Uprawnieniami
         </Typography>

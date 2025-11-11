@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchUserOrders } from "../../api/order-service";
 import UserLayout from "../../components/layout/UserLayout";
+import Breadcrumbs from "../../components/common/Breadcrumbs";
 import { OrderRow } from "../../components/orders/OrderRow";
 import { type OrderDetailsResponse } from "../../types/orders";
 import {
@@ -93,6 +94,12 @@ const UserOrdersManagementPage: React.FC = () => {
 
   return (
     <UserLayout>
+      <Breadcrumbs
+        items={[
+          { label: "Moje konto", path: "/user" },
+          { label: "Moje zamówienia" },
+        ]}
+      />
       <Typography variant="h4" gutterBottom>
         Moje zamówienia
       </Typography>
