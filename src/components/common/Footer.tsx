@@ -1,9 +1,9 @@
 import React from "react";
-import { Box, Typography, Container, Grid, Link, IconButton, Divider } from "@mui/material";
 import FacebookIcon from "@mui/icons-material/Facebook";
-import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import TwitterIcon from "@mui/icons-material/Twitter";
+import { Box, Typography, Container, Grid, Link, IconButton, Divider } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const Footer: React.FC = () => {
@@ -41,8 +41,8 @@ const Footer: React.FC = () => {
               E-COMMERCE
             </Typography>
             <Typography variant="body2" sx={{ mb: 2, opacity: 0.9, lineHeight: 1.7 }}>
-              Wszystko co potrzebujesz w jednym miejscu. Jakość, niskie ceny i szybka dostawa.
-              Twoje zakupy, nasza pasja.
+              Wszystko co potrzebujesz w jednym miejscu. Jakość, niskie ceny i szybka dostawa. Twoje
+              zakupy, nasza pasja.
             </Typography>
             <Box sx={{ display: "flex", gap: 1, mt: 3 }}>
               <IconButton

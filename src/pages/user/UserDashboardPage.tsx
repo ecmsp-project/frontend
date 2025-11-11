@@ -1,6 +1,6 @@
 import React from "react";
-import UserLayout from "../../components/layout/UserLayout";
 import Breadcrumbs from "../../components/common/Breadcrumbs";
+import UserLayout from "../../components/layout/UserLayout";
 import { useIndividualUser } from "../../contexts/IndividualUserContext";
 import { Typography, Paper, Grid, CircularProgress, Alert, Box } from "@mui/material";
 

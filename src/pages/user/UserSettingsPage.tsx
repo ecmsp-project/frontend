@@ -1,6 +1,6 @@
 import React from "react";
-import UserLayout from "../../components/layout/UserLayout";
 import Breadcrumbs from "../../components/common/Breadcrumbs";
+import UserLayout from "../../components/layout/UserLayout";
 import {
   Typography,
   Paper,
@@ -15,12 +15,7 @@ import {
 const UserSettingsPage: React.FC = () => {
   return (
     <UserLayout>
-      <Breadcrumbs
-        items={[
-          { label: "Moje konto", path: "/user" },
-          { label: "Ustawienia" },
-        ]}
-      />
+      <Breadcrumbs items={[{ label: "Moje konto", path: "/user" }, { label: "Ustawienia" }]} />
       <Typography variant="h4" gutterBottom>
         Ustawienia
       </Typography>
