@@ -1,10 +1,10 @@
 import React, { useState, useCallback, type KeyboardEvent } from "react";
+import { useIndividualUser } from "../../contexts/IndividualUserContext";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { AppBar, Toolbar, Typography, IconButton, InputBase, Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useIndividualUser } from "../../contexts/IndividualUserContext";
 
 interface HeaderProps {
   minimalist?: boolean;
