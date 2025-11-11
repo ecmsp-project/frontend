@@ -1,6 +1,6 @@
 import React, { useState, useCallback, type KeyboardEvent } from "react";
-import { useIndividualUser } from "../../contexts/IndividualUserContext";
 import { useCartContext } from "../../contexts/CartContext";
+import { useIndividualUser } from "../../contexts/IndividualUserContext";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import CategoryIcon from "@mui/icons-material/Category";
 import LogoutIcon from "@mui/icons-material/Logout";
