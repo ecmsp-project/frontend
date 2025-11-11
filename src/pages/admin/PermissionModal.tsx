@@ -51,7 +51,8 @@ export const PermissionModal: React.FC<PermissionModalProps> = ({
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>
-        {readOnly ? "Podgląd uprawnień dla roli" : "Zarządzanie uprawnieniami dla roli"}: {role.name}
+        {readOnly ? "Podgląd uprawnień dla roli" : "Zarządzanie uprawnieniami dla roli"}:{" "}
+        {role.name}
       </DialogTitle>
       <DialogContent dividers>
         {loadingPermissions ? (

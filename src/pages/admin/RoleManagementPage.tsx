@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
-import { useRoleContext } from "../../contexts/RoleContext";
 import { useIndividualUser } from "../../contexts/IndividualUserContext";
+import { useRoleContext } from "../../contexts/RoleContext";
 import { PERMISSIONS } from "../../types/permissions";
 import type { Role } from "../../types/users";
 import { PermissionModal } from "./PermissionModal";
@@ -108,9 +108,7 @@ const RoleManagementPage: React.FC = () => {
         )}
 
         <Box mb={2} display="flex" justifyContent="flex-end">
-          <Tooltip
-            title={!canManageRoles ? "Brak uprawnień do dodawania ról" : "Dodaj nową rolę"}
-          >
+          <Tooltip title={!canManageRoles ? "Brak uprawnień do dodawania ról" : "Dodaj nową rolę"}>
             <span>
               <Button
                 variant="contained"
@@ -143,7 +141,9 @@ const RoleManagementPage: React.FC = () => {
                   <TableCell>
                     <Tooltip
                       title={
-                        !canManageRoles ? "Brak uprawnień do edycji uprawnień" : "Edytuj uprawnienia"
+                        !canManageRoles
+                          ? "Brak uprawnień do edycji uprawnień"
+                          : "Edytuj uprawnienia"
                       }
                     >
                       <span>
@@ -157,7 +157,9 @@ const RoleManagementPage: React.FC = () => {
                         </IconButton>
                       </span>
                     </Tooltip>
-                    <Tooltip title={!canManageRoles ? "Brak uprawnień do usuwania ról" : "Usuń rolę"}>
+                    <Tooltip
+                      title={!canManageRoles ? "Brak uprawnień do usuwania ról" : "Usuń rolę"}
+                    >
                       <span>
                         <IconButton
                           size="small"

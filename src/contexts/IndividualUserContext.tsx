@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
-import type { User } from "../types/users.ts";
 import type { Permission } from "../types/permissions.ts";
+import type { User } from "../types/users.ts";
 
 interface IndividualUserContextType {
   currentUser: User | null;

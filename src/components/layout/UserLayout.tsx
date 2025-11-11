@@ -1,4 +1,5 @@
 import React from "react";
+import { useIndividualUser } from "../../contexts/IndividualUserContext";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -18,7 +19,6 @@ import {
   IconButton,
 } from "@mui/material";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { useIndividualUser } from "../../contexts/IndividualUserContext";
 
 const drawerWidth = 240;
 
@@ -52,11 +52,7 @@ const UserLayout: React.FC<UserLayoutProps> = ({ children }) => {
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             Panel Użytkownika E-COMMERCE
             {currentUser && (
-              <Typography
-                component="span"
-                variant="body2"
-                sx={{ ml: 2, opacity: 0.8 }}
-              >
+              <Typography component="span" variant="body2" sx={{ ml: 2, opacity: 0.8 }}>
                 ({currentUser.login})
               </Typography>
             )}

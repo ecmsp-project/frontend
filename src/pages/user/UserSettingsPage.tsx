@@ -59,14 +59,8 @@ const UserSettingsPage: React.FC = () => {
             control={<Switch defaultChecked />}
             label="Powiadomienia e-mail o zamówieniach"
           />
-          <FormControlLabel
-            control={<Switch defaultChecked />}
-            label="Newsletter z promocjami"
-          />
-          <FormControlLabel
-            control={<Switch />}
-            label="Powiadomienia SMS"
-          />
+          <FormControlLabel control={<Switch defaultChecked />} label="Newsletter z promocjami" />
+          <FormControlLabel control={<Switch />} label="Powiadomienia SMS" />
         </Box>
       </Paper>
 

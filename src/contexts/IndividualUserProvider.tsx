@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, type ReactNode } from "react";
 import { getCurrentUser } from "../api/auth-service";
-import type { User } from "../types/users.ts";
 import type { Permission } from "../types/permissions.ts";
+import type { User } from "../types/users.ts";
 import { getPermissionsFromToken } from "../utils/jwt";
 import { IndividualUserContext } from "./IndividualUserContext";
 
@@ -94,8 +94,6 @@ export default function IndividualUserProvider({ children }: { children: ReactNo
   };
 
   return (
-    <IndividualUserContext.Provider value={contextValue}>
-      {children}
-    </IndividualUserContext.Provider>
+    <IndividualUserContext.Provider value={contextValue}>{children}</IndividualUserContext.Provider>
   );
 }

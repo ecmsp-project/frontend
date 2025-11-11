@@ -68,9 +68,7 @@ const UserDashboardPage: React.FC = () => {
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {currentUser.roles.flatMap((role) => role.permissions).length > 0
-                ? currentUser.roles
-                    .flatMap((role) => role.permissions)
-                    .join(", ")
+                ? currentUser.roles.flatMap((role) => role.permissions).join(", ")
                 : "Brak specjalnych uprawnień"}
             </Typography>
           </Paper>

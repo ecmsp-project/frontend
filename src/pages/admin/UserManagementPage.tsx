@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
-import { useUserContext } from "../../contexts/UserContext";
 import { useIndividualUser } from "../../contexts/IndividualUserContext";
+import { useUserContext } from "../../contexts/UserContext";
 import { PERMISSIONS } from "../../types/permissions";
 import AddRoleModal from "./AddRoleModal";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -216,9 +216,7 @@ const UserManagementPage: React.FC = () => {
                     </TableCell>
                     <TableCell>
                       <Tooltip
-                        title={
-                          !canManageUsers ? "Brak uprawnień do usuwania użytkowników" : "Usuń"
-                        }
+                        title={!canManageUsers ? "Brak uprawnień do usuwania użytkowników" : "Usuń"}
                       >
                         <span>
                           <IconButton
