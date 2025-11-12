@@ -7,11 +7,11 @@ import EditableText from "../../components/cms/EditableText";
 import { useCMS } from "../../contexts/CMSContext";
 import type { CategoryFromAPI } from "../../types/cms";
 import AddIcon from "@mui/icons-material/Add";
+import CategoryIcon from "@mui/icons-material/Category";
 import CheckroomIcon from "@mui/icons-material/Checkroom";
+import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FacebookIcon from "@mui/icons-material/Facebook";
-import CategoryIcon from "@mui/icons-material/Category";
-import CloseIcon from "@mui/icons-material/Close";
 import HomeIcon from "@mui/icons-material/Home";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
@@ -42,7 +42,6 @@ import {
   ListItemButton,
   ListItemText,
   CircularProgress,
-  Button,
   Tooltip,
 } from "@mui/material";
 
@@ -982,7 +981,8 @@ const HomePageEditor: React.FC = () => {
                       secondary={
                         <Box sx={{ display: "flex", gap: 1, mt: 0.5 }}>
                           <Typography variant="caption" color="text.secondary">
-                            {category.productCount} {category.productCount === 1 ? "produkt" : "produktów"}
+                            {category.productCount}{" "}
+                            {category.productCount === 1 ? "produkt" : "produktów"}
                           </Typography>
                           {category.subCategoryCount > 0 && (
                             <>
