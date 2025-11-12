@@ -1,3 +1,4 @@
+import { CMSProvider } from "./contexts/CMSProvider.tsx";
 import CartProvider from "./contexts/CartProvider.tsx";
 import IndividualUserProvider from "./contexts/IndividualUserProvider.tsx";
 import { PermissionProvider } from "./contexts/PermissionProvider.tsx";
@@ -14,7 +15,9 @@ import ProductPage from "./pages/ProductPage.tsx";
 import Register from "./pages/Register.tsx";
 import SearchPage from "./pages/SearchPage";
 import UserOrdersPage from "./pages/UserOrdersPage.tsx";
+import CMSPage from "./pages/admin/CMSPage.tsx";
 import DashboardPage from "./pages/admin/DashboardPage.tsx";
+import HomePageEditor from "./pages/admin/HomePageEditor.tsx";
 import OrderManagementPage from "./pages/admin/OrderManagmentPage.tsx";
 import RoleManagementPage from "./pages/admin/RoleManagementPage.tsx";
 import UserManagementPage from "./pages/admin/UserManagementPage.tsx";
@@ -37,40 +40,44 @@ export default function App() {
             <RoleProvider>
               <PermissionProvider>
                 <CartProvider>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      minHeight: "100vh",
-                      width: "100%",
-                      bgcolor: "background.default",
-                    }}
-                  >
-                    <Box component="main" sx={{ flexGrow: 1 }}>
-                      <Routes>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/search" element={<SearchPage />} />
-                        <Route path="/category/:slug" element={<SearchPage />} />
-                        <Route path="/product/:id" element={<ProductPage />} />
-                        <Route path="/cart" element={<CartPage />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/contact" element={<Contact />} />
-                        <Route path="/faq" element={<Faq />} />
-                        <Route path="/orders" element={<UserOrdersPage />} />
-                        <Route path="/cp" element={<CreateProductPage />} />
-                        <Route path="/cv" element={<CreateVariantPage />} />
-                        <Route path="/user" element={<UserDashboardPage />} />
-                        <Route path="/user/orders" element={<UserOrdersManagementPage />} />
-                        <Route path="/user/settings" element={<UserSettingsPage />} />
-                        <Route path="/admin" element={<DashboardPage />} />
-                        <Route path="/admin/users" element={<UserManagementPage />} />
-                        <Route path="/admin/roles" element={<RoleManagementPage />} />
-                        <Route path="/admin/orders" element={<OrderManagementPage />} />
-                        <Route path="*" element={<div>404 Not Found</div>} />
-                      </Routes>
+                  <CMSProvider>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        minHeight: "100vh",
+                        width: "100%",
+                        bgcolor: "background.default",
+                      }}
+                    >
+                      <Box component="main" sx={{ flexGrow: 1 }}>
+                        <Routes>
+                          <Route path="/" element={<HomePage />} />
+                          <Route path="/search" element={<SearchPage />} />
+                          <Route path="/category/:slug" element={<SearchPage />} />
+                          <Route path="/product/:id" element={<ProductPage />} />
+                          <Route path="/cart" element={<CartPage />} />
+                          <Route path="/login" element={<Login />} />
+                          <Route path="/register" element={<Register />} />
+                          <Route path="/contact" element={<Contact />} />
+                          <Route path="/faq" element={<Faq />} />
+                          <Route path="/orders" element={<UserOrdersPage />} />
+                          <Route path="/cp" element={<CreateProductPage />} />
+                          <Route path="/cv" element={<CreateVariantPage />} />
+                          <Route path="/user" element={<UserDashboardPage />} />
+                          <Route path="/user/orders" element={<UserOrdersManagementPage />} />
+                          <Route path="/user/settings" element={<UserSettingsPage />} />
+                          <Route path="/admin" element={<DashboardPage />} />
+                          <Route path="/admin/cms" element={<CMSPage />} />
+                          <Route path="/admin/cms/home/edit" element={<HomePageEditor />} />
+                          <Route path="/admin/users" element={<UserManagementPage />} />
+                          <Route path="/admin/roles" element={<RoleManagementPage />} />
+                          <Route path="/admin/orders" element={<OrderManagementPage />} />
+                          <Route path="*" element={<div>404 Not Found</div>} />
+                        </Routes>
+                      </Box>
                     </Box>
-                  </Box>
+                  </CMSProvider>
                 </CartProvider>
               </PermissionProvider>
             </RoleProvider>
