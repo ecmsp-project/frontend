@@ -1,4 +1,5 @@
 import CartProvider from "./contexts/CartProvider.tsx";
+import { CMSProvider } from "./contexts/CMSContext.tsx";
 import IndividualUserProvider from "./contexts/IndividualUserProvider.tsx";
 import { PermissionProvider } from "./contexts/PermissionProvider.tsx";
 import { RoleProvider } from "./contexts/RoleProvider.tsx";
@@ -14,7 +15,9 @@ import ProductPage from "./pages/ProductPage.tsx";
 import Register from "./pages/Register.tsx";
 import SearchPage from "./pages/SearchPage";
 import UserOrdersPage from "./pages/UserOrdersPage.tsx";
+import CMSPage from "./pages/admin/CMSPage.tsx";
 import DashboardPage from "./pages/admin/DashboardPage.tsx";
+import HomePageEditor from "./pages/admin/HomePageEditor.tsx";
 import OrderManagementPage from "./pages/admin/OrderManagmentPage.tsx";
 import RoleManagementPage from "./pages/admin/RoleManagementPage.tsx";
 import UserManagementPage from "./pages/admin/UserManagementPage.tsx";
@@ -37,6 +40,7 @@ export default function App() {
             <RoleProvider>
               <PermissionProvider>
                 <CartProvider>
+                  <CMSProvider>
                   <Box
                     sx={{
                       display: "flex",
@@ -64,6 +68,8 @@ export default function App() {
                         <Route path="/user/orders" element={<UserOrdersManagementPage />} />
                         <Route path="/user/settings" element={<UserSettingsPage />} />
                         <Route path="/admin" element={<DashboardPage />} />
+                        <Route path="/admin/cms" element={<CMSPage />} />
+                        <Route path="/admin/cms/home/edit" element={<HomePageEditor />} />
                         <Route path="/admin/users" element={<UserManagementPage />} />
                         <Route path="/admin/roles" element={<RoleManagementPage />} />
                         <Route path="/admin/orders" element={<OrderManagementPage />} />
@@ -71,6 +77,7 @@ export default function App() {
                       </Routes>
                     </Box>
                   </Box>
+                  </CMSProvider>
                 </CartProvider>
               </PermissionProvider>
             </RoleProvider>

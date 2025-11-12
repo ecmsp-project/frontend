@@ -7,6 +7,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PeopleIcon from "@mui/icons-material/People";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import WebIcon from "@mui/icons-material/Web";
 import {
   AppBar,
   Toolbar,
@@ -34,6 +35,11 @@ interface MenuItem {
 
 const allMenuItems: MenuItem[] = [
   { text: "Pulpit", icon: <DashboardIcon />, path: "/admin" },
+  {
+    text: "UI Strony",
+    icon: <WebIcon />,
+    path: "/admin/cms",
+  },
   {
     text: "Zarządzanie Użytkownikami",
     icon: <PeopleIcon />,
