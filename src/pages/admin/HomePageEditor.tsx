@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useCMS } from "../../contexts/CMSContext";
+import { saveGlobalSettings } from "../../api/cms-service";
 import CMSToolbar from "../../components/cms/CMSToolbar";
 import EditableText from "../../components/cms/EditableText";
-import { saveGlobalSettings } from "../../api/cms-service";
 import MainLayout from "../../components/layout/MainLayout";
+import { useCMS } from "../../contexts/CMSContext";
+import AddIcon from "@mui/icons-material/Add";
 import CheckroomIcon from "@mui/icons-material/Checkroom";
+import DeleteIcon from "@mui/icons-material/Delete";
 import HomeIcon from "@mui/icons-material/Home";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
@@ -13,17 +15,12 @@ import SpaIcon from "@mui/icons-material/Spa";
 import SportsBasketballIcon from "@mui/icons-material/SportsBasketball";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
 import {
   Typography,
   Container,
   Grid,
   Card,
-  CardMedia,
   Box,
-  Button,
-  Chip,
   alpha,
   IconButton,
   Alert,

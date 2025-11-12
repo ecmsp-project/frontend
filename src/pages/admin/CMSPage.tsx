@@ -64,8 +64,8 @@ const CMSPage: React.FC = () => {
                 </Box>
               </Box>
               <Typography variant="body2" sx={{ mb: 2 }}>
-                Dostosuj wygląd strony głównej: teksty, obrazy, kafelki z funkcjami oraz
-                wyświetlane kategorie produktów.
+                Dostosuj wygląd strony głównej: teksty, obrazy, kafelki z funkcjami oraz wyświetlane
+                kategorie produktów.
               </Typography>
             </CardContent>
             <CardActions sx={{ p: 2, pt: 0 }}>

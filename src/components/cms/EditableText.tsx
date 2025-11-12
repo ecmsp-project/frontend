@@ -1,4 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import {
   Box,
   TextField,
@@ -9,13 +12,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  IconButton,
 } from "@mui/material";
-import FormatBoldIcon from "@mui/icons-material/FormatBold";
-import FormatItalicIcon from "@mui/icons-material/FormatItalic";
-import FormatSizeIcon from "@mui/icons-material/FormatSize";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
 
 interface EditableTextProps {
   value: string;
@@ -29,10 +26,8 @@ const EditableText: React.FC<EditableTextProps> = ({
   value,
   onChange,
   multiline = false,
-  variant = "body1",
   isEditMode,
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(value);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [fontSize, setFontSize] = useState("16");
@@ -45,19 +40,16 @@ const EditableText: React.FC<EditableTextProps> = ({
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     if (!isEditMode) return;
-    setIsEditing(true);
     setAnchorEl(event.currentTarget);
   };
 
   const handleSave = () => {
     onChange(editValue);
-    setIsEditing(false);
     setAnchorEl(null);
   };
 
   const handleCancel = () => {
     setEditValue(value);
-    setIsEditing(false);
     setAnchorEl(null);
   };
 
@@ -112,7 +104,11 @@ const EditableText: React.FC<EditableTextProps> = ({
           <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>Rozmiar</InputLabel>
-              <Select value={fontSize} onChange={(e) => setFontSize(e.target.value)} label="Rozmiar">
+              <Select
+                value={fontSize}
+                onChange={(e) => setFontSize(e.target.value)}
+                label="Rozmiar"
+              >
                 <MenuItem value="12">12px</MenuItem>
                 <MenuItem value="14">14px</MenuItem>
                 <MenuItem value="16">16px</MenuItem>

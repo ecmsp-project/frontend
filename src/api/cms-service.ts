@@ -18,9 +18,7 @@ export const fetchGlobalSettings = async (): Promise<GlobalSettings> => {
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to fetch global settings: ${response.status} ${response.statusText}`,
-      );
+      throw new Error(`Failed to fetch global settings: ${response.status} ${response.statusText}`);
     }
 
     return await response.json();
@@ -48,9 +46,7 @@ export const saveGlobalSettings = async (settings: GlobalSettings): Promise<void
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to save global settings: ${response.status} ${response.statusText}`,
-      );
+      throw new Error(`Failed to save global settings: ${response.status} ${response.statusText}`);
     }
   } catch (error) {
     console.error("API Error saving global settings:", error);
