@@ -273,8 +273,8 @@ const ContactPageEditor: React.FC = () => {
             </Grid>
 
             <Alert severity="info" sx={{ mb: 3 }}>
-              Formularz kontaktowy nie jest edytowalny w trybie edycji. Możesz edytować tylko
-              teksty informacyjne i dane kontaktowe.
+              Formularz kontaktowy nie jest edytowalny w trybie edycji. Możesz edytować tylko teksty
+              informacyjne i dane kontaktowe.
             </Alert>
           </Container>
         </Box>

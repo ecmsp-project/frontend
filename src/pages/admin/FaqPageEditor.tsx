@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { saveGlobalSettings } from "../../api/cms-service";
-import Accordion from "../../components/common/Accordion";
 import CMSToolbar from "../../components/cms/CMSToolbar";
 import EditableText from "../../components/cms/EditableText";
+import Accordion from "../../components/common/Accordion";
 import MainLayout from "../../components/layout/MainLayout";
 import { useCMS } from "../../contexts/CMSContext";
+import type { FaqItem } from "../../types/cms";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -18,7 +19,6 @@ import {
   Snackbar,
   alpha,
 } from "@mui/material";
-import type { FaqItem } from "../../types/cms";
 
 const defaultFaqSettings = {
   pageTitle: "Najczęściej zadawane pytania",
