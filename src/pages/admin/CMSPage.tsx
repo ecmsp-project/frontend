@@ -1,6 +1,7 @@
 import React from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
 import EditIcon from "@mui/icons-material/Edit";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import WebIcon from "@mui/icons-material/Web";
 import {
   Typography,
@@ -123,14 +124,65 @@ const CMSPage: React.FC = () => {
             </CardContent>
             <CardActions sx={{ p: 2, pt: 0 }}>
               <Button
-                variant="outlined"
+                variant="contained"
                 startIcon={<EditIcon />}
                 fullWidth
                 onClick={() => navigate("/admin/cms/contact/edit")}
                 sx={{ textTransform: "none", py: 1 }}
-                disabled
               >
-                Wkrótce Dostępne
+                Edytuj Stronę Kontaktową
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
+
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Card
+            elevation={2}
+            sx={{
+              height: "100%",
+              transition: "all 0.3s",
+              "&:hover": {
+                transform: "translateY(-4px)",
+                boxShadow: 6,
+              },
+            }}
+          >
+            <CardContent>
+              <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                <Box
+                  sx={{
+                    bgcolor: "success.light",
+                    color: "success.contrastText",
+                    borderRadius: "50%",
+                    p: 1.5,
+                    mr: 2,
+                  }}
+                >
+                  <HelpOutlineIcon fontSize="large" />
+                </Box>
+                <Box>
+                  <Typography variant="h6" fontWeight={600}>
+                    Strona FAQ
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Edytuj najczęściej zadawane pytania
+                  </Typography>
+                </Box>
+              </Box>
+              <Typography variant="body2" sx={{ mb: 2 }}>
+                Zarządzaj pytaniami i odpowiedziami: dodawaj, edytuj i usuwaj pytania z sekcji FAQ.
+              </Typography>
+            </CardContent>
+            <CardActions sx={{ p: 2, pt: 0 }}>
+              <Button
+                variant="contained"
+                startIcon={<EditIcon />}
+                fullWidth
+                onClick={() => navigate("/admin/cms/faq/edit")}
+                sx={{ textTransform: "none", py: 1 }}
+              >
+                Edytuj Stronę FAQ
               </Button>
             </CardActions>
           </Card>
