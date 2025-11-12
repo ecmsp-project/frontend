@@ -20,11 +20,43 @@ export interface HeroSection {
   secondaryButtonText: string;
 }
 
+export interface SocialMedia {
+  facebook: string;
+  twitter: string;
+  instagram: string;
+  linkedin: string;
+}
+
 export interface FooterContent {
   shopName: string;
   shopDescription: string;
   customerServiceHours: string[];
   customerServicePhone: string;
+  socialMedia: SocialMedia;
+  copyrightText: string;
+}
+
+export interface ContactPageContent {
+  pageTitle: string;
+  pageSubtitle: string;
+  sectionTitle: string;
+  phone: string;
+  phoneHours: string;
+  email: string;
+  emailDescription: string;
+}
+
+export interface FaqItem {
+  id: string;
+  question: string;
+  answer: string;
+  expanded?: boolean;
+}
+
+export interface FaqPageContent {
+  pageTitle: string;
+  pageSubtitle: string;
+  faqItems: FaqItem[];
 }
 
 export interface GlobalSettings {
@@ -34,6 +66,9 @@ export interface GlobalSettings {
   categoriesTitle: string;
   categoriesSubtitle: string;
   footer: FooterContent;
+  headerShopName: string;
+  contactPage: ContactPageContent;
+  faqPage?: FaqPageContent;
 }
 
 export interface TextStyle {

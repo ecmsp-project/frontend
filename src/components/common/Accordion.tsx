@@ -7,7 +7,7 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
 
 interface AccordionProps {
-  title: string;
+  title: string | React.ReactNode;
   content: string | React.ReactNode;
   defaultExpanded?: boolean;
   disabled?: boolean;
@@ -78,18 +78,32 @@ const Accordion: React.FC<AccordionProps> = ({
           },
         }}
       >
-        <Typography
-          component="span"
-          sx={{
-            color: "text.primary",
-            fontSize: "1.125rem",
-            fontWeight: "600",
-            lineHeight: 1.4,
-            pr: 2,
-          }}
-        >
-          {title}
-        </Typography>
+        {typeof title === "string" ? (
+          <Typography
+            component="span"
+            sx={{
+              color: "text.primary",
+              fontSize: "1.125rem",
+              fontWeight: "600",
+              lineHeight: 1.4,
+              pr: 2,
+            }}
+          >
+            {title}
+          </Typography>
+        ) : (
+          <Box
+            sx={{
+              color: "text.primary",
+              fontSize: "1.125rem",
+              fontWeight: "600",
+              lineHeight: 1.4,
+              pr: 2,
+            }}
+          >
+            {title}
+          </Box>
+        )}
       </AccordionSummary>
       <AccordionDetails
         sx={{
