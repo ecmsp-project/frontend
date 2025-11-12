@@ -249,7 +249,7 @@ const HomePageEditor: React.FC = () => {
                             justifyContent: "center",
                           }}
                         >
-                          <IconComponent sx={{ fontSize: 40 }} />
+                          <IconComponent />
                         </Box>
                       </Box>
                       <Typography variant="h6" gutterBottom fontWeight={600}>

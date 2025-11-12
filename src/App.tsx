@@ -1,4 +1,4 @@
-import { CMSProvider } from "./contexts/CMSContext.tsx";
+import { CMSProvider } from "./contexts/CMSProvider.tsx";
 import CartProvider from "./contexts/CartProvider.tsx";
 import IndividualUserProvider from "./contexts/IndividualUserProvider.tsx";
 import { PermissionProvider } from "./contexts/PermissionProvider.tsx";
