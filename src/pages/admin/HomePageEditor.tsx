@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { saveGlobalSettings } from "../../api/cms-service";
+import { getRootCategories } from "../../api/product-service";
 import CMSToolbar from "../../components/cms/CMSToolbar";
 import EditableLink from "../../components/cms/EditableLink";
 import EditableText from "../../components/cms/EditableText";
 import { useCMS } from "../../contexts/CMSContext";
+import type { CategoryFromAPI } from "../../types/cms";
 import AddIcon from "@mui/icons-material/Add";
+import CategoryIcon from "@mui/icons-material/Category";
 import CheckroomIcon from "@mui/icons-material/Checkroom";
+import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import HomeIcon from "@mui/icons-material/Home";
@@ -30,6 +34,15 @@ import {
   Alert,
   Snackbar,
   Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  CircularProgress,
+  Tooltip,
 } from "@mui/material";
 
 const iconMap: { [key: string]: React.ComponentType } = {
@@ -149,12 +162,36 @@ const HomePageEditor: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [availableCategories, setAvailableCategories] = useState<CategoryFromAPI[]>([]);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(false);
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
+  const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
 
   useEffect(() => {
     setEditMode(true);
     if (!settings) {
       setSettings(defaultSettings);
     }
+
+    // Load selected category IDs from settings
+    if (settings?.selectedCategoryIds) {
+      setSelectedCategoryIds(settings.selectedCategoryIds);
+    }
+
+    // Fetch categories from API
+    const fetchCategories = async () => {
+      setIsLoadingCategories(true);
+      try {
+        const response = await getRootCategories();
+        setAvailableCategories(response.categories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      } finally {
+        setIsLoadingCategories(false);
+      }
+    };
+
+    fetchCategories();
     return () => setEditMode(false);
   }, [setEditMode, settings, setSettings]);
 
@@ -162,7 +199,13 @@ const HomePageEditor: React.FC = () => {
     if (!settings) return;
     setIsSaving(true);
     try {
-      await saveGlobalSettings(settings);
+      // Save settings with selected category IDs
+      const updatedSettings = {
+        ...settings,
+        selectedCategoryIds: selectedCategoryIds,
+      };
+      await saveGlobalSettings(updatedSettings);
+      setSettings(updatedSettings);
       setDirty(false);
       setShowSuccess(true);
     } catch (error) {
@@ -171,6 +214,41 @@ const HomePageEditor: React.FC = () => {
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleAddCategory = (categoryId: string) => {
+    if (!selectedCategoryIds.includes(categoryId)) {
+      setSelectedCategoryIds([...selectedCategoryIds, categoryId]);
+      setDirty(true);
+    }
+    setCategoryDialogOpen(false);
+  };
+
+  const handleRemoveCategory = (categoryId: string) => {
+    setSelectedCategoryIds(selectedCategoryIds.filter((id) => id !== categoryId));
+    setDirty(true);
+  };
+
+  const getSelectedCategories = () => {
+    return availableCategories.filter((cat) => selectedCategoryIds.includes(cat.id));
+  };
+
+  const getAvailableCategoriesToAdd = () => {
+    return availableCategories.filter((cat) => !selectedCategoryIds.includes(cat.id));
+  };
+
+  const getCategoryColor = (index: number) => {
+    const colors = [
+      "#1976d2",
+      "#9c27b0",
+      "#e91e63",
+      "#4caf50",
+      "#ff9800",
+      "#795548",
+      "#00bcd4",
+      "#f44336",
+    ];
+    return colors[index % colors.length];
   };
 
   if (!settings) return null;
@@ -368,10 +446,193 @@ const HomePageEditor: React.FC = () => {
             </Typography>
           </Box>
 
-          <Alert severity="info" sx={{ mb: 3 }}>
-            Kategorie są obecnie edytowalne tylko przez mockowane dane. Wybór kategorii z API będzie
-            dostępny wkrótce.
-          </Alert>
+          {/* Category Selection Section */}
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              Wybierz kategorie z systemu, które mają być wyświetlane na stronie głównej
+            </Typography>
+
+            {isLoadingCategories ? (
+              <Card
+                elevation={0}
+                sx={{
+                  p: 4,
+                  textAlign: "center",
+                  bgcolor: (theme) => alpha(theme.palette.primary.main, 0.05),
+                }}
+              >
+                <CircularProgress size={40} sx={{ mb: 2 }} />
+                <Typography variant="body1" color="text.secondary">
+                  Ładowanie kategorii z API...
+                </Typography>
+              </Card>
+            ) : (
+              <Grid container spacing={3}>
+                {/* Selected Category Tiles */}
+                {getSelectedCategories().map((category, index) => (
+                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={category.id}>
+                    <Card
+                      elevation={2}
+                      sx={{
+                        height: "100%",
+                        position: "relative",
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          transform: "translateY(-4px)",
+                          boxShadow: 6,
+                        },
+                      }}
+                    >
+                      {/* Remove Button */}
+                      <IconButton
+                        size="small"
+                        sx={{
+                          position: "absolute",
+                          top: 8,
+                          right: 8,
+                          bgcolor: "error.main",
+                          color: "white",
+                          zIndex: 1,
+                          "&:hover": { bgcolor: "error.dark" },
+                        }}
+                        onClick={() => handleRemoveCategory(category.id)}
+                      >
+                        <CloseIcon fontSize="small" />
+                      </IconButton>
+
+                      {/* Category Header with Color */}
+                      <Box
+                        sx={{
+                          height: 120,
+                          background: `linear-gradient(135deg, ${getCategoryColor(index)} 0%, ${alpha(
+                            getCategoryColor(index),
+                            0.7,
+                          )} 100%)`,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          position: "relative",
+                          overflow: "hidden",
+                        }}
+                      >
+                        <CategoryIcon
+                          sx={{
+                            fontSize: 64,
+                            color: "white",
+                            opacity: 0.9,
+                          }}
+                        />
+                      </Box>
+
+                      {/* Category Details */}
+                      <Box sx={{ p: 2 }}>
+                        <Typography
+                          variant="h6"
+                          gutterBottom
+                          sx={{
+                            fontWeight: 600,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {category.name}
+                        </Typography>
+
+                        <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+                          <Tooltip title="Liczba produktów">
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 0.5,
+                                px: 1.5,
+                                py: 0.5,
+                                bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
+                                borderRadius: 1,
+                              }}
+                            >
+                              <Typography variant="caption" fontWeight={600} color="primary">
+                                {category.productCount}
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                produktów
+                              </Typography>
+                            </Box>
+                          </Tooltip>
+
+                          {category.subCategoryCount > 0 && (
+                            <Tooltip title="Liczba podkategorii">
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 0.5,
+                                  px: 1.5,
+                                  py: 0.5,
+                                  bgcolor: (theme) => alpha(theme.palette.secondary.main, 0.1),
+                                  borderRadius: 1,
+                                }}
+                              >
+                                <Typography variant="caption" fontWeight={600} color="secondary">
+                                  {category.subCategoryCount}
+                                </Typography>
+                                <Typography variant="caption" color="text.secondary">
+                                  podkat.
+                                </Typography>
+                              </Box>
+                            </Tooltip>
+                          )}
+                        </Box>
+                      </Box>
+                    </Card>
+                  </Grid>
+                ))}
+
+                {/* Add Category Button */}
+                {getAvailableCategoriesToAdd().length > 0 && (
+                  <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+                    <Card
+                      elevation={0}
+                      sx={{
+                        height: "100%",
+                        minHeight: 220,
+                        bgcolor: (theme) => alpha(theme.palette.success.main, 0.05),
+                        border: "2px dashed",
+                        borderColor: "success.main",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          bgcolor: (theme) => alpha(theme.palette.success.main, 0.1),
+                          transform: "scale(1.02)",
+                        },
+                      }}
+                      onClick={() => setCategoryDialogOpen(true)}
+                    >
+                      <Box sx={{ textAlign: "center", p: 3 }}>
+                        <AddIcon sx={{ fontSize: 56, color: "success.main", mb: 2 }} />
+                        <Typography variant="h6" color="success.main" fontWeight={600}>
+                          Dodaj Kategorię
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                          {getAvailableCategoriesToAdd().length} dostępnych
+                        </Typography>
+                      </Box>
+                    </Card>
+                  </Grid>
+                )}
+              </Grid>
+            )}
+
+            {!isLoadingCategories && getAvailableCategoriesToAdd().length === 0 && (
+              <Alert severity="info" sx={{ mt: 2 }}>
+                Wszystkie dostępne kategorie zostały już dodane.
+              </Alert>
+            )}
+          </Box>
         </Container>
 
         {/* Footer - edytowalna stopka */}
@@ -640,6 +901,112 @@ const HomePageEditor: React.FC = () => {
           Błąd podczas zapisywania zmian
         </Alert>
       </Snackbar>
+
+      {/* Category Selection Dialog */}
+      <Dialog
+        open={categoryDialogOpen}
+        onClose={() => setCategoryDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 2,
+          },
+        }}
+      >
+        <DialogTitle sx={{ pb: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <CategoryIcon color="primary" />
+              <Typography variant="h6" fontWeight={600}>
+                Wybierz kategorię
+              </Typography>
+            </Box>
+            <IconButton
+              size="small"
+              onClick={() => setCategoryDialogOpen(false)}
+              sx={{ color: "text.secondary" }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+            Kliknij kategorię aby dodać ją do strony głównej
+          </Typography>
+        </DialogTitle>
+
+        <DialogContent sx={{ pt: 2 }}>
+          {getAvailableCategoriesToAdd().length === 0 ? (
+            <Alert severity="info">Wszystkie kategorie zostały już dodane.</Alert>
+          ) : (
+            <List sx={{ p: 0 }}>
+              {getAvailableCategoriesToAdd().map((category, index) => (
+                <ListItem key={category.id} disablePadding sx={{ mb: 1 }}>
+                  <ListItemButton
+                    onClick={() => handleAddCategory(category.id)}
+                    sx={{
+                      borderRadius: 2,
+                      border: "1px solid",
+                      borderColor: "divider",
+                      transition: "all 0.2s ease",
+                      "&:hover": {
+                        borderColor: "primary.main",
+                        bgcolor: (theme) => alpha(theme.palette.primary.main, 0.05),
+                        transform: "translateX(4px)",
+                      },
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: 48,
+                        height: 48,
+                        borderRadius: 1,
+                        bgcolor: getCategoryColor(index),
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        mr: 2,
+                        flexShrink: 0,
+                      }}
+                    >
+                      <CategoryIcon sx={{ color: "white", fontSize: 28 }} />
+                    </Box>
+
+                    <ListItemText
+                      primary={
+                        <Typography variant="body1" fontWeight={600}>
+                          {category.name}
+                        </Typography>
+                      }
+                      secondary={
+                        <Box sx={{ display: "flex", gap: 1, mt: 0.5 }}>
+                          <Typography variant="caption" color="text.secondary">
+                            {category.productCount}{" "}
+                            {category.productCount === 1 ? "produkt" : "produktów"}
+                          </Typography>
+                          {category.subCategoryCount > 0 && (
+                            <>
+                              <Typography variant="caption" color="text.secondary">
+                                •
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                {category.subCategoryCount}{" "}
+                                {category.subCategoryCount === 1 ? "podkategoria" : "podkategorii"}
+                              </Typography>
+                            </>
+                          )}
+                        </Box>
+                      }
+                    />
+
+                    <AddIcon sx={{ color: "success.main", ml: 1 }} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

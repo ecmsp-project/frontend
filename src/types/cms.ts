@@ -13,6 +13,21 @@ export interface CategoryTile {
   color: string;
 }
 
+// Category from product-service API
+export interface CategoryFromAPI {
+  id: string; // UUID
+  name: string;
+  parentCategoryId: string | null;
+  parentCategoryName: string | null;
+  subCategoryCount: number;
+  productCount: number;
+  propertyCount: number;
+}
+
+export interface GetCategoriesResponse {
+  categories: CategoryFromAPI[];
+}
+
 export interface HeroSection {
   title: string;
   subtitle: string;
@@ -69,6 +84,7 @@ export interface GlobalSettings {
   headerShopName: string;
   contactPage: ContactPageContent;
   faqPage?: FaqPageContent;
+  selectedCategoryIds?: string[]; // IDs of categories to display from API
 }
 
 export interface TextStyle {

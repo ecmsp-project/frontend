@@ -1,13 +1,16 @@
+import type { GetCategoriesResponse } from "../types/cms";
 import type {
   ProductCreateRequestDTO,
   ProductCreateResponseDTO,
   VariantCreateRequestDTO,
   VariantCreateResponseDTO,
 } from "../types/products";
-import { API_BASE_URL, apiCall } from "./utils";
+import { apiCall } from "./utils";
 
-const PRODUCT_API = `${API_BASE_URL}/api/products`;
-const VARIANT_API = `${API_BASE_URL}/api/variants`;
+const PRODUCT_SERVICE_URL = "http://localhost:8400";
+const PRODUCT_API = `${PRODUCT_SERVICE_URL}/api/products`;
+const VARIANT_API = `${PRODUCT_SERVICE_URL}/api/variants`;
+const CATEGORY_API = `${PRODUCT_SERVICE_URL}/api/categories`;
 
 export const createProduct = async (
   productData: ProductCreateRequestDTO,
@@ -45,6 +48,23 @@ export const createVariant = async (
     return await response.json();
   } catch (error) {
     console.error("API Error creating variant:", error);
+    throw error;
+  }
+};
+
+export const getRootCategories = async (): Promise<GetCategoriesResponse> => {
+  try {
+    const response = await apiCall(`${CATEGORY_API}/subcategories`, {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch categories: ${response.status} ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("API Error fetching categories:", error);
     throw error;
   }
 };
