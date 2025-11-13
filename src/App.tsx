@@ -15,6 +15,7 @@ import ProductPage from "./pages/ProductPage.tsx";
 import Register from "./pages/Register.tsx";
 import SearchPage from "./pages/SearchPage";
 import UserOrdersPage from "./pages/UserOrdersPage.tsx";
+import CategoryManagementPage from "./pages/admin/CategoryManagementPage.tsx";
 import CMSPage from "./pages/admin/CMSPage.tsx";
 import ContactPageEditor from "./pages/admin/ContactPageEditor.tsx";
 import DashboardPage from "./pages/admin/DashboardPage.tsx";
@@ -74,6 +75,7 @@ export default function App() {
                           <Route path="/admin/cms/home/edit" element={<HomePageEditor />} />
                           <Route path="/admin/cms/contact/edit" element={<ContactPageEditor />} />
                           <Route path="/admin/cms/faq/edit" element={<FaqPageEditor />} />
+                          <Route path="/admin/categories" element={<CategoryManagementPage />} />
                           <Route path="/admin/users" element={<UserManagementPage />} />
                           <Route path="/admin/roles" element={<RoleManagementPage />} />
                           <Route path="/admin/orders" element={<OrderManagementPage />} />

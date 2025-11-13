@@ -3,6 +3,7 @@ import { useIndividualUser } from "../../contexts/IndividualUserContext";
 import { PERMISSIONS } from "../../types/permissions";
 import type { Permission } from "../../types/permissions";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import CategoryIcon from "@mui/icons-material/Category";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PeopleIcon from "@mui/icons-material/People";
@@ -39,6 +40,11 @@ const allMenuItems: MenuItem[] = [
     text: "UI Strony",
     icon: <WebIcon />,
     path: "/admin/cms",
+  },
+  {
+    text: "Kategorie",
+    icon: <CategoryIcon />,
+    path: "/admin/categories",
   },
   {
     text: "Zarządzanie Użytkownikami",
