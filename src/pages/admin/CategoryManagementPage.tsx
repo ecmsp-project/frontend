@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
-import AdminLayout from "../../components/layout/AdminLayout";
-import { Typography, Box, Alert, CircularProgress, Paper } from "@mui/material";
 import { getAllCategories, createCategory, deleteCategory } from "../../api/product-service";
-import type { CategoryFromAPI } from "../../types/cms";
-import type {
-  CategoryFormDialogState,
-  CategoryDeleteDialogState,
-} from "../../types/category";
-import CategoryTree from "../../components/admin/categories/CategoryTree";
-import CategoryFormDialog from "../../components/admin/categories/CategoryFormDialog";
 import CategoryDeleteDialog from "../../components/admin/categories/CategoryDeleteDialog";
+import CategoryFormDialog from "../../components/admin/categories/CategoryFormDialog";
+import CategoryTree from "../../components/admin/categories/CategoryTree";
+import AdminLayout from "../../components/layout/AdminLayout";
+import type { CategoryFormDialogState, CategoryDeleteDialogState } from "../../types/category";
+import type { CategoryFromAPI } from "../../types/cms";
+import { Typography, Box, Alert, CircularProgress, Paper } from "@mui/material";
 
 const CategoryManagementPage: React.FC = () => {
   const [categories, setCategories] = useState<CategoryFromAPI[]>([]);
@@ -133,7 +130,9 @@ const CategoryManagementPage: React.FC = () => {
     } catch (err) {
       console.error("Error deleting category:", err);
       // Note: Backend endpoint may not be implemented yet
-      alert("Błąd: Endpoint usuwania kategorii może nie być jeszcze zaimplementowany na backendzie.");
+      alert(
+        "Błąd: Endpoint usuwania kategorii może nie być jeszcze zaimplementowany na backendzie.",
+      );
       throw err;
     }
   };
@@ -175,7 +174,7 @@ const CategoryManagementPage: React.FC = () => {
         childCategoryName={formDialog.childCategoryName}
         onClose={handleCloseFormDialog}
         onSubmit={handleCreateCategory}
-        container={() => document.fullscreenElement as HTMLElement || document.body}
+        container={() => (document.fullscreenElement as HTMLElement) || document.body}
       />
 
       <CategoryDeleteDialog
@@ -183,7 +182,7 @@ const CategoryManagementPage: React.FC = () => {
         category={deleteDialog.category}
         onClose={handleCloseDeleteDialog}
         onConfirm={handleDeleteCategory}
-        container={() => document.fullscreenElement as HTMLElement || document.body}
+        container={() => (document.fullscreenElement as HTMLElement) || document.body}
       />
     </AdminLayout>
   );

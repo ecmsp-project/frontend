@@ -1,13 +1,9 @@
 import React from "react";
-import {
-  BaseEdge,
-  EdgeLabelRenderer,
-  getBezierPath,
-} from "@xyflow/react";
-import type { EdgeProps } from "@xyflow/react";
-import { IconButton } from "@mui/material";
-import { Add as AddIcon } from "@mui/icons-material";
 import type { CategoryEdgeData } from "../../../types/category";
+import { Add as AddIcon } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
+import { BaseEdge, EdgeLabelRenderer, getBezierPath } from "@xyflow/react";
+import type { EdgeProps } from "@xyflow/react";
 
 const CategoryEdge: React.FC<EdgeProps> = ({
   id,

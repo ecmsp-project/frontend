@@ -1,3 +1,8 @@
+import type {
+  CategoryCreateRequestDTO,
+  CategoryCreateResponseDTO,
+  CategoryUpdateRequestDTO,
+} from "../types/category";
 import type { GetCategoriesResponse, CategoryFromAPI } from "../types/cms";
 import type {
   ProductCreateRequestDTO,
@@ -5,11 +10,6 @@ import type {
   VariantCreateRequestDTO,
   VariantCreateResponseDTO,
 } from "../types/products";
-import type {
-  CategoryCreateRequestDTO,
-  CategoryCreateResponseDTO,
-  CategoryUpdateRequestDTO,
-} from "../types/category";
 import { apiCall } from "./utils";
 
 const PRODUCT_SERVICE_URL = "http://localhost:8400";

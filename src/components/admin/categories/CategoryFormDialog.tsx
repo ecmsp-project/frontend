@@ -1,4 +1,11 @@
 import React, { useState } from "react";
+import type { CategoryCreationMode } from "../../../types/category";
+import {
+  Category as CategoryIcon,
+  ArrowDownward as ArrowDownIcon,
+  AddCircleOutline as AddIcon,
+  FolderSpecial as RootIcon,
+} from "@mui/icons-material";
 import {
   Dialog,
   DialogTitle,
@@ -13,15 +20,8 @@ import {
   Divider,
   Chip,
 } from "@mui/material";
-import {
-  Category as CategoryIcon,
-  ArrowDownward as ArrowDownIcon,
-  AddCircleOutline as AddIcon,
-  FolderSpecial as RootIcon,
-} from "@mui/icons-material";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import type { CategoryCreationMode } from "../../../types/category";
 
 interface CategoryFormDialogProps {
   open: boolean;
@@ -254,7 +254,10 @@ const CategoryFormDialog: React.FC<CategoryFormDialogProps> = ({
 
               {/* Category name input */}
               <Box>
-                <Typography variant="subtitle2" sx={{ mb: 1.5, fontWeight: 600, color: "text.secondary" }}>
+                <Typography
+                  variant="subtitle2"
+                  sx={{ mb: 1.5, fontWeight: 600, color: "text.secondary" }}
+                >
                   Wprowadź nazwę nowej kategorii:
                 </Typography>
                 <TextField

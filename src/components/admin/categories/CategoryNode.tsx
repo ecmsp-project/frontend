@@ -1,13 +1,13 @@
 import React from "react";
-import { Handle, Position } from "@xyflow/react";
-import type { NodeProps } from "@xyflow/react";
-import { Box, Typography, IconButton, Chip, Stack } from "@mui/material";
+import type { CategoryNodeData } from "../../../types/category";
 import {
   Add as AddIcon,
   Delete as DeleteIcon,
   FolderOpen as FolderIcon,
 } from "@mui/icons-material";
-import type { CategoryNodeData } from "../../../types/category";
+import { Box, Typography, IconButton, Chip, Stack } from "@mui/material";
+import { Handle, Position } from "@xyflow/react";
+import type { NodeProps } from "@xyflow/react";
 
 const CategoryNode: React.FC<NodeProps> = ({ data }) => {
   const { category, onAddLeaf, onDelete } = data as CategoryNodeData;
@@ -91,12 +91,7 @@ const CategoryNode: React.FC<NodeProps> = ({ data }) => {
           >
             <AddIcon fontSize="small" />
           </IconButton>
-          <IconButton
-            size="small"
-            color="error"
-            onClick={onDelete}
-            title="Usuń kategorię"
-          >
+          <IconButton size="small" color="error" onClick={onDelete} title="Usuń kategorię">
             <DeleteIcon fontSize="small" />
           </IconButton>
         </Box>

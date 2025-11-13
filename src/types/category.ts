@@ -1,4 +1,4 @@
-import type { CategoryFromAPI } from './cms';
+import type { CategoryFromAPI } from "./cms";
 
 // Request DTOs matching backend
 export interface CategoryCreateRequestDTO {
@@ -24,7 +24,7 @@ export interface CategoryCreateResponseDTO {
 }
 
 // Category creation modes (using type union instead of enum)
-export type CategoryCreationMode = 'LEAF' | 'SPLIT' | 'SPLIT_ALL';
+export type CategoryCreationMode = "LEAF" | "SPLIT" | "SPLIT_ALL";
 
 // Extended category type with children for tree structure
 export interface CategoryTreeNode extends CategoryFromAPI {

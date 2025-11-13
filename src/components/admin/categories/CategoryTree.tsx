@@ -1,4 +1,16 @@
 import React, { useMemo, useCallback, useState, useRef } from "react";
+import type { CategoryTreeNode } from "../../../types/category";
+import type { CategoryFromAPI } from "../../../types/cms";
+import CategoryEdge from "./CategoryEdge";
+import CategoryNode from "./CategoryNode";
+import {
+  Fullscreen,
+  FullscreenExit,
+  AccountTree,
+  Add as AddIcon,
+  Refresh as RefreshIcon,
+} from "@mui/icons-material";
+import { Box, Typography, IconButton, Button } from "@mui/material";
 import {
   ReactFlow,
   Background,
@@ -12,13 +24,7 @@ import {
 } from "@xyflow/react";
 import type { Node, Edge } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { Box, Typography, IconButton, Button } from "@mui/material";
-import { Fullscreen, FullscreenExit, AccountTree, Add as AddIcon, Refresh as RefreshIcon } from "@mui/icons-material";
 import dagre from "dagre";
-import type { CategoryFromAPI } from "../../../types/cms";
-import type { CategoryTreeNode } from "../../../types/category";
-import CategoryNode from "./CategoryNode";
-import CategoryEdge from "./CategoryEdge";
 
 interface CategoryTreeProps {
   categories: CategoryFromAPI[];
@@ -41,7 +47,7 @@ const edgeTypes = {
 };
 
 // Dagre layout configuration
-const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'TB') => {
+const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = "TB") => {
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));
 
@@ -241,7 +247,7 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
   React.useEffect(() => {
     if (newlyAddedCategoryId && nodes.length > 0) {
       // Find the newly added node
-      const newNode = nodes.find(node => node.id === newlyAddedCategoryId);
+      const newNode = nodes.find((node) => node.id === newlyAddedCategoryId);
 
       if (newNode) {
         // Wait a bit for the node to be rendered
@@ -252,11 +258,11 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
           // Center the camera on the new node with smooth animation
           reactFlowInstance.setCenter(
             newNode.position.x + 125, // Center of node (nodeWidth / 2)
-            newNode.position.y + 60,  // Center of node (nodeHeight / 2)
+            newNode.position.y + 60, // Center of node (nodeHeight / 2)
             {
               zoom: currentZoom, // Keep current zoom level
-              duration: 800 // Smooth animation
-            }
+              duration: 800, // Smooth animation
+            },
           );
         }, 100);
       }
@@ -268,11 +274,14 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
     if (!containerRef.current) return;
 
     if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen().then(() => {
-        setIsFullscreen(true);
-      }).catch(err => {
-        console.error('Error entering fullscreen:', err);
-      });
+      containerRef.current
+        .requestFullscreen()
+        .then(() => {
+          setIsFullscreen(true);
+        })
+        .catch((err) => {
+          console.error("Error entering fullscreen:", err);
+        });
     } else {
       document.exitFullscreen().then(() => {
         setIsFullscreen(false);
@@ -286,15 +295,15 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
       setIsFullscreen(!!document.fullscreenElement);
     };
 
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
     return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
     };
   }, []);
 
   // Auto layout function
   const onAutoLayout = useCallback(() => {
-    const layouted = getLayoutedElements(nodes, edges, 'TB');
+    const layouted = getLayoutedElements(nodes, edges, "TB");
     setNodes(layouted.nodes);
     setEdges(layouted.edges);
 
@@ -318,15 +327,15 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
 
   // Apply highlight style to newly added node
   const nodesWithHighlight = React.useMemo(() => {
-    return nodes.map(node => {
+    return nodes.map((node) => {
       if (node.id === newlyAddedCategoryId) {
         return {
           ...node,
           style: {
             ...node.style,
-            animation: 'pulse 2s ease-in-out 3',
+            animation: "pulse 2s ease-in-out 3",
           },
-          className: 'newly-added-node',
+          className: "newly-added-node",
         };
       }
       return node;
