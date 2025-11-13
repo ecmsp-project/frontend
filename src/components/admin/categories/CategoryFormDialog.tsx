@@ -21,6 +21,7 @@ interface CategoryFormDialogProps {
   childCategoryName?: string;
   onClose: () => void;
   onSubmit: (name: string) => Promise<void>;
+  container?: () => HTMLElement;
 }
 
 const validationSchema = Yup.object({
@@ -37,6 +38,7 @@ const CategoryFormDialog: React.FC<CategoryFormDialogProps> = ({
   childCategoryName,
   onClose,
   onSubmit,
+  container,
 }) => {
   const [error, setError] = useState<string | null>(null);
 
@@ -88,7 +90,13 @@ const CategoryFormDialog: React.FC<CategoryFormDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="sm"
+      fullWidth
+      container={container}
+    >
       <DialogTitle>{getDialogTitle()}</DialogTitle>
       <Formik
         initialValues={{ name: "" }}

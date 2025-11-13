@@ -18,6 +18,7 @@ interface CategoryDeleteDialogProps {
   category?: CategoryFromAPI;
   onClose: () => void;
   onConfirm: (categoryId: string) => Promise<void>;
+  container?: () => HTMLElement;
 }
 
 const CategoryDeleteDialog: React.FC<CategoryDeleteDialogProps> = ({
@@ -25,6 +26,7 @@ const CategoryDeleteDialog: React.FC<CategoryDeleteDialogProps> = ({
   category,
   onClose,
   onConfirm,
+  container,
 }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -57,7 +59,13 @@ const CategoryDeleteDialog: React.FC<CategoryDeleteDialogProps> = ({
   if (!category) return null;
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="sm"
+      fullWidth
+      container={container}
+    >
       <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <WarningIcon color="warning" />
         Usuń kategorię

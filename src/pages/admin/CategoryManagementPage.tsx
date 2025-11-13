@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
-import { Typography, Box, Alert, CircularProgress, Button, Paper } from "@mui/material";
-import { Add as AddIcon, Refresh as RefreshIcon } from "@mui/icons-material";
+import { Typography, Box, Alert, CircularProgress, Paper } from "@mui/material";
 import { getAllCategories, createCategory, deleteCategory } from "../../api/product-service";
 import type { CategoryFromAPI } from "../../types/cms";
 import type {
@@ -141,25 +140,8 @@ const CategoryManagementPage: React.FC = () => {
 
   return (
     <AdminLayout>
-      <Box sx={{ mb: 3, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <Box sx={{ mb: 3 }}>
         <Typography variant="h4">Zarządzanie Kategoriami</Typography>
-        <Box>
-          <Button
-            variant="outlined"
-            startIcon={<RefreshIcon />}
-            onClick={fetchCategories}
-            sx={{ mr: 2 }}
-          >
-            Odśwież
-          </Button>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleOpenAddRootDialog}
-          >
-            Dodaj kategorię główną
-          </Button>
-        </Box>
       </Box>
 
       {error && (
@@ -174,21 +156,15 @@ const CategoryManagementPage: React.FC = () => {
         </Box>
       ) : (
         <Paper elevation={2} sx={{ p: 3, height: 700 }}>
-          {categories.length === 0 ? (
-            <Box sx={{ textAlign: "center", py: 5 }}>
-              <Typography variant="h6" color="text.secondary">
-                Brak kategorii. Dodaj pierwszą kategorię używając przycisku powyżej.
-              </Typography>
-            </Box>
-          ) : (
-            <CategoryTree
-              categories={categories}
-              onAddLeaf={handleOpenAddLeafDialog}
-              onAddBetween={handleOpenAddBetweenDialog}
-              onDelete={handleOpenDeleteDialog}
-              newlyAddedCategoryId={newlyAddedCategoryId}
-            />
-          )}
+          <CategoryTree
+            categories={categories}
+            onAddLeaf={handleOpenAddLeafDialog}
+            onAddBetween={handleOpenAddBetweenDialog}
+            onDelete={handleOpenDeleteDialog}
+            newlyAddedCategoryId={newlyAddedCategoryId}
+            onAddRootCategory={handleOpenAddRootDialog}
+            onRefresh={fetchCategories}
+          />
         </Paper>
       )}
 
@@ -199,6 +175,7 @@ const CategoryManagementPage: React.FC = () => {
         childCategoryName={formDialog.childCategoryName}
         onClose={handleCloseFormDialog}
         onSubmit={handleCreateCategory}
+        container={() => document.fullscreenElement as HTMLElement || document.body}
       />
 
       <CategoryDeleteDialog
@@ -206,6 +183,7 @@ const CategoryManagementPage: React.FC = () => {
         category={deleteDialog.category}
         onClose={handleCloseDeleteDialog}
         onConfirm={handleDeleteCategory}
+        container={() => document.fullscreenElement as HTMLElement || document.body}
       />
     </AdminLayout>
   );

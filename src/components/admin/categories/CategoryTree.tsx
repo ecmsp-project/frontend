@@ -13,7 +13,7 @@ import {
 import type { Node, Edge } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { Box, Typography, IconButton, Button } from "@mui/material";
-import { Fullscreen, FullscreenExit, AccountTree } from "@mui/icons-material";
+import { Fullscreen, FullscreenExit, AccountTree, Add as AddIcon, Refresh as RefreshIcon } from "@mui/icons-material";
 import dagre from "dagre";
 import type { CategoryFromAPI } from "../../../types/cms";
 import type { CategoryTreeNode } from "../../../types/category";
@@ -26,6 +26,8 @@ interface CategoryTreeProps {
   onAddBetween: (parentId: string, childId: string, parentName: string, childName: string) => void;
   onDelete: (category: CategoryFromAPI) => void;
   newlyAddedCategoryId?: string | null;
+  onAddRootCategory: () => void;
+  onRefresh: () => void;
 }
 
 // Custom node types for React Flow
@@ -91,10 +93,13 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
   onAddBetween,
   onDelete,
   newlyAddedCategoryId,
+  onAddRootCategory,
+  onRefresh,
 }) => {
   const reactFlowInstance = useReactFlow();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [hasAutoLayoutRun, setHasAutoLayoutRun] = useState(false);
   // Build tree structure from flat list
   const buildTree = useCallback((flatCategories: CategoryFromAPI[]): CategoryTreeNode[] => {
     const categoryMap = new Map<string, CategoryTreeNode>();
@@ -297,7 +302,19 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
     window.requestAnimationFrame(() => {
       reactFlowInstance.fitView({ padding: 0.2, duration: 400 });
     });
+
+    setHasAutoLayoutRun(true);
   }, [nodes, edges, setNodes, setEdges, reactFlowInstance]);
+
+  // Run auto layout on initial load
+  React.useEffect(() => {
+    if (!hasAutoLayoutRun && nodes.length > 0 && isInitialized) {
+      // Wait a bit for nodes to be rendered
+      setTimeout(() => {
+        onAutoLayout();
+      }, 300);
+    }
+  }, [hasAutoLayoutRun, nodes.length, isInitialized, onAutoLayout]);
 
   // Apply highlight style to newly added node
   const nodesWithHighlight = React.useMemo(() => {
@@ -345,78 +362,172 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
           }
         `}
       </style>
-      <ReactFlow
-        nodes={nodesWithHighlight}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        fitView={!isInitialized && nodes.length > 0}
-        fitViewOptions={{ padding: 0.2, duration: 200 }}
-        minZoom={0.1}
-        maxZoom={1.5}
-      >
-        <Background />
-        <Controls />
-        <MiniMap
-          nodeColor={() => {
-            return "#1976d2";
+      {categories.length === 0 ? (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            gap: 3,
           }}
-          maskColor="rgba(0, 0, 0, 0.1)"
-        />
-        <Panel position="top-left">
-          <Box
-            sx={{
-              bgcolor: "background.paper",
-              p: 1.5,
-              borderRadius: 1,
-              boxShadow: 1,
+        >
+          <Typography variant="h6" color="text.secondary">
+            Brak kategorii
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Kliknij przycisk "Dodaj główną" w prawym górnym rogu aby dodać pierwszą kategorię
+          </Typography>
+        </Box>
+      ) : (
+        <ReactFlow
+          nodes={nodesWithHighlight}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          fitView={!isInitialized && nodes.length > 0}
+          fitViewOptions={{ padding: 0.2, duration: 200 }}
+          minZoom={0.1}
+          maxZoom={1.5}
+        >
+          <Background />
+          <Controls />
+          <MiniMap
+            nodeColor={() => {
+              return "#1976d2";
             }}
-          >
-            <Typography variant="caption" display="block">
-              Liczba kategorii: {categories.length}
-            </Typography>
-            <Typography variant="caption" display="block" color="text.secondary">
-              Kliknij na krawędź aby dodać kategorię między węzłami
-            </Typography>
-          </Box>
-        </Panel>
-        <Panel position="top-right">
-          <Box sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
-            <Button
-              variant="contained"
-              size="small"
-              startIcon={<AccountTree />}
-              onClick={onAutoLayout}
-              sx={{
-                bgcolor: "primary.main",
-                boxShadow: 2,
-                "&:hover": {
-                  bgcolor: "primary.dark",
-                },
-              }}
-              title="Automatycznie rozłóż elementy aby się nie nakładały"
-            >
-              Auto Layout
-            </Button>
-            <IconButton
-              onClick={toggleFullscreen}
+            maskColor="rgba(0, 0, 0, 0.1)"
+          />
+          <Panel position="top-left">
+            <Box
               sx={{
                 bgcolor: "background.paper",
-                boxShadow: 2,
-                "&:hover": {
-                  bgcolor: "primary.light",
-                  color: "white",
-                },
+                p: 1.5,
+                borderRadius: 1,
+                boxShadow: 1,
               }}
-              title={isFullscreen ? "Wyjdź z pełnego ekranu" : "Pełny ekran"}
             >
-              {isFullscreen ? <FullscreenExit /> : <Fullscreen />}
-            </IconButton>
-          </Box>
-        </Panel>
-      </ReactFlow>
+              <Typography variant="caption" display="block">
+                Liczba kategorii: {categories.length}
+              </Typography>
+              <Typography variant="caption" display="block" color="text.secondary">
+                Kliknij na krawędź aby dodać kategorię między węzłami
+              </Typography>
+            </Box>
+          </Panel>
+          <Panel position="top-right">
+            <Box sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={<AddIcon />}
+                onClick={onAddRootCategory}
+                sx={{
+                  bgcolor: "success.main",
+                  boxShadow: 2,
+                  "&:hover": {
+                    bgcolor: "success.dark",
+                  },
+                }}
+                title="Dodaj kategorię główną"
+              >
+                Dodaj główną
+              </Button>
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<RefreshIcon />}
+                onClick={onRefresh}
+                sx={{
+                  boxShadow: 1,
+                  bgcolor: "background.paper",
+                }}
+                title="Odśwież kategorie"
+              >
+                Odśwież
+              </Button>
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={<AccountTree />}
+                onClick={onAutoLayout}
+                sx={{
+                  bgcolor: "primary.main",
+                  boxShadow: 2,
+                  "&:hover": {
+                    bgcolor: "primary.dark",
+                  },
+                }}
+                title="Automatycznie rozłóż elementy aby się nie nakładały"
+              >
+                Auto Layout
+              </Button>
+              <IconButton
+                onClick={toggleFullscreen}
+                sx={{
+                  bgcolor: "background.paper",
+                  boxShadow: 2,
+                  "&:hover": {
+                    bgcolor: "primary.light",
+                    color: "white",
+                  },
+                }}
+                title={isFullscreen ? "Wyjdź z pełnego ekranu" : "Pełny ekran"}
+              >
+                {isFullscreen ? <FullscreenExit /> : <Fullscreen />}
+              </IconButton>
+            </Box>
+          </Panel>
+        </ReactFlow>
+      )}
+
+      {/* Floating action buttons - always visible */}
+      {categories.length === 0 && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: 16,
+            right: 16,
+            display: "flex",
+            gap: 1,
+            flexDirection: "column",
+            zIndex: 10,
+          }}
+        >
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<AddIcon />}
+            onClick={onAddRootCategory}
+            sx={{
+              bgcolor: "success.main",
+              boxShadow: 2,
+              "&:hover": {
+                bgcolor: "success.dark",
+              },
+            }}
+            title="Dodaj kategorię główną"
+          >
+            Dodaj główną
+          </Button>
+          <Button
+            variant="outlined"
+            size="small"
+            startIcon={<RefreshIcon />}
+            onClick={onRefresh}
+            sx={{
+              boxShadow: 1,
+              bgcolor: "background.paper",
+            }}
+            title="Odśwież kategorie"
+          >
+            Odśwież
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };
