@@ -86,8 +86,8 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
     // Layout constants
     const NODE_WIDTH = 250;
     const NODE_HEIGHT = 120;
-    const HORIZONTAL_SPACING = 100;
-    const VERTICAL_SPACING = 150;
+    const HORIZONTAL_SPACING = 500; // Significantly increased
+    const VERTICAL_SPACING = 300; // Significantly increased
 
     // Recursive layout function
     const layoutNode = (
@@ -131,33 +131,35 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
       }
 
       // Layout children
-      let childX = position.x;
       if (node.children.length > 0) {
         // Calculate total width needed for children
         const totalChildrenWidth =
           node.children.length * NODE_WIDTH + (node.children.length - 1) * HORIZONTAL_SPACING;
 
         // Start from left to center children under parent
-        childX = position.x - totalChildrenWidth / 2 + NODE_WIDTH / 2;
+        let childX = position.x - totalChildrenWidth / 2 + NODE_WIDTH / 2;
 
-        node.children.forEach((child, index) => {
+        node.children.forEach((child) => {
           const childPosition = {
-            x: childX + index * (NODE_WIDTH + HORIZONTAL_SPACING),
+            x: childX,
             y: position.y + NODE_HEIGHT + VERTICAL_SPACING,
           };
 
           layoutNode(child, level + 1, childPosition, nodeId);
+
+          // Move to next child position
+          childX += NODE_WIDTH + HORIZONTAL_SPACING;
         });
       }
 
-      return childX;
+      return position.x;
     };
 
     // Layout root nodes
     let rootX = 100;
     tree.forEach((root) => {
       layoutNode(root, 0, { x: rootX, y: 50 });
-      rootX += NODE_WIDTH + HORIZONTAL_SPACING + 200; // Extra spacing between root trees
+      rootX += NODE_WIDTH + HORIZONTAL_SPACING + 600; // Extra spacing between root trees
     });
 
     console.log('CategoryTree: Generated', nodes.length, 'nodes and', edges.length, 'edges');
