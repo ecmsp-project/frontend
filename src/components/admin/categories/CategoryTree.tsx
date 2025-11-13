@@ -10,7 +10,7 @@ import {
   useReactFlow,
   ReactFlowProvider,
 } from "@xyflow/react";
-import type { Node, Edge, Viewport } from "@xyflow/react";
+import type { Node, Edge } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { Box, Typography, IconButton, Button } from "@mui/material";
 import { Fullscreen, FullscreenExit, AccountTree } from "@mui/icons-material";
@@ -95,7 +95,6 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
   const reactFlowInstance = useReactFlow();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const savedViewportRef = useRef<Viewport | null>(null);
   // Build tree structure from flat list
   const buildTree = useCallback((flatCategories: CategoryFromAPI[]): CategoryTreeNode[] => {
     const categoryMap = new Map<string, CategoryTreeNode>();
@@ -220,32 +219,44 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
 
   const [nodes, setNodes, onNodesChange] = useNodesState(flowNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(flowEdges);
-
-  // Save viewport before update
-  const saveViewport = useCallback(() => {
-    const viewport = reactFlowInstance.getViewport();
-    savedViewportRef.current = viewport;
-  }, [reactFlowInstance]);
+  const [isInitialized, setIsInitialized] = React.useState(false);
 
   // Update nodes and edges when categories change
   React.useEffect(() => {
-    // Save current viewport before updating
-    if (nodes.length > 0) {
-      saveViewport();
-    }
-
     setNodes(flowNodes);
     setEdges(flowEdges);
 
-    // Restore viewport after update
-    if (savedViewportRef.current) {
-      setTimeout(() => {
-        if (savedViewportRef.current) {
-          reactFlowInstance.setViewport(savedViewportRef.current);
-        }
-      }, 50);
+    // Mark as initialized after first render
+    if (!isInitialized && flowNodes.length > 0) {
+      setIsInitialized(true);
     }
-  }, [flowNodes, flowEdges, setNodes, setEdges, reactFlowInstance, nodes.length, saveViewport]);
+  }, [flowNodes, flowEdges, setNodes, setEdges, isInitialized]);
+
+  // Focus on newly added category
+  React.useEffect(() => {
+    if (newlyAddedCategoryId && nodes.length > 0) {
+      // Find the newly added node
+      const newNode = nodes.find(node => node.id === newlyAddedCategoryId);
+
+      if (newNode) {
+        // Wait a bit for the node to be rendered
+        setTimeout(() => {
+          // Get current zoom to maintain it
+          const currentZoom = reactFlowInstance.getZoom();
+
+          // Center the camera on the new node with smooth animation
+          reactFlowInstance.setCenter(
+            newNode.position.x + 125, // Center of node (nodeWidth / 2)
+            newNode.position.y + 60,  // Center of node (nodeHeight / 2)
+            {
+              zoom: currentZoom, // Keep current zoom level
+              duration: 800 // Smooth animation
+            }
+          );
+        }, 100);
+      }
+    }
+  }, [newlyAddedCategoryId, nodes, reactFlowInstance]);
 
   // Fullscreen toggle
   const toggleFullscreen = useCallback(() => {
@@ -341,11 +352,10 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
-        fitView={nodes.length === 0}
-        fitViewOptions={{ padding: 0.2 }}
+        fitView={!isInitialized && nodes.length > 0}
+        fitViewOptions={{ padding: 0.2, duration: 200 }}
         minZoom={0.1}
         maxZoom={1.5}
-        defaultViewport={savedViewportRef.current || { x: 0, y: 0, zoom: 0.8 }}
       >
         <Background />
         <Controls />
