@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useState, useRef } from "react";
 import {
   ReactFlow,
   Background,
@@ -7,10 +7,14 @@ import {
   useNodesState,
   useEdgesState,
   Panel,
+  useReactFlow,
+  ReactFlowProvider,
 } from "@xyflow/react";
-import type { Node, Edge } from "@xyflow/react";
+import type { Node, Edge, Viewport } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, IconButton, Button } from "@mui/material";
+import { Fullscreen, FullscreenExit, AccountTree } from "@mui/icons-material";
+import dagre from "dagre";
 import type { CategoryFromAPI } from "../../../types/cms";
 import type { CategoryTreeNode } from "../../../types/category";
 import CategoryNode from "./CategoryNode";
@@ -21,6 +25,7 @@ interface CategoryTreeProps {
   onAddLeaf: (categoryId: string, categoryName: string) => void;
   onAddBetween: (parentId: string, childId: string, parentName: string, childName: string) => void;
   onDelete: (category: CategoryFromAPI) => void;
+  newlyAddedCategoryId?: string | null;
 }
 
 // Custom node types for React Flow
@@ -33,12 +38,64 @@ const edgeTypes = {
   categoryEdge: CategoryEdge,
 };
 
-const CategoryTree: React.FC<CategoryTreeProps> = ({
+// Dagre layout configuration
+const getLayoutedElements = (nodes: Node[], edges: Edge[], direction = 'TB') => {
+  const dagreGraph = new dagre.graphlib.Graph();
+  dagreGraph.setDefaultEdgeLabel(() => ({}));
+
+  // Configure the graph
+  const nodeWidth = 250;
+  const nodeHeight = 120;
+
+  dagreGraph.setGraph({
+    rankdir: direction,
+    nodesep: 150, // Horizontal spacing between nodes at the same level
+    edgesep: 100, // Spacing between edges
+    ranksep: 250, // Vertical spacing between levels
+    marginx: 50,
+    marginy: 50,
+  });
+
+  // Add nodes to dagre graph
+  nodes.forEach((node) => {
+    dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
+  });
+
+  // Add edges to dagre graph
+  edges.forEach((edge) => {
+    dagreGraph.setEdge(edge.source, edge.target);
+  });
+
+  // Calculate layout
+  dagre.layout(dagreGraph);
+
+  // Apply the calculated positions to nodes
+  const layoutedNodes = nodes.map((node) => {
+    const nodeWithPosition = dagreGraph.node(node.id);
+    return {
+      ...node,
+      position: {
+        x: nodeWithPosition.x - nodeWidth / 2,
+        y: nodeWithPosition.y - nodeHeight / 2,
+      },
+    };
+  });
+
+  return { nodes: layoutedNodes, edges };
+};
+
+// Internal component that uses useReactFlow
+const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
   categories,
   onAddLeaf,
   onAddBetween,
   onDelete,
+  newlyAddedCategoryId,
 }) => {
+  const reactFlowInstance = useReactFlow();
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const savedViewportRef = useRef<Viewport | null>(null);
   // Build tree structure from flat list
   const buildTree = useCallback((flatCategories: CategoryFromAPI[]): CategoryTreeNode[] => {
     const categoryMap = new Map<string, CategoryTreeNode>();
@@ -73,15 +130,11 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
     const nodes: Node[] = [];
     const edges: Edge[] = [];
 
-    console.log('CategoryTree: Building tree for categories:', categories.length);
-
     if (categories.length === 0) {
-      console.log('CategoryTree: No categories to display');
       return { nodes, edges };
     }
 
     const tree = buildTree(categories);
-    console.log('CategoryTree: Built tree structure:', tree.length, 'roots');
 
     // Layout constants
     const NODE_WIDTH = 250;
@@ -162,35 +215,137 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
       rootX += NODE_WIDTH + HORIZONTAL_SPACING + 600; // Extra spacing between root trees
     });
 
-    console.log('CategoryTree: Generated', nodes.length, 'nodes and', edges.length, 'edges');
-    console.log('CategoryTree: Nodes:', nodes);
-    console.log('CategoryTree: Edges:', edges);
-
     return { nodes, edges };
   }, [categories, buildTree, onAddLeaf, onAddBetween, onDelete]);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(flowNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(flowEdges);
 
+  // Save viewport before update
+  const saveViewport = useCallback(() => {
+    const viewport = reactFlowInstance.getViewport();
+    savedViewportRef.current = viewport;
+  }, [reactFlowInstance]);
+
   // Update nodes and edges when categories change
   React.useEffect(() => {
+    // Save current viewport before updating
+    if (nodes.length > 0) {
+      saveViewport();
+    }
+
     setNodes(flowNodes);
     setEdges(flowEdges);
-  }, [flowNodes, flowEdges, setNodes, setEdges]);
+
+    // Restore viewport after update
+    if (savedViewportRef.current) {
+      setTimeout(() => {
+        if (savedViewportRef.current) {
+          reactFlowInstance.setViewport(savedViewportRef.current);
+        }
+      }, 50);
+    }
+  }, [flowNodes, flowEdges, setNodes, setEdges, reactFlowInstance, nodes.length, saveViewport]);
+
+  // Fullscreen toggle
+  const toggleFullscreen = useCallback(() => {
+    if (!containerRef.current) return;
+
+    if (!document.fullscreenElement) {
+      containerRef.current.requestFullscreen().then(() => {
+        setIsFullscreen(true);
+      }).catch(err => {
+        console.error('Error entering fullscreen:', err);
+      });
+    } else {
+      document.exitFullscreen().then(() => {
+        setIsFullscreen(false);
+      });
+    }
+  }, []);
+
+  // Listen for fullscreen changes
+  React.useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
+  // Auto layout function
+  const onAutoLayout = useCallback(() => {
+    const layouted = getLayoutedElements(nodes, edges, 'TB');
+    setNodes(layouted.nodes);
+    setEdges(layouted.edges);
+
+    // Fit view after layout
+    window.requestAnimationFrame(() => {
+      reactFlowInstance.fitView({ padding: 0.2, duration: 400 });
+    });
+  }, [nodes, edges, setNodes, setEdges, reactFlowInstance]);
+
+  // Apply highlight style to newly added node
+  const nodesWithHighlight = React.useMemo(() => {
+    return nodes.map(node => {
+      if (node.id === newlyAddedCategoryId) {
+        return {
+          ...node,
+          style: {
+            ...node.style,
+            animation: 'pulse 2s ease-in-out 3',
+          },
+          className: 'newly-added-node',
+        };
+      }
+      return node;
+    });
+  }, [nodes, newlyAddedCategoryId]);
 
   return (
-    <Box sx={{ width: "100%", height: 600 }}>
+    <Box
+      ref={containerRef}
+      sx={{
+        width: "100%",
+        height: isFullscreen ? "100vh" : 600,
+        position: isFullscreen ? "fixed" : "relative",
+        top: isFullscreen ? 0 : "auto",
+        left: isFullscreen ? 0 : "auto",
+        zIndex: isFullscreen ? 9999 : "auto",
+        bgcolor: "background.paper",
+      }}
+    >
+      <style>
+        {`
+          @keyframes pulse {
+            0%, 100% {
+              box-shadow: 0 0 0 0 rgba(25, 118, 210, 0.7);
+            }
+            50% {
+              box-shadow: 0 0 0 20px rgba(25, 118, 210, 0);
+            }
+          }
+
+          .newly-added-node {
+            animation: pulse 2s ease-in-out 3;
+          }
+        `}
+      </style>
       <ReactFlow
-        nodes={nodes}
+        nodes={nodesWithHighlight}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
-        fitView
+        fitView={nodes.length === 0}
+        fitViewOptions={{ padding: 0.2 }}
         minZoom={0.1}
         maxZoom={1.5}
-        defaultViewport={{ x: 0, y: 0, zoom: 0.8 }}
+        defaultViewport={savedViewportRef.current || { x: 0, y: 0, zoom: 0.8 }}
       >
         <Background />
         <Controls />
@@ -217,8 +372,51 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
             </Typography>
           </Box>
         </Panel>
+        <Panel position="top-right">
+          <Box sx={{ display: "flex", gap: 1, flexDirection: "column" }}>
+            <Button
+              variant="contained"
+              size="small"
+              startIcon={<AccountTree />}
+              onClick={onAutoLayout}
+              sx={{
+                bgcolor: "primary.main",
+                boxShadow: 2,
+                "&:hover": {
+                  bgcolor: "primary.dark",
+                },
+              }}
+              title="Automatycznie rozłóż elementy aby się nie nakładały"
+            >
+              Auto Layout
+            </Button>
+            <IconButton
+              onClick={toggleFullscreen}
+              sx={{
+                bgcolor: "background.paper",
+                boxShadow: 2,
+                "&:hover": {
+                  bgcolor: "primary.light",
+                  color: "white",
+                },
+              }}
+              title={isFullscreen ? "Wyjdź z pełnego ekranu" : "Pełny ekran"}
+            >
+              {isFullscreen ? <FullscreenExit /> : <Fullscreen />}
+            </IconButton>
+          </Box>
+        </Panel>
       </ReactFlow>
     </Box>
+  );
+};
+
+// Wrapper component with ReactFlowProvider
+const CategoryTree: React.FC<CategoryTreeProps> = (props) => {
+  return (
+    <ReactFlowProvider>
+      <CategoryTreeInner {...props} />
+    </ReactFlowProvider>
   );
 };
 

@@ -35,21 +35,11 @@ const CategoryEdge: React.FC<EdgeProps> = ({
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('CategoryEdge: Button clicked!', id);
-    console.log('CategoryEdge: edgeData:', edgeData);
-    console.log('CategoryEdge: hasCallback:', !!edgeData?.onAddBetween);
 
     if (edgeData?.onAddBetween) {
-      console.log('CategoryEdge: Calling onAddBetween...');
       edgeData.onAddBetween();
-    } else {
-      console.error('CategoryEdge: No onAddBetween callback found!');
     }
   };
-
-  React.useEffect(() => {
-    console.log('CategoryEdge mounted:', { id, hasData: !!edgeData, hasCallback: !!edgeData?.onAddBetween });
-  }, [id, edgeData]);
 
   return (
     <>
@@ -60,14 +50,8 @@ const CategoryEdge: React.FC<EdgeProps> = ({
         stroke="transparent"
         strokeWidth={30}
         style={{ cursor: "pointer" }}
-        onMouseEnter={() => {
-          console.log('CategoryEdge: Mouse entered edge', id);
-          setIsHovered(true);
-        }}
-        onMouseLeave={() => {
-          console.log('CategoryEdge: Mouse left edge', id);
-          setIsHovered(false);
-        }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       />
 
       {/* Visible edge */}
@@ -91,22 +75,13 @@ const CategoryEdge: React.FC<EdgeProps> = ({
               pointerEvents: "all",
               zIndex: 10000,
             }}
-            onMouseEnter={() => {
-              console.log('CategoryEdge: Mouse entered button area', id);
-              setIsHovered(true);
-            }}
-            onMouseLeave={() => {
-              console.log('CategoryEdge: Mouse left button area', id);
-            }}
+            onMouseEnter={() => setIsHovered(true)}
           >
             <IconButton
               size="small"
               color="primary"
               onClick={handleClick}
-              onMouseDown={(e) => {
-                console.log('CategoryEdge: Mouse down on button', id);
-                e.stopPropagation();
-              }}
+              onMouseDown={(e) => e.stopPropagation()}
               title="Dodaj kategorię między węzłami"
               sx={{
                 bgcolor: "background.paper",

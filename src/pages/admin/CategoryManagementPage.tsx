@@ -16,6 +16,7 @@ const CategoryManagementPage: React.FC = () => {
   const [categories, setCategories] = useState<CategoryFromAPI[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [newlyAddedCategoryId, setNewlyAddedCategoryId] = useState<string | null>(null);
   const [formDialog, setFormDialog] = useState<CategoryFormDialogState>({
     open: false,
     mode: "LEAF",
@@ -28,11 +29,7 @@ const CategoryManagementPage: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      console.log("CategoryManagement: Fetching categories...");
       const response = await getAllCategories();
-      console.log("CategoryManagement: Received response:", response);
-      console.log("CategoryManagement: Categories count:", response.categories.length);
-      console.log("CategoryManagement: Categories data:", response.categories);
       setCategories(response.categories);
     } catch (err) {
       console.error("Error fetching categories:", err);
@@ -111,7 +108,16 @@ const CategoryManagementPage: React.FC = () => {
         requestData.childCategoryId = formDialog.childCategoryId;
       }
 
-      await createCategory(requestData);
+      const result = await createCategory(requestData);
+
+      // Set newly added category ID for highlighting
+      setNewlyAddedCategoryId(result.id);
+
+      // Clear highlight after 6 seconds (3 animations * 2 seconds)
+      setTimeout(() => {
+        setNewlyAddedCategoryId(null);
+      }, 6000);
+
       await fetchCategories();
       handleCloseFormDialog();
     } catch (err) {
@@ -180,6 +186,7 @@ const CategoryManagementPage: React.FC = () => {
               onAddLeaf={handleOpenAddLeafDialog}
               onAddBetween={handleOpenAddBetweenDialog}
               onDelete={handleOpenDeleteDialog}
+              newlyAddedCategoryId={newlyAddedCategoryId}
             />
           )}
         </Paper>
