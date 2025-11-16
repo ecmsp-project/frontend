@@ -2,6 +2,7 @@ import { CMSProvider } from "./contexts/CMSProvider.tsx";
 import CartProvider from "./contexts/CartProvider.tsx";
 import IndividualUserProvider from "./contexts/IndividualUserProvider.tsx";
 import { PermissionProvider } from "./contexts/PermissionProvider.tsx";
+import ProductProvider from "./contexts/ProductProvider.tsx";
 import { RoleProvider } from "./contexts/RoleProvider.tsx";
 import UserProvider from "./contexts/UserProvider.tsx";
 import CartPage from "./pages/CartPage.tsx";
@@ -43,7 +44,8 @@ export default function App() {
             <RoleProvider>
               <PermissionProvider>
                 <CartProvider>
-                  <CMSProvider>
+                  <ProductProvider>
+                    <CMSProvider>
                     <Box
                       sx={{
                         display: "flex",
@@ -84,7 +86,8 @@ export default function App() {
                       </Box>
                     </Box>
                   </CMSProvider>
-                </CartProvider>
+                </ProductProvider>
+              </CartProvider>
               </PermissionProvider>
             </RoleProvider>
           </UserProvider>
