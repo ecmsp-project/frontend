@@ -74,6 +74,17 @@ export interface FaqPageContent {
   faqItems: FaqItem[];
 }
 
+export interface HomePageContent {
+  hero: HeroSection;
+  features: FeatureTile[];
+  categories: CategoryTile[];
+  categoriesTitle: string;
+  categoriesSubtitle: string;
+  footer: FooterContent;
+  headerShopName: string;
+  selectedCategoryIds?: string[]; // IDs of categories to display from API
+}
+
 export interface GlobalSettings {
   hero: HeroSection;
   features: FeatureTile[];

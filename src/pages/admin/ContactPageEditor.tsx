@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { saveGlobalSettings } from "../../api/cms-service";
+import { saveContactSettings, fetchContactSettings } from "../../api/cms-service";
 import CMSToolbar from "../../components/cms/CMSToolbar";
 import EditableText from "../../components/cms/EditableText";
 import ContactForm from "../../components/forms/ContactForm";
@@ -26,47 +26,60 @@ const ContactPageEditor: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Inicjalizacja - pobierz dane z API
+  useEffect(() => {
+    const initializeData = async () => {
+      if (!isInitialized && !settings?.contactPage) {
+        try {
+          const data = await fetchContactSettings();
+          setSettings({
+            ...settings,
+            hero: {
+              title: "Witaj w E-COMMERCE",
+              subtitle: "Odkryj najlepsze produkty w najlepszych cenach",
+              primaryButtonText: "Rozpocznij Zakupy",
+              secondaryButtonText: "Dowiedz Się Więcej",
+            },
+            features: [],
+            categories: [],
+            categoriesTitle: "Popularne Kategorie",
+            categoriesSubtitle: "Odkryj nasze najlepsze kategorie produktów",
+            footer: {
+              shopName: "E-COMMERCE",
+              shopDescription: "Opis sklepu",
+              customerServiceHours: [],
+              customerServicePhone: "",
+              socialMedia: {
+                facebook: "",
+                twitter: "",
+                instagram: "",
+                linkedin: "",
+              },
+              copyrightText: "",
+            },
+            headerShopName: "E-COMMERCE",
+            contactPage: data,
+          });
+        } catch (error) {
+          console.error("Failed to load contact data from CMS, using defaults:", error);
+          setSettings({
+            ...settings,
+            contactPage: defaultContactSettings,
+          });
+        }
+        setIsInitialized(true);
+      }
+    };
+
+    initializeData();
+  }, [isInitialized, settings, setSettings]);
 
   useEffect(() => {
     setEditMode(true);
-    if (!settings) {
-      // Jeśli nie ma ustawień, zainicjuj z domyślnymi wartościami
-      setSettings({
-        hero: {
-          title: "Witaj w E-COMMERCE",
-          subtitle: "Odkryj najlepsze produkty w najlepszych cenach",
-          primaryButtonText: "Rozpocznij Zakupy",
-          secondaryButtonText: "Dowiedz Się Więcej",
-        },
-        features: [],
-        categories: [],
-        categoriesTitle: "Popularne Kategorie",
-        categoriesSubtitle: "Odkryj nasze najlepsze kategorie produktów",
-        footer: {
-          shopName: "E-COMMERCE",
-          shopDescription: "Opis sklepu",
-          customerServiceHours: [],
-          customerServicePhone: "",
-          socialMedia: {
-            facebook: "",
-            twitter: "",
-            instagram: "",
-            linkedin: "",
-          },
-          copyrightText: "",
-        },
-        headerShopName: "E-COMMERCE",
-        contactPage: defaultContactSettings,
-      });
-    } else if (!settings.contactPage) {
-      // Jeśli są ustawienia ale brak contactPage
-      setSettings({
-        ...settings,
-        contactPage: defaultContactSettings,
-      });
-    }
     return () => setEditMode(false);
-  }, [setEditMode, settings, setSettings]);
+  }, [setEditMode]);
 
   const handleFormSubmit = (values: ContactFormValues) => {
     console.log("Form submitted:", values);
@@ -74,10 +87,22 @@ const ContactPageEditor: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (!settings) return;
+    if (!settings || !settings.contactPage) return;
     setIsSaving(true);
     try {
-      await saveGlobalSettings(settings);
+      // Konwertuj na ContactPageContent
+      const contactSettingsData = {
+        pageTitle: settings.contactPage.pageTitle,
+        pageSubtitle: settings.contactPage.pageSubtitle,
+        sectionTitle: settings.contactPage.sectionTitle,
+        phone: settings.contactPage.phone,
+        phoneHours: settings.contactPage.phoneHours,
+        email: settings.contactPage.email,
+        emailDescription: settings.contactPage.emailDescription,
+      };
+
+      // Zapisz używając nowego endpointu
+      await saveContactSettings(contactSettingsData);
       setDirty(false);
       setShowSuccess(true);
     } catch (error) {

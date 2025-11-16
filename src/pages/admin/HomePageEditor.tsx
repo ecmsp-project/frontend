@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { saveGlobalSettings } from "../../api/cms-service";
+import { saveHomeSettings, fetchHomeSettings } from "../../api/cms-service";
 import { getRootCategories } from "../../api/product-service";
 import CMSToolbar from "../../components/cms/CMSToolbar";
 import EditableLink from "../../components/cms/EditableLink";
@@ -166,12 +166,39 @@ const HomePageEditor: React.FC = () => {
   const [isLoadingCategories, setIsLoadingCategories] = useState(false);
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Inicjalizacja - pobierz dane z API lub użyj domyślnych
+  useEffect(() => {
+    const initializeData = async () => {
+      if (!isInitialized && !settings) {
+        try {
+          const data = await fetchHomeSettings();
+          // Konwertuj HomePageContent na GlobalSettings
+          setSettings({
+            ...defaultSettings,
+            hero: data.hero,
+            features: data.features,
+            categories: data.categories,
+            categoriesTitle: data.categoriesTitle,
+            categoriesSubtitle: data.categoriesSubtitle,
+            footer: data.footer,
+            headerShopName: data.headerShopName,
+            selectedCategoryIds: data.selectedCategoryIds || [],
+          });
+        } catch (error) {
+          console.error("Failed to load home data from CMS, using defaults:", error);
+          setSettings(defaultSettings);
+        }
+        setIsInitialized(true);
+      }
+    };
+
+    initializeData();
+  }, [isInitialized, settings, setSettings]);
 
   useEffect(() => {
     setEditMode(true);
-    if (!settings) {
-      setSettings(defaultSettings);
-    }
 
     // Load selected category IDs from settings
     if (settings?.selectedCategoryIds) {
@@ -193,18 +220,32 @@ const HomePageEditor: React.FC = () => {
 
     fetchCategories();
     return () => setEditMode(false);
-  }, [setEditMode, settings, setSettings]);
+  }, [setEditMode, settings]);
 
   const handleSave = async () => {
     if (!settings) return;
     setIsSaving(true);
     try {
-      // Save settings with selected category IDs
+      // Konwertuj GlobalSettings na HomePageContent
+      const homeSettings = {
+        hero: settings.hero,
+        features: settings.features,
+        categories: settings.categories,
+        categoriesTitle: settings.categoriesTitle,
+        categoriesSubtitle: settings.categoriesSubtitle,
+        footer: settings.footer,
+        headerShopName: settings.headerShopName,
+        selectedCategoryIds: selectedCategoryIds,
+      };
+
+      // Zapisz używając nowego endpointu
+      await saveHomeSettings(homeSettings);
+
+      // Zaktualizuj lokalny stan
       const updatedSettings = {
         ...settings,
         selectedCategoryIds: selectedCategoryIds,
       };
-      await saveGlobalSettings(updatedSettings);
       setSettings(updatedSettings);
       setDirty(false);
       setShowSuccess(true);

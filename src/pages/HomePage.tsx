@@ -1,5 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { fetchHomeSettings } from "../api/cms-service";
+import { getRootCategories } from "../api/product-service";
+import type { HomePageContent, CategoryFromAPI } from "../types/cms";
 import MainLayout from "../components/layout/MainLayout.tsx";
+import CategoryIcon from "@mui/icons-material/Category";
 import CheckroomIcon from "@mui/icons-material/Checkroom";
 import HomeIcon from "@mui/icons-material/Home";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
@@ -19,7 +23,21 @@ import {
   Button,
   Chip,
   alpha,
+  CircularProgress,
 } from "@mui/material";
+
+// Mapowanie nazw ikon z API na komponenty Material-UI
+const iconMap: { [key: string]: React.ComponentType } = {
+  TrendingUpIcon,
+  LocalShippingIcon,
+  VerifiedUserIcon,
+  PhoneAndroidIcon,
+  CheckroomIcon,
+  SpaIcon,
+  HomeIcon,
+  SportsBasketballIcon,
+  MenuBookIcon,
+};
 
 const categories = [
   {
@@ -85,6 +103,72 @@ const features = [
 ];
 
 const HomePage: React.FC = () => {
+  const [homeContent, setHomeContent] = useState<HomePageContent | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [categoriesFromAPI, setCategoriesFromAPI] = useState<CategoryFromAPI[]>([]);
+
+  useEffect(() => {
+    const loadContent = async () => {
+      try {
+        setIsLoading(true);
+
+        // Pobierz dane CMS i kategorie z product API równolegle
+        const [cmsData, categoriesResponse] = await Promise.all([
+          fetchHomeSettings(),
+          getRootCategories(),
+        ]);
+
+        setHomeContent(cmsData);
+        setCategoriesFromAPI(categoriesResponse.categories);
+      } catch (error) {
+        console.error("Failed to load home content:", error);
+        // W przypadku błędu używamy fallback do domyślnych wartości
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadContent();
+  }, []);
+
+  // Filtruj kategorie według selectedCategoryIds z CMS
+  const getSelectedCategories = () => {
+    if (!homeContent?.selectedCategoryIds || homeContent.selectedCategoryIds.length === 0) {
+      return []; // Nie wyświetlaj kategorii jeśli nie wybrano żadnych
+    }
+    return categoriesFromAPI.filter((cat) => homeContent.selectedCategoryIds?.includes(cat.id));
+  };
+
+  const getCategoryColor = (index: number) => {
+    const colors = [
+      "#1976d2",
+      "#9c27b0",
+      "#e91e63",
+      "#4caf50",
+      "#ff9800",
+      "#795548",
+      "#00bcd4",
+      "#f44336",
+    ];
+    return colors[index % colors.length];
+  };
+
+  // Pokazuj loader podczas ładowania
+  if (isLoading) {
+    return (
+      <MainLayout>
+        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
+          <CircularProgress size={60} />
+        </Box>
+      </MainLayout>
+    );
+  }
+
+  // Przygotuj dane do wyświetlenia (z API lub fallback)
+  const selectedCategories = getSelectedCategories();
+  const displayCategories = selectedCategories.length > 0 ? selectedCategories : categories;
+  const displayFeatures = homeContent?.features || features;
+
   return (
     <MainLayout>
       {/* Hero Section */}
@@ -121,7 +205,7 @@ const HomePage: React.FC = () => {
               textShadow: "0 2px 10px rgba(0,0,0,0.2)",
             }}
           >
-            Witaj w E-COMMERCE
+            {homeContent?.hero.title || "Witaj w E-COMMERCE"}
           </Typography>
           <Typography
             variant="h5"
@@ -132,7 +216,7 @@ const HomePage: React.FC = () => {
               opacity: 0.95,
             }}
           >
-            Odkryj najlepsze produkty w najlepszych cenach
+            {homeContent?.hero.subtitle || "Odkryj najlepsze produkty w najlepszych cenach"}
           </Typography>
           <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
             <Button
@@ -152,7 +236,7 @@ const HomePage: React.FC = () => {
                 transition: "all 0.3s",
               }}
             >
-              Rozpocznij Zakupy
+              {homeContent?.hero.primaryButtonText || "Rozpocznij Zakupy"}
             </Button>
             <Button
               variant="outlined"
@@ -171,7 +255,7 @@ const HomePage: React.FC = () => {
                 transition: "all 0.3s",
               }}
             >
-              Dowiedz Się Więcej
+              {homeContent?.hero.secondaryButtonText || "Dowiedz Się Więcej"}
             </Button>
           </Box>
         </Container>
@@ -180,67 +264,76 @@ const HomePage: React.FC = () => {
       <Container maxWidth="lg" sx={{ mb: 8 }}>
         {/* Features */}
         <Grid container spacing={3} sx={{ mb: 8 }}>
-          {features.map((feature, index) => (
-            <Grid size={{ xs: 12, md: 4 }} key={index}>
-              <Card
-                elevation={0}
-                sx={{
-                  textAlign: "center",
-                  p: 3,
-                  height: "100%",
-                  bgcolor: (theme) => alpha(theme.palette.primary.main, 0.05),
-                  transition: "all 0.3s",
-                  "&:hover": {
-                    bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
-                    transform: "translateY(-4px)",
-                  },
-                }}
-              >
-                <Box
+          {displayFeatures.map((feature, index) => {
+            const IconComponent = iconMap[feature.icon] || TrendingUpIcon;
+            return (
+              <Grid size={{ xs: 12, md: 4 }} key={feature.id || index}>
+                <Card
+                  elevation={0}
                   sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    mb: 2,
+                    textAlign: "center",
+                    p: 3,
+                    height: "100%",
+                    bgcolor: (theme) => alpha(theme.palette.primary.main, 0.05),
+                    transition: "all 0.3s",
+                    "&:hover": {
+                      bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
+                      transform: "translateY(-4px)",
+                    },
                   }}
                 >
                   <Box
                     sx={{
-                      bgcolor: "primary.main",
-                      color: "white",
-                      borderRadius: "50%",
-                      p: 2,
                       display: "flex",
-                      alignItems: "center",
                       justifyContent: "center",
+                      mb: 2,
                     }}
                   >
-                    <feature.icon sx={{ fontSize: 40 }} />
+                    <Box
+                      sx={{
+                        bgcolor: "primary.main",
+                        color: "white",
+                        borderRadius: "50%",
+                        p: 2,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <IconComponent sx={{ fontSize: 40 }} />
+                    </Box>
                   </Box>
-                </Box>
-                <Typography variant="h6" gutterBottom fontWeight={600}>
-                  {feature.title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {feature.description}
-                </Typography>
-              </Card>
-            </Grid>
-          ))}
+                  <Typography variant="h6" gutterBottom fontWeight={600}>
+                    {feature.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {feature.description}
+                  </Typography>
+                </Card>
+              </Grid>
+            );
+          })}
         </Grid>
 
         {/* Categories Section */}
         <Box sx={{ mb: 4 }}>
           <Typography variant="h4" component="h2" gutterBottom fontWeight={700} sx={{ mb: 1 }}>
-            Popularne Kategorie
+            {homeContent?.categoriesTitle || "Popularne Kategorie"}
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-            Odkryj nasze najlepsze kategorie produktów
+            {homeContent?.categoriesSubtitle || "Odkryj nasze najlepsze kategorie produktów"}
           </Typography>
         </Box>
 
         <Grid container spacing={3}>
-          {categories.map((category) => {
-            const IconComponent = category.icon;
+          {displayCategories.map((category, index) => {
+            // Dla kategorii z product API używamy CategoryIcon, dla fallback używamy mapowania
+            const IconComponent = (category as any).icon
+              ? iconMap[(category as any).icon] || PhoneAndroidIcon
+              : CategoryIcon;
+            const categoryColor = getCategoryColor(index);
+            const categoryImage = (category as any).image || `https://via.placeholder.com/400x300/${categoryColor.slice(1)}/ffffff?text=${encodeURIComponent(category.name)}`;
+
             return (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={category.id}>
                 <Card
@@ -269,7 +362,7 @@ const HomePage: React.FC = () => {
                   <CardMedia
                     component="img"
                     height="280"
-                    image={category.image}
+                    image={categoryImage}
                     alt={category.name}
                     className="category-image"
                     sx={{
@@ -285,7 +378,7 @@ const HomePage: React.FC = () => {
                       left: 0,
                       right: 0,
                       bottom: 0,
-                      bgcolor: alpha(category.color, 0.85),
+                      bgcolor: alpha(categoryColor, 0.85),
                       opacity: 0,
                       transition: "opacity 0.4s",
                       display: "flex",
@@ -310,7 +403,7 @@ const HomePage: React.FC = () => {
                         variant="contained"
                         sx={{
                           bgcolor: "white",
-                          color: category.color,
+                          color: categoryColor,
                           mt: 2,
                           "&:hover": {
                             bgcolor: "rgba(255,255,255,0.9)",
@@ -319,6 +412,11 @@ const HomePage: React.FC = () => {
                       >
                         Przeglądaj
                       </Button>
+                      {(category as CategoryFromAPI).productCount !== undefined && (
+                        <Typography variant="body2" sx={{ mt: 1, opacity: 0.9 }}>
+                          {(category as CategoryFromAPI).productCount} produktów
+                        </Typography>
+                      )}
                     </Box>
                   </Box>
                   <Box
@@ -343,7 +441,7 @@ const HomePage: React.FC = () => {
                       position: "absolute",
                       top: 12,
                       right: 12,
-                      bgcolor: category.color,
+                      bgcolor: categoryColor,
                       color: "white",
                       fontWeight: 600,
                     }}
