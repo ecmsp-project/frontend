@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useEffect, useState } from "react";
-import {getAllCategories} from "../api/product-service";
+import { getAllCategories } from "../api/product-service";
 import type { CategoryFromAPI } from "../types/cms";
 import { ProductContext } from "./ProductContext";
 
@@ -37,4 +37,3 @@ export default function ProductProvider({ children }: { children: ReactNode }) {
 
   return <ProductContext.Provider value={contextValue}>{children}</ProductContext.Provider>;
 }
-
