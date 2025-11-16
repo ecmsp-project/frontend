@@ -265,9 +265,12 @@ const HomePage: React.FC = () => {
         {/* Features */}
         <Grid container spacing={3} sx={{ mb: 8 }}>
           {displayFeatures.map((feature, index) => {
-            const IconComponent = iconMap[feature.icon] || TrendingUpIcon;
+            // Handle both string icon names (from CMS) and icon components (from fallback)
+            const IconComponent = typeof feature.icon === 'string'
+              ? (iconMap[feature.icon] || TrendingUpIcon)
+              : (feature.icon || TrendingUpIcon);
             return (
-              <Grid size={{ xs: 12, md: 4 }} key={feature.id || index}>
+              <Grid size={{ xs: 12, md: 4 }} key={'id' in feature ? feature.id : `feature-${index}`}>
                 <Card
                   elevation={0}
                   sx={{

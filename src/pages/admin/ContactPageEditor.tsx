@@ -65,7 +65,30 @@ const ContactPageEditor: React.FC = () => {
         } catch (error) {
           console.error("Failed to load contact data from CMS, using defaults:", error);
           setSettings({
-            ...settings,
+            hero: {
+              title: "Witaj w E-COMMERCE",
+              subtitle: "Odkryj najlepsze produkty w najlepszych cenach",
+              primaryButtonText: "Rozpocznij Zakupy",
+              secondaryButtonText: "Dowiedz Się Więcej",
+            },
+            features: [],
+            categories: [],
+            categoriesTitle: "Popularne Kategorie",
+            categoriesSubtitle: "Odkryj nasze najlepsze kategorie produktów",
+            footer: {
+              shopName: "E-COMMERCE",
+              shopDescription: "Opis sklepu",
+              customerServiceHours: [],
+              customerServicePhone: "",
+              socialMedia: {
+                facebook: "",
+                twitter: "",
+                instagram: "",
+                linkedin: "",
+              },
+              copyrightText: "",
+            },
+            headerShopName: "E-COMMERCE",
             contactPage: defaultContactSettings,
           });
         }
