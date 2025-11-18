@@ -3,27 +3,26 @@ import { useIndividualUser } from "../../contexts/IndividualUserContext";
 import { PERMISSIONS } from "../../types/permissions";
 import type { Permission } from "../../types/permissions";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import AnalyticsIcon from "@mui/icons-material/Analytics";
+import AssessmentIcon from "@mui/icons-material/Assessment";
+import BarChartIcon from "@mui/icons-material/BarChart";
 import CategoryIcon from "@mui/icons-material/Category";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import InventoryIcon from "@mui/icons-material/Inventory";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PeopleIcon from "@mui/icons-material/People";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import WebIcon from "@mui/icons-material/Web";
-import AnalyticsIcon from "@mui/icons-material/Analytics";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import AssessmentIcon from "@mui/icons-material/Assessment";
-import InventoryIcon from "@mui/icons-material/Inventory";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import StoreIcon from "@mui/icons-material/Store";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
+import WebIcon from "@mui/icons-material/Web";
 import {
   AppBar,
   Toolbar,
   Typography,
   Drawer,
   List,
-  ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -49,7 +48,7 @@ const allMenuItems: MenuItem[] = [
   {
     text: "Pulpit",
     icon: <DashboardIcon />,
-    path: "/admin"
+    path: "/admin",
   },
   {
     text: "Użytkownicy",
