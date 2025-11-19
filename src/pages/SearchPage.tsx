@@ -290,7 +290,7 @@ const SearchPage: React.FC = () => {
   const [sortedProducts, setSortedProducts] = useState<ProductRepresentationDTO[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [categoryId, setCategoryId] = useState<string | null>(null);
-  const [priceRange, setPriceRange] = useState<number[]>([0, 5000]);
+  const [priceRange, setPriceRange] = useState<number[]>([0, 15_000]);
   const [priceMenuAnchor, setPriceMenuAnchor] = useState<null | HTMLElement>(null);
   const [categoryMenuAnchor, setCategoryMenuAnchor] = useState<null | HTMLElement>(null);
   const [sortMenuAnchor, setSortMenuAnchor] = useState<null | HTMLElement>(null);
@@ -354,14 +354,22 @@ const SearchPage: React.FC = () => {
     }
   }, []);
 
+  // Filtruj i sortuj produkty gdy zmieni się sortBy, products lub priceRange
   useEffect(() => {
     if (products.length > 0) {
-      const sorted = sortProducts(products, sortBy);
+      // Najpierw filtruj po zakresie cen
+      const filtered = products.filter((product) => {
+        const price = product.variantDetail.price;
+        return price >= priceRange[0] && price <= priceRange[1];
+      });
+
+      // Następnie sortuj
+      const sorted = sortProducts(filtered, sortBy);
       setSortedProducts(sorted);
     } else {
       setSortedProducts([]);
     }
-  }, [products, sortBy]);
+  }, [products, sortBy, priceRange]);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -560,7 +568,7 @@ const SearchPage: React.FC = () => {
               onChange={(_, newValue) => setPriceRange(newValue as number[])}
               valueLabelDisplay="auto"
               min={0}
-              max={5000}
+              max={15_000}
               step={50}
               valueLabelFormat={(value) => `${value} zł`}
               sx={{
