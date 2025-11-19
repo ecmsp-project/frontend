@@ -28,6 +28,7 @@ import UserManagementPage from "./pages/admin/UserManagementPage.tsx";
 import UserDashboardPage from "./pages/user/UserDashboardPage.tsx";
 import UserOrdersManagementPage from "./pages/user/UserOrdersManagementPage.tsx";
 import UserSettingsPage from "./pages/user/UserSettingsPage.tsx";
+import SalesStatisticsPage from "./pages/admin/analytics/SalesStatisticsPage.tsx";
 import theme from "./utils/theme.ts";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -81,6 +82,7 @@ export default function App() {
                             <Route path="/admin/users" element={<UserManagementPage />} />
                             <Route path="/admin/roles" element={<RoleManagementPage />} />
                             <Route path="/admin/orders" element={<OrderManagementPage />} />
+                            <Route path="/admin/analytics/sales" element={<SalesStatisticsPage />} />
                             <Route path="*" element={<div>404 Not Found</div>} />
                           </Routes>
                         </Box>
