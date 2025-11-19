@@ -1,4 +1,4 @@
-import React, { useState, useCallback, type KeyboardEvent } from "react";
+import React, { useState, useCallback, useEffect, type KeyboardEvent } from "react";
 import { useCartContext } from "../../contexts/CartContext";
 import { useIndividualUser } from "../../contexts/IndividualUserContext";
 import { useProductContext } from "../../contexts/ProductContext";
@@ -29,7 +29,7 @@ import {
   ListItemIcon,
   Badge,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface HeaderProps {
   minimalist?: boolean;
@@ -43,6 +43,7 @@ interface Category {
 
 const Header: React.FC<HeaderProps> = ({ minimalist }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { logout, permissions } = useIndividualUser();
   const { cartItems } = useCartContext();
   const { categories } = useProductContext();
@@ -53,6 +54,17 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
 
   // Oblicz całkowitą liczbę produktów w koszyku
   const cartItemsCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  // Synchronizuj searchTerm z parametrem query z URL
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const queryParam = searchParams.get("query");
+    if (queryParam !== null) {
+      setSearchTerm(queryParam);
+    } else if (location.pathname !== "/search") {
+      setSearchTerm("");
+    }
+  }, [location.search, location.pathname]);
 
   // Sprawdź token przy każdej zmianie w localStorage
   React.useEffect(() => {
