@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { saveGlobalSettings } from "../../api/cms-service";
+import { saveFaqSettings, fetchFaqSettings } from "../../api/cms-service";
 import CMSToolbar from "../../components/cms/CMSToolbar";
 import EditableText from "../../components/cms/EditableText";
 import Accordion from "../../components/common/Accordion";
@@ -57,60 +57,115 @@ const FaqPageEditor: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Inicjalizacja - pobierz dane z API
+  useEffect(() => {
+    const initializeData = async () => {
+      if (!isInitialized && !settings?.faqPage) {
+        try {
+          const data = await fetchFaqSettings();
+          setSettings({
+            ...settings,
+            hero: {
+              title: "Witaj w E-COMMERCE",
+              subtitle: "Odkryj najlepsze produkty w najlepszych cenach",
+              primaryButtonText: "Rozpocznij Zakupy",
+              secondaryButtonText: "Dowiedz Się Więcej",
+            },
+            features: [],
+            categories: [],
+            categoriesTitle: "Popularne Kategorie",
+            categoriesSubtitle: "Odkryj nasze najlepsze kategorie produktów",
+            footer: {
+              shopName: "E-COMMERCE",
+              shopDescription: "Opis sklepu",
+              customerServiceHours: [],
+              customerServicePhone: "",
+              socialMedia: {
+                facebook: "",
+                twitter: "",
+                instagram: "",
+                linkedin: "",
+              },
+              copyrightText: "",
+            },
+            headerShopName: "E-COMMERCE",
+            contactPage: {
+              pageTitle: "Kontakt",
+              pageSubtitle: "Potrzebujesz pomocy?",
+              sectionTitle: "Dane kontaktowe",
+              phone: "",
+              phoneHours: "",
+              email: "",
+              emailDescription: "",
+            },
+            faqPage: data,
+          });
+        } catch (error) {
+          console.error("Failed to load FAQ data from CMS, using defaults:", error);
+          setSettings({
+            hero: {
+              title: "Witaj w E-COMMERCE",
+              subtitle: "Odkryj najlepsze produkty w najlepszych cenach",
+              primaryButtonText: "Rozpocznij Zakupy",
+              secondaryButtonText: "Dowiedz Się Więcej",
+            },
+            features: [],
+            categories: [],
+            categoriesTitle: "Popularne Kategorie",
+            categoriesSubtitle: "Odkryj nasze najlepsze kategorie produktów",
+            footer: {
+              shopName: "E-COMMERCE",
+              shopDescription: "Opis sklepu",
+              customerServiceHours: [],
+              customerServicePhone: "",
+              socialMedia: {
+                facebook: "",
+                twitter: "",
+                instagram: "",
+                linkedin: "",
+              },
+              copyrightText: "",
+            },
+            headerShopName: "E-COMMERCE",
+            contactPage: {
+              pageTitle: "Kontakt",
+              pageSubtitle: "Potrzebujesz pomocy?",
+              sectionTitle: "Dane kontaktowe",
+              phone: "",
+              phoneHours: "",
+              email: "",
+              emailDescription: "",
+            },
+            faqPage: defaultFaqSettings,
+          });
+        }
+        setIsInitialized(true);
+      }
+    };
+
+    initializeData();
+  }, [isInitialized, settings, setSettings]);
 
   useEffect(() => {
     setEditMode(true);
-    if (!settings) {
-      setSettings({
-        hero: {
-          title: "Witaj w E-COMMERCE",
-          subtitle: "Odkryj najlepsze produkty w najlepszych cenach",
-          primaryButtonText: "Rozpocznij Zakupy",
-          secondaryButtonText: "Dowiedz Się Więcej",
-        },
-        features: [],
-        categories: [],
-        categoriesTitle: "Popularne Kategorie",
-        categoriesSubtitle: "Odkryj nasze najlepsze kategorie produktów",
-        footer: {
-          shopName: "E-COMMERCE",
-          shopDescription: "Opis sklepu",
-          customerServiceHours: [],
-          customerServicePhone: "",
-          socialMedia: {
-            facebook: "",
-            twitter: "",
-            instagram: "",
-            linkedin: "",
-          },
-          copyrightText: "",
-        },
-        headerShopName: "E-COMMERCE",
-        contactPage: {
-          pageTitle: "Kontakt",
-          pageSubtitle: "Potrzebujesz pomocy?",
-          sectionTitle: "Dane kontaktowe",
-          phone: "",
-          phoneHours: "",
-          email: "",
-          emailDescription: "",
-        },
-        faqPage: defaultFaqSettings,
-      });
-    } else if (!settings.faqPage) {
-      setSettings({
-        ...settings,
-        faqPage: defaultFaqSettings,
-      });
-    }
     return () => setEditMode(false);
-  }, [setEditMode, settings, setSettings]);
+  }, [setEditMode]);
 
   const handleSave = async () => {
-    if (!settings) return;
+    if (!settings || !settings.faqPage) return;
     setIsSaving(true);
     try {
-      await saveGlobalSettings(settings);
+      // Konwertuj na FaqPageContent
+      const faqSettings = {
+        pageTitle: settings.faqPage.pageTitle,
+        pageSubtitle: settings.faqPage.pageSubtitle,
+        faqItems: settings.faqPage.faqItems,
+      };
+
+      // Zapisz używając nowego endpointu
+      await saveFaqSettings(faqSettings);
       setDirty(false);
       setShowSuccess(true);
     } catch (error) {

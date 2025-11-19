@@ -1,15 +1,54 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { fetchContactSettings } from "../api/cms-service";
 import ContactForm from "../components/forms/ContactForm";
 import type { ContactFormValues } from "../components/forms/ContactForm";
 import MainLayout from "../components/layout/MainLayout";
+import type { ContactPageContent } from "../types/cms";
 import { Phone as PhoneIcon, Email as EmailIcon } from "@mui/icons-material";
-import { Container, Typography, Grid, Box, Link } from "@mui/material";
+import { Container, Typography, Grid, Box, Link, CircularProgress } from "@mui/material";
 
 const Contact: React.FC = () => {
+  const [contactContent, setContactContent] = useState<ContactPageContent | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadContactContent = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchContactSettings();
+        setContactContent(data);
+      } catch (error) {
+        console.error("Failed to load contact content from CMS:", error);
+        // Fallback do domyślnych wartości
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadContactContent();
+  }, []);
+
   const handleFormSubmit = (values: ContactFormValues) => {
     console.log("Form submitted:", values);
     alert("Formularz został wysłany pomyślnie!");
   };
+
+  if (isLoading) {
+    return (
+      <MainLayout>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "60vh",
+          }}
+        >
+          <CircularProgress size={60} />
+        </Box>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
@@ -25,7 +64,7 @@ const Contact: React.FC = () => {
               lineHeight: 1.2,
             }}
           >
-            Kontakt
+            {contactContent?.pageTitle || "Kontakt"}
           </Typography>
 
           <Typography
@@ -38,7 +77,7 @@ const Contact: React.FC = () => {
               lineHeight: 1.6,
             }}
           >
-            Potrzebujesz pomocy?{" "}
+            {contactContent?.pageSubtitle || "Potrzebujesz pomocy?"}{" "}
             <Link
               href="/faq"
               sx={{
@@ -70,7 +109,7 @@ const Contact: React.FC = () => {
                     color: "text.primary",
                   }}
                 >
-                  Dane kontaktowe
+                  {contactContent?.sectionTitle || "Dane kontaktowe"}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <PhoneIcon sx={{ fontSize: "1.5rem", color: "primary.main" }} />
@@ -82,10 +121,10 @@ const Contact: React.FC = () => {
                         fontWeight: 500,
                       }}
                     >
-                      22 299 00 89
+                      {contactContent?.phone || "22 299 00 89"}
                     </Typography>
                     <Typography sx={{ fontSize: "0.875rem", color: "text.secondary" }}>
-                      Poniedziałek - Piątek 9:00 - 19:00
+                      {contactContent?.phoneHours || "Poniedziałek - Piątek 9:00 - 19:00"}
                     </Typography>
                   </Box>
                 </Box>
@@ -95,15 +134,15 @@ const Contact: React.FC = () => {
                   <Box>
                     <Typography
                       sx={{
-                        foantSize: "1rem",
+                        fontSize: "1rem",
                         color: "text.primary",
                         fontWeight: 500,
                       }}
                     >
-                      zamowienia@sklep.pl
+                      {contactContent?.email || "zamowienia@sklep.pl"}
                     </Typography>
                     <Typography sx={{ fontSize: "0.875rem", color: "text.secondary" }}>
-                      Zamówienia
+                      {contactContent?.emailDescription || "Zamówienia"}
                     </Typography>
                   </Box>
                 </Box>

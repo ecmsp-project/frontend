@@ -1,32 +1,78 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { fetchFaqSettings } from "../api/cms-service";
 import Accordion from "../components/common/Accordion";
 import MainLayout from "../components/layout/MainLayout";
-import { Box, Container, Link, Typography } from "@mui/material";
+import type { FaqPageContent } from "../types/cms";
+import { Box, Container, Link, Typography, CircularProgress } from "@mui/material";
+
+// Domyślne dane FAQ (fallback)
+const defaultFaqData = [
+  {
+    id: "faq1",
+    question: "Jak mogę złożyć zamówienie?",
+    answer:
+      "Złożenie zamówienia jest bardzo proste! Wybierz interesujące Cię produkty, dodaj je do koszyka, przejdź do kasy i wypełnij formularz z danymi dostawy. Następnie wybierz metodę płatności i potwierdź zamówienie. Otrzymasz e-mail z potwierdzeniem zamówienia.",
+    expanded: true,
+  },
+  {
+    id: "faq2",
+    question: "Jakie metody płatności akceptujecie?",
+    answer:
+      "Akceptujemy płatności kartą płatniczą (Visa, Mastercard), przelewem bankowym, płatności online (BLIK, Przelewy24), a także płatność przy odbiorze (za pobraniem). Wszystkie płatności są bezpieczne i szyfrowane.",
+  },
+  {
+    id: "faq3",
+    question: "Ile kosztuje dostawa?",
+    answer:
+      "Dostawa jest darmowa przy zamówieniach powyżej 200 zł. Dla zamówień poniżej tej kwoty koszt dostawy wynosi 15 zł. Oferujemy również dostawę kurierem ekspresową za 25 zł oraz odbiór osobisty w naszym sklepie stacjonarnym za darmo.",
+  },
+  {
+    id: "faq4",
+    question: "Jak mogę skontaktować się z obsługą klienta?",
+    answer:
+      "Możesz skontaktować się z nami przez e-mail (sklep@naszasklep.pl), telefon (123-456-789) lub czat na stronie. Nasza obsługa klienta jest dostępna od poniedziałku do piątku w godzinach 9:00-17:00. Odpowiadamy na wiadomości w ciągu 24 godzin.",
+  },
+];
 
 const Faq: React.FC = () => {
-  const faqData = [
-    {
-      question: "Jak mogę złożyć zamówienie?",
-      answer:
-        "Złożenie zamówienia jest bardzo proste! Wybierz interesujące Cię produkty, dodaj je do koszyka, przejdź do kasy i wypełnij formularz z danymi dostawy. Następnie wybierz metodę płatności i potwierdź zamówienie. Otrzymasz e-mail z potwierdzeniem zamówienia.",
-      expanded: true,
-    },
-    {
-      question: "Jakie metody płatności akceptujecie?",
-      answer:
-        "Akceptujemy płatności kartą płatniczą (Visa, Mastercard), przelewem bankowym, płatności online (BLIK, Przelewy24), a także płatność przy odbiorze (za pobraniem). Wszystkie płatności są bezpieczne i szyfrowane.",
-    },
-    {
-      question: "Ile kosztuje dostawa?",
-      answer:
-        "Dostawa jest darmowa przy zamówieniach powyżej 200 zł. Dla zamówień poniżej tej kwoty koszt dostawy wynosi 15 zł. Oferujemy również dostawę kurierem ekspresową za 25 zł oraz odbiór osobisty w naszym sklepie stacjonarnym za darmo.",
-    },
-    {
-      question: "Jak mogę skontaktować się z obsługą klienta?",
-      answer:
-        "Możesz skontaktować się z nami przez e-mail (sklep@naszasklep.pl), telefon (123-456-789) lub czat na stronie. Nasza obsługa klienta jest dostępna od poniedziałku do piątku w godzinach 9:00-17:00. Odpowiadamy na wiadomości w ciągu 24 godzin.",
-    },
-  ];
+  const [faqContent, setFaqContent] = useState<FaqPageContent | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadFaqContent = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchFaqSettings();
+        setFaqContent(data);
+      } catch (error) {
+        console.error("Failed to load FAQ content from CMS:", error);
+        // Fallback do domyślnych wartości
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadFaqContent();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <MainLayout>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "60vh",
+          }}
+        >
+          <CircularProgress size={60} />
+        </Box>
+      </MainLayout>
+    );
+  }
+
+  const displayFaqItems = faqContent?.faqItems || defaultFaqData;
 
   return (
     <MainLayout>
@@ -48,7 +94,7 @@ const Faq: React.FC = () => {
               lineHeight: 1.2,
             }}
           >
-            Najczęściej zadawane pytania
+            {faqContent?.pageTitle || "Najczęściej zadawane pytania"}
           </Typography>
 
           <Typography
@@ -61,7 +107,7 @@ const Faq: React.FC = () => {
               lineHeight: 1.6,
             }}
           >
-            Nie mozesz znalezc odpowiedzi na swoje pytanie?{" "}
+            {faqContent?.pageSubtitle || "Nie mozesz znalezc odpowiedzi na swoje pytanie?"}{" "}
             <Link
               href="/contact"
               sx={{
@@ -76,9 +122,9 @@ const Faq: React.FC = () => {
         </Box>
 
         <Box sx={{ mb: 4 }}>
-          {faqData.map((faq, index) => (
+          {displayFaqItems.map((faq, index) => (
             <Accordion
-              key={index}
+              key={faq.id || index}
               title={faq.question}
               content={faq.answer}
               defaultExpanded={faq.expanded}
