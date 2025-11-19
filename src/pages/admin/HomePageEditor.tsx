@@ -524,13 +524,15 @@ const HomePageEditor: React.FC = () => {
   useEffect(() => {
     setEditMode(true);
 
-    // Load selected category IDs from settings
     if (settings?.selectedCategoryIds) {
       setSelectedCategoryIds(settings.selectedCategoryIds);
     }
 
-    // Fetch categories from API
-    const fetchCategories = async () => {
+    return () => setEditMode(false);
+  }, [setEditMode, settings?.selectedCategoryIds]);
+
+  useEffect(() => {
+    const loadCategories = async () => {
       setIsLoadingCategories(true);
       try {
         const response = await getRootCategories();
@@ -542,9 +544,8 @@ const HomePageEditor: React.FC = () => {
       }
     };
 
-    fetchCategories();
-    return () => setEditMode(false);
-  }, [setEditMode, settings]);
+    loadCategories();
+  }, []);
 
   const handleSave = async () => {
     if (!settings) return;
