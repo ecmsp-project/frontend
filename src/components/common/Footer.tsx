@@ -58,7 +58,8 @@ const Footer: React.FC = () => {
               {footerData?.footer?.shopName || "E-COMMERCE"}
             </Typography>
             <Typography variant="body2" sx={{ mb: 2, opacity: 0.9, lineHeight: 1.7 }}>
-              {footerData?.footer?.shopDescription || "Wszystko co potrzebujesz w jednym miejscu. Jakość, niskie ceny i szybka dostawa. Twoje zakupy, nasza pasja."}
+              {footerData?.footer?.shopDescription ||
+                "Wszystko co potrzebujesz w jednym miejscu. Jakość, niskie ceny i szybka dostawa. Twoje zakupy, nasza pasja."}
             </Typography>
             <Box sx={{ display: "flex", gap: 1, mt: 3 }}>
               {footerData?.footer?.socialMedia?.facebook && (
@@ -418,7 +419,8 @@ const Footer: React.FC = () => {
 
         <Box sx={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 2 }}>
           <Typography variant="body2" sx={{ opacity: 0.9 }}>
-            {footerData?.footer?.copyrightText || `© ${new Date().getFullYear()} E-COMMERCE. Wszelkie prawa zastrzeżone.`}
+            {footerData?.footer?.copyrightText ||
+              `© ${new Date().getFullYear()} E-COMMERCE. Wszelkie prawa zastrzeżone.`}
           </Typography>
           <Box sx={{ display: "flex", gap: 2 }}>
             <Link

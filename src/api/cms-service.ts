@@ -1,4 +1,9 @@
-import type { GlobalSettings, HomePageContent, FaqPageContent, ContactPageContent } from "../types/cms";
+import type {
+  GlobalSettings,
+  HomePageContent,
+  FaqPageContent,
+  ContactPageContent,
+} from "../types/cms";
 import { API_BASE_URL, apiCall } from "./utils";
 
 // ==================== HOME PAGE ====================
@@ -109,7 +114,9 @@ export const fetchContactSettings = async (): Promise<ContactPageContent> => {
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch contact settings: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch contact settings: ${response.status} ${response.statusText}`,
+      );
     }
 
     return await response.json();

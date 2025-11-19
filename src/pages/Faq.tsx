@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { fetchFaqSettings } from "../api/cms-service";
-import type { FaqPageContent } from "../types/cms";
 import Accordion from "../components/common/Accordion";
 import MainLayout from "../components/layout/MainLayout";
+import type { FaqPageContent } from "../types/cms";
 import { Box, Container, Link, Typography, CircularProgress } from "@mui/material";
 
 // Domyślne dane FAQ (fallback)
@@ -58,7 +58,14 @@ const Faq: React.FC = () => {
   if (isLoading) {
     return (
       <MainLayout>
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "60vh",
+          }}
+        >
           <CircularProgress size={60} />
         </Box>
       </MainLayout>

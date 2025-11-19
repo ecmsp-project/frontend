@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { fetchHomeSettings } from "../api/cms-service";
 import { getRootCategories } from "../api/product-service";
-import type { HomePageContent, CategoryFromAPI } from "../types/cms";
 import MainLayout from "../components/layout/MainLayout.tsx";
+import type { HomePageContent, CategoryFromAPI } from "../types/cms";
 import CategoryIcon from "@mui/icons-material/Category";
 import CheckroomIcon from "@mui/icons-material/Checkroom";
 import HomeIcon from "@mui/icons-material/Home";
@@ -157,7 +157,14 @@ const HomePage: React.FC = () => {
   if (isLoading) {
     return (
       <MainLayout>
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "60vh",
+          }}
+        >
           <CircularProgress size={60} />
         </Box>
       </MainLayout>
@@ -266,11 +273,15 @@ const HomePage: React.FC = () => {
         <Grid container spacing={3} sx={{ mb: 8 }}>
           {displayFeatures.map((feature, index) => {
             // Handle both string icon names (from CMS) and icon components (from fallback)
-            const IconComponent = typeof feature.icon === 'string'
-              ? (iconMap[feature.icon] || TrendingUpIcon)
-              : (feature.icon || TrendingUpIcon);
+            const IconComponent =
+              typeof feature.icon === "string"
+                ? iconMap[feature.icon] || TrendingUpIcon
+                : feature.icon || TrendingUpIcon;
             return (
-              <Grid size={{ xs: 12, md: 4 }} key={'id' in feature ? feature.id : `feature-${index}`}>
+              <Grid
+                size={{ xs: 12, md: 4 }}
+                key={"id" in feature ? feature.id : `feature-${index}`}
+              >
                 <Card
                   elevation={0}
                   sx={{
@@ -335,7 +346,9 @@ const HomePage: React.FC = () => {
               ? iconMap[(category as any).icon] || PhoneAndroidIcon
               : CategoryIcon;
             const categoryColor = getCategoryColor(index);
-            const categoryImage = (category as any).image || `https://via.placeholder.com/400x300/${categoryColor.slice(1)}/ffffff?text=${encodeURIComponent(category.name)}`;
+            const categoryImage =
+              (category as any).image ||
+              `https://via.placeholder.com/400x300/${categoryColor.slice(1)}/ffffff?text=${encodeURIComponent(category.name)}`;
 
             return (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={category.id}>

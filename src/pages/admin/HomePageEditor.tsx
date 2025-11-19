@@ -6,6 +6,23 @@ import EditableLink from "../../components/cms/EditableLink";
 import EditableText from "../../components/cms/EditableText";
 import { useCMS } from "../../contexts/CMSContext";
 import type { CategoryFromAPI } from "../../types/cms";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  rectSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import AddIcon from "@mui/icons-material/Add";
 import CategoryIcon from "@mui/icons-material/Category";
 import CheckroomIcon from "@mui/icons-material/Checkroom";
@@ -24,23 +41,6 @@ import SportsBasketballIcon from "@mui/icons-material/SportsBasketball";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
-import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-  rectSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import {
   Typography,
   Container,
@@ -208,7 +208,7 @@ const SortableCategoryItem: React.FC<SortableCategoryItemProps> = ({
   onRemove,
   getCategoryColor,
 }) => {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const { setNodeRef, transform, transition, isDragging } = useSortable({
     id: category.id,
   });
 
@@ -235,33 +235,6 @@ const SortableCategoryItem: React.FC<SortableCategoryItemProps> = ({
           },
         }}
       >
-        {/* Drag Handle */}
-        <Box
-          {...attributes}
-          {...listeners}
-          sx={{
-            position: "absolute",
-            top: 8,
-            left: 8,
-            zIndex: 2,
-            cursor: isDragging ? "grabbing" : "grab",
-            color: "white",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: 36,
-            height: 36,
-            borderRadius: 1,
-            bgcolor: "rgba(0,0,0,0.3)",
-            backdropFilter: "blur(8px)",
-            "&:hover": {
-              bgcolor: "rgba(0,0,0,0.5)",
-            },
-          }}
-        >
-          <DragIndicatorIcon fontSize="small" />
-        </Box>
-
         {/* Remove Button */}
         <IconButton
           size="small"
@@ -720,7 +693,10 @@ const HomePageEditor: React.FC = () => {
                       const newFeatures = [...settings.features];
                       const featureIndex = newFeatures.findIndex((f) => f.id === feature.id);
                       if (featureIndex !== -1) {
-                        newFeatures[featureIndex] = { ...newFeatures[featureIndex], [field]: value };
+                        newFeatures[featureIndex] = {
+                          ...newFeatures[featureIndex],
+                          [field]: value,
+                        };
                         setSettings({ ...settings, features: newFeatures });
                         setDirty(true);
                       }
@@ -822,10 +798,7 @@ const HomePageEditor: React.FC = () => {
                 collisionDetection={closestCenter}
                 onDragEnd={handleCategoriesDragEnd}
               >
-                <SortableContext
-                  items={selectedCategoryIds}
-                  strategy={rectSortingStrategy}
-                >
+                <SortableContext items={selectedCategoryIds}>
                   <Grid container spacing={3}>
                     {/* Selected Category Tiles */}
                     {getSelectedCategories().map((category, index) => (

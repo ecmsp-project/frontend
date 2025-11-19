@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { fetchContactSettings } from "../api/cms-service";
-import type { ContactPageContent } from "../types/cms";
 import ContactForm from "../components/forms/ContactForm";
 import type { ContactFormValues } from "../components/forms/ContactForm";
 import MainLayout from "../components/layout/MainLayout";
+import type { ContactPageContent } from "../types/cms";
 import { Phone as PhoneIcon, Email as EmailIcon } from "@mui/icons-material";
 import { Container, Typography, Grid, Box, Link, CircularProgress } from "@mui/material";
 
@@ -36,7 +36,14 @@ const Contact: React.FC = () => {
   if (isLoading) {
     return (
       <MainLayout>
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "60vh",
+          }}
+        >
           <CircularProgress size={60} />
         </Box>
       </MainLayout>
