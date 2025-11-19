@@ -27,6 +27,7 @@ import {
   Menu,
   MenuItem,
   Chip,
+  Pagination,
 } from "@mui/material";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 
@@ -295,6 +296,9 @@ const SearchPage: React.FC = () => {
   const [categoryMenuAnchor, setCategoryMenuAnchor] = useState<null | HTMLElement>(null);
   const [sortMenuAnchor, setSortMenuAnchor] = useState<null | HTMLElement>(null);
   const [sortBy, setSortBy] = useState<string>("relevance");
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [pageSize] = useState<number>(20);
+  const [nextPageNumber, setNextPageNumber] = useState<number | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { categories } = useProductContext();
@@ -320,39 +324,54 @@ const SearchPage: React.FC = () => {
     }
   };
 
-  const loadProductsByCategory = useCallback(async (catId: string) => {
-    setLoading(true);
-    try {
-      const response = await getProductsByCategory(catId, {
-        pageNumber: 0,
-        pageSize: 20,
-      });
-      const loadedProducts = response.productsRepresentation || [];
-      setProducts(loadedProducts);
-    } catch (error) {
-      console.error("Error loading products by category:", error);
-      setProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const loadProductsByCategory = useCallback(
+    async (catId: string, page: number = 0) => {
+      setLoading(true);
+      try {
+        const response = await getProductsByCategory(catId, {
+          pageNumber: page,
+          pageSize: pageSize,
+        });
+        const loadedProducts = response.productsRepresentation || [];
+        setProducts(loadedProducts);
+        setNextPageNumber(response.nextPageNumber);
+      } catch (error) {
+        console.error("Error loading products by category:", error);
+        setProducts([]);
+        setNextPageNumber(null);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [pageSize],
+  );
 
-  const loadSearchResults = useCallback(async (query: string) => {
-    setLoading(true);
-    try {
-      const response = await searchProducts(query, {
-        pageNumber: 0,
-        pageSize: 20,
-      });
-      const loadedProducts = response.productsRepresentation || [];
-      setProducts(loadedProducts);
-    } catch (error) {
-      console.error("Error searching products:", error);
-      setProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const loadSearchResults = useCallback(
+    async (query: string, page: number = 0) => {
+      setLoading(true);
+      try {
+        const response = await searchProducts(query, {
+          pageNumber: page,
+          pageSize: pageSize,
+        });
+        const loadedProducts = response.productsRepresentation || [];
+        setProducts(loadedProducts);
+        setNextPageNumber(response.nextPageNumber);
+      } catch (error) {
+        console.error("Error searching products:", error);
+        setProducts([]);
+        setNextPageNumber(null);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [pageSize],
+  );
+
+  const handlePageChange = (_event: React.ChangeEvent<unknown>, page: number) => {
+    setCurrentPage(page - 1); // Material-UI Pagination używa 1-based, API używa 0-based
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   // Filtruj i sortuj produkty gdy zmieni się sortBy, products lub priceRange
   useEffect(() => {
@@ -371,6 +390,12 @@ const SearchPage: React.FC = () => {
     }
   }, [products, sortBy, priceRange]);
 
+  // Resetuj stronę przy zmianie wyszukiwania/kategorii
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [location.search, location.pathname, params.slug]);
+
+  // Ładuj produkty przy zmianie strony, wyszukiwania lub kategorii
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const queryParam = searchParams.get("query");
@@ -378,19 +403,27 @@ const SearchPage: React.FC = () => {
     if (queryParam) {
       setSearchTerm(queryParam);
       setCategoryId(null);
-      loadSearchResults(queryParam);
+      loadSearchResults(queryParam, currentPage);
       return;
     }
     if (params.slug) {
       setSearchTerm("");
       setCategoryId(params.slug);
-      loadProductsByCategory(params.slug);
+      loadProductsByCategory(params.slug, currentPage);
       return;
     }
     setSearchTerm("");
     setCategoryId(null);
     setProducts([]);
-  }, [location.search, location.pathname, params.slug, loadProductsByCategory, loadSearchResults]);
+    setNextPageNumber(null);
+  }, [
+    location.search,
+    location.pathname,
+    params.slug,
+    currentPage,
+    loadProductsByCategory,
+    loadSearchResults,
+  ]);
 
   return (
     <MainLayout>
@@ -608,17 +641,59 @@ const SearchPage: React.FC = () => {
               <CircularProgress />
             </Box>
           ) : (
-            <Box>
-              {sortedProducts.length > 0 ? (
-                sortedProducts.map((product) => (
-                  <ProductListItem key={product.variantDetail.variant_id} product={product} />
-                ))
-              ) : (
-                <Typography variant="body1" color="text.secondary" sx={{ mt: 4 }}>
-                  Brak produktów do wyświetlenia
-                </Typography>
+            <>
+              <Box>
+                {sortedProducts.length > 0 ? (
+                  sortedProducts.map((product) => (
+                    <ProductListItem key={product.variantDetail.variant_id} product={product} />
+                  ))
+                ) : (
+                  <Typography variant="body1" color="text.secondary" sx={{ mt: 4 }}>
+                    Brak produktów do wyświetlenia
+                  </Typography>
+                )}
+              </Box>
+              {sortedProducts.length > 0 && nextPageNumber !== null && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    mt: 4,
+                    mb: 2,
+                  }}
+                >
+                  <Pagination
+                    count={nextPageNumber} // nextPageNumber wskazuje na następną stronę (0-based), więc to jest liczba dostępnych stron
+                    page={currentPage + 1} // Material-UI używa 1-based pagination
+                    onChange={handlePageChange}
+                    color="primary"
+                    size="large"
+                    showFirstButton
+                    showLastButton
+                  />
+                </Box>
               )}
-            </Box>
+              {sortedProducts.length > 0 && nextPageNumber === null && currentPage > 0 && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    mt: 4,
+                    mb: 2,
+                  }}
+                >
+                  <Pagination
+                    count={currentPage + 1} // Jeśli nie ma nextPageNumber, ale jesteśmy na stronie > 0, pokaż paginację z aktualną liczbą stron
+                    page={currentPage + 1}
+                    onChange={handlePageChange}
+                    color="primary"
+                    size="large"
+                    showFirstButton
+                    showLastButton
+                  />
+                </Box>
+              )}
+            </>
           )}
         </Box>
       </Container>
