@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MainLayout from "../components/layout/MainLayout";
 import type { Product } from "../types/products.ts";
 import {
@@ -14,6 +14,7 @@ import {
   Rating,
   Button,
 } from "@mui/material";
+import { useLocation } from "react-router-dom";
 
 const mockProducts: Product[] = [
   {
@@ -113,14 +114,25 @@ const ProductListItem: React.FC<{ product: Product }> = ({ product }) => (
 );
 
 const SearchPage: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const location = useLocation();
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const queryParam = searchParams.get("query");
+    setSearchTerm(queryParam || "");
+  }, [location.search]);
+
   return (
     <MainLayout>
       <Container maxWidth="lg">
-        <Typography variant="h4" component="h1" gutterBottom>
-          Wyniki wyszukiwania dla "Laptop"
-        </Typography>
+        {searchTerm && (
+          <Typography padding={4} paddingBottom={0} variant="h4" component="h1" gutterBottom>
+            Wyniki wyszukiwania dla {searchTerm}
+          </Typography>
+        )}
 
-        <Grid container spacing={3}>
+        <Grid padding={4} container spacing={3}>
           <Grid size={{ xs: 12, md: 3 }}>
             <Paper sx={{ p: 2 }}>
               <Typography variant="h6" gutterBottom>

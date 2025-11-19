@@ -55,7 +55,6 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
   // Oblicz całkowitą liczbę produktów w koszyku
   const cartItemsCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
-  // Synchronizuj searchTerm z parametrem query z URL
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const queryParam = searchParams.get("query");

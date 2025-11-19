@@ -33,3 +33,27 @@ export interface VariantCreateRequestDTO {
 export interface VariantCreateResponseDTO {
   id: string;
 }
+
+export interface GetProductsRequestDTO {
+  pageNumber: number;
+  pageSize: number;
+}
+
+export interface GetProductsResponseDTO {
+  productsRepresentation: ProductRepresentationDTO[];
+  nextPageNumber: number;
+}
+
+export interface ProductRepresentationDTO {
+  productId: string;
+  variantDetail: VariantDetailDTO;
+}
+
+export interface VariantDetailDTO {
+  variant_id: string;
+  price: number;
+  stockQuantity: number;
+  imageUrl: string;
+  description: string;
+  additionalProperties: Record<string, any>;
+}
