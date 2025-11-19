@@ -1,22 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { getProductsByCategory, searchProducts } from "../api/product-service";
 import MainLayout from "../components/layout/MainLayout";
 import { useProductContext } from "../contexts/ProductContext.tsx";
 import type { CategoryFromAPI } from "../types/cms";
 import type { ProductRepresentationDTO } from "../types/products.ts";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
   Typography,
   Container,
-  Grid,
   Paper,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
-  Divider,
   Button,
   CircularProgress,
   Accordion,
@@ -24,6 +23,10 @@ import {
   AccordionDetails,
   TextField,
   InputAdornment,
+  Slider,
+  Menu,
+  MenuItem,
+  Chip,
 } from "@mui/material";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 
@@ -74,7 +77,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
 
   return (
     <>
-      <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}>
+      <Typography variant="subtitle1" sx={{ mb: 1 }}>
         Kategoria
       </Typography>
       <TextField
@@ -284,8 +287,14 @@ const ProductListItem: React.FC<{ product: ProductRepresentationDTO }> = ({ prod
 const SearchPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [products, setProducts] = useState<ProductRepresentationDTO[]>([]);
+  const [sortedProducts, setSortedProducts] = useState<ProductRepresentationDTO[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [categoryId, setCategoryId] = useState<string | null>(null);
+  const [priceRange, setPriceRange] = useState<number[]>([0, 5000]);
+  const [priceMenuAnchor, setPriceMenuAnchor] = useState<null | HTMLElement>(null);
+  const [categoryMenuAnchor, setCategoryMenuAnchor] = useState<null | HTMLElement>(null);
+  const [sortMenuAnchor, setSortMenuAnchor] = useState<null | HTMLElement>(null);
+  const [sortBy, setSortBy] = useState<string>("relevance");
   const location = useLocation();
   const navigate = useNavigate();
   const { categories } = useProductContext();
@@ -294,6 +303,65 @@ const SearchPage: React.FC = () => {
   const handleCategoryClick = (categoryId: string) => {
     navigate(`/category/${categoryId}`);
   };
+
+  const sortProducts = (
+    productsToSort: ProductRepresentationDTO[],
+    sortOption: string,
+  ): ProductRepresentationDTO[] => {
+    const sorted = [...productsToSort];
+    switch (sortOption) {
+      case "price-asc":
+        return sorted.sort((a, b) => a.variantDetail.price - b.variantDetail.price);
+      case "price-desc":
+        return sorted.sort((a, b) => b.variantDetail.price - a.variantDetail.price);
+      case "relevance":
+      default:
+        return sorted; // Domyślnie bez sortowania (zachowaj kolejność z API)
+    }
+  };
+
+  const loadProductsByCategory = useCallback(async (catId: string) => {
+    setLoading(true);
+    try {
+      const response = await getProductsByCategory(catId, {
+        pageNumber: 0,
+        pageSize: 20,
+      });
+      const loadedProducts = response.productsRepresentation || [];
+      setProducts(loadedProducts);
+    } catch (error) {
+      console.error("Error loading products by category:", error);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const loadSearchResults = useCallback(async (query: string) => {
+    setLoading(true);
+    try {
+      const response = await searchProducts(query, {
+        pageNumber: 0,
+        pageSize: 20,
+      });
+      const loadedProducts = response.productsRepresentation || [];
+      setProducts(loadedProducts);
+    } catch (error) {
+      console.error("Error searching products:", error);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (products.length > 0) {
+      const sorted = sortProducts(products, sortBy);
+      setSortedProducts(sorted);
+    } else {
+      setSortedProducts([]);
+    }
+  }, [products, sortBy]);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -314,39 +382,7 @@ const SearchPage: React.FC = () => {
     setSearchTerm("");
     setCategoryId(null);
     setProducts([]);
-  }, [location.search, location.pathname, params.slug]);
-
-  const loadProductsByCategory = async (catId: string) => {
-    setLoading(true);
-    try {
-      const response = await getProductsByCategory(catId, {
-        pageNumber: 0,
-        pageSize: 20,
-      });
-      setProducts(response.productsRepresentation || []);
-    } catch (error) {
-      console.error("Error loading products by category:", error);
-      setProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadSearchResults = async (query: string) => {
-    setLoading(true);
-    try {
-      const response = await searchProducts(query, {
-        pageNumber: 0,
-        pageSize: 20,
-      });
-      setProducts(response.productsRepresentation || []);
-    } catch (error) {
-      console.error("Error searching products:", error);
-      setProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [location.search, location.pathname, params.slug, loadProductsByCategory, loadSearchResults]);
 
   return (
     <MainLayout>
@@ -362,54 +398,221 @@ const SearchPage: React.FC = () => {
           </Typography>
         )}
 
-        <Grid padding={4} container spacing={3}>
-          <Grid size={{ xs: 12, md: 3 }}>
-            <Paper sx={{ p: 2 }}>
-              <Typography variant="h6" gutterBottom>
-                Filtry
-              </Typography>
-              <Divider sx={{ mb: 2 }} />
+        <Box padding={4} paddingBottom={2}>
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 1,
+              mb: 2,
+            }}
+          >
+            <Button
+              variant="outlined"
+              endIcon={<ArrowDropDownIcon />}
+              onClick={(e) => setSortMenuAnchor(e.currentTarget)}
+              sx={{
+                textTransform: "none",
+                borderColor: "divider",
+                color: "text.primary",
+                "&:hover": {
+                  borderColor: "primary.main",
+                  backgroundColor: "action.hover",
+                },
+              }}
+            >
+              Sortuj
+            </Button>
 
-              <CategoryFilter
-                categories={categories}
-                selectedCategoryId={categoryId}
-                onCategoryClick={handleCategoryClick}
-              />
+            <Button
+              variant="outlined"
+              endIcon={<ArrowDropDownIcon />}
+              onClick={(e) => setCategoryMenuAnchor(e.currentTarget)}
+              sx={{
+                textTransform: "none",
+                borderColor: "divider",
+                color: "text.primary",
+                "&:hover": {
+                  borderColor: "primary.main",
+                  backgroundColor: "action.hover",
+                },
+              }}
+            >
+              Kategoria
+              {categoryId && (
+                <Chip
+                  label={categories.find((c) => c.id === categoryId)?.name}
+                  size="small"
+                  onDelete={() => {
+                    setCategoryId(null);
+                    navigate("/search");
+                  }}
+                  sx={{ ml: 1, height: 20 }}
+                />
+              )}
+            </Button>
 
-              <Typography variant="subtitle1" sx={{ mt: 2 }}>
-                Cena
+            <Button
+              variant="outlined"
+              endIcon={<ArrowDropDownIcon />}
+              onClick={(e) => setPriceMenuAnchor(e.currentTarget)}
+              sx={{
+                textTransform: "none",
+                borderColor: "divider",
+                color: "text.primary",
+                "&:hover": {
+                  borderColor: "primary.main",
+                  backgroundColor: "action.hover",
+                },
+              }}
+            >
+              Cena
+              {(priceRange[0] > 0 || priceRange[1] < 5000) && (
+                <Chip
+                  label={`${priceRange[0]}-${priceRange[1]} zł`}
+                  size="small"
+                  onDelete={() => setPriceRange([0, 5000])}
+                  sx={{ ml: 1, height: 20 }}
+                />
+              )}
+            </Button>
+          </Box>
+
+          <Typography variant="body2" color="text.secondary">
+            Liczba produktów: {sortedProducts.length}
+          </Typography>
+        </Box>
+
+        <Menu
+          anchorEl={sortMenuAnchor}
+          open={Boolean(sortMenuAnchor)}
+          onClose={() => setSortMenuAnchor(null)}
+        >
+          <MenuItem
+            selected={sortBy === "relevance"}
+            onClick={() => {
+              setSortBy("relevance");
+              setSortMenuAnchor(null);
+            }}
+          >
+            Trafność
+          </MenuItem>
+          <MenuItem
+            selected={sortBy === "price-asc"}
+            onClick={() => {
+              setSortBy("price-asc");
+              setSortMenuAnchor(null);
+            }}
+          >
+            Cena: od najniższej
+          </MenuItem>
+          <MenuItem
+            selected={sortBy === "price-desc"}
+            onClick={() => {
+              setSortBy("price-desc");
+              setSortMenuAnchor(null);
+            }}
+          >
+            Cena: od najwyższej
+          </MenuItem>
+        </Menu>
+
+        <Menu
+          anchorEl={categoryMenuAnchor}
+          open={Boolean(categoryMenuAnchor)}
+          onClose={() => setCategoryMenuAnchor(null)}
+          PaperProps={{
+            sx: {
+              maxHeight: 400,
+              width: 300,
+            },
+          }}
+        >
+          <Box sx={{ p: 2 }}>
+            <CategoryFilter
+              categories={categories}
+              selectedCategoryId={categoryId}
+              onCategoryClick={(id) => {
+                handleCategoryClick(id);
+                setCategoryMenuAnchor(null);
+              }}
+            />
+          </Box>
+        </Menu>
+
+        <Menu
+          anchorEl={priceMenuAnchor}
+          open={Boolean(priceMenuAnchor)}
+          onClose={() => setPriceMenuAnchor(null)}
+          PaperProps={{
+            sx: {
+              width: 300,
+              p: 2,
+            },
+          }}
+        >
+          <Typography variant="subtitle2" sx={{ mb: 2 }}>
+            Zakres cen
+          </Typography>
+          <Box sx={{ px: 1 }}>
+            <Slider
+              value={priceRange}
+              onChange={(_, newValue) => setPriceRange(newValue as number[])}
+              valueLabelDisplay="auto"
+              min={0}
+              max={5000}
+              step={50}
+              valueLabelFormat={(value) => `${value} zł`}
+              sx={{
+                color: "primary.main",
+                "& .MuiSlider-thumb": {
+                  width: 18,
+                  height: 18,
+                },
+                "& .MuiSlider-track": {
+                  height: 4,
+                },
+                "& .MuiSlider-rail": {
+                  height: 4,
+                },
+              }}
+            />
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mt: 1,
+              }}
+            >
+              <Typography variant="caption" color="text.secondary">
+                {priceRange[0]} zł
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Od 0 zł do 5000 zł
+              <Typography variant="caption" color="text.secondary">
+                {priceRange[1]} zł
               </Typography>
-            </Paper>
-          </Grid>
-          <Grid size={{ xs: 12, md: 9 }}>
-            {loading ? (
-              <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
-                <CircularProgress />
-              </Box>
-            ) : (
-              <>
-                <Typography variant="subtitle1" gutterBottom color="text.secondary">
-                  Znaleziono {products.length} {products.length === 1 ? "produkt" : "produktów"}
+            </Box>
+          </Box>
+        </Menu>
+
+        <Box padding={4} paddingTop={0}>
+          {loading ? (
+            <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <Box>
+              {sortedProducts.length > 0 ? (
+                sortedProducts.map((product) => (
+                  <ProductListItem key={product.variantDetail.variant_id} product={product} />
+                ))
+              ) : (
+                <Typography variant="body1" color="text.secondary" sx={{ mt: 4 }}>
+                  Brak produktów do wyświetlenia
                 </Typography>
-
-                <Box>
-                  {products.length > 0 ? (
-                    products.map((product) => (
-                      <ProductListItem key={product.variantDetail.variant_id} product={product} />
-                    ))
-                  ) : (
-                    <Typography variant="body1" color="text.secondary" sx={{ mt: 4 }}>
-                      Brak produktów do wyświetlenia
-                    </Typography>
-                  )}
-                </Box>
-              </>
-            )}
-          </Grid>
-        </Grid>
+              )}
+            </Box>
+          )}
+        </Box>
       </Container>
     </MainLayout>
   );
