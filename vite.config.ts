@@ -5,9 +5,9 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    dedupe: ['react', 'react-dom'],
+    dedupe: ["react", "react-dom"],
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'recharts'],
+    include: ["react", "react-dom", "recharts"],
   },
 });

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
+import type { DateRange } from "../../types/statistics";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import { Box, Stack, Typography, Paper, Chip } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { pl } from "date-fns/locale/pl";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import type { DateRange } from "../../types/statistics";
 
 interface DateRangeSelectorProps {
   dateRange: DateRange;
@@ -13,10 +13,7 @@ interface DateRangeSelectorProps {
 
 type Preset = "7d" | "30d" | "90d" | "1y" | "all";
 
-const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
-  dateRange,
-  onDateRangeChange,
-}) => {
+const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({ dateRange, onDateRangeChange }) => {
   const [activePreset, setActivePreset] = useState<Preset | null>("90d");
 
   const applyPreset = (preset: Preset) => {
@@ -65,9 +62,7 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
       <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={pl}>
         <Stack spacing={2}>
           {/* Header */}
-          <Box
-            sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
-          >
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
             <CalendarTodayIcon color="action" />
             <Typography variant="subtitle1" fontWeight="medium">
               Zakres dat
@@ -103,11 +98,7 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
 
           {/* Preset Buttons */}
           <Box>
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{ mb: 1, display: "block" }}
-            >
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: "block" }}>
               Szybki wybór:
             </Typography>
             <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>

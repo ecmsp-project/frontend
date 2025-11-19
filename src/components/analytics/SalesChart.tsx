@@ -1,4 +1,8 @@
 import React, { useState } from "react";
+import type { VariantSalesOverTimeDTO, LinearRegressionLineDTO } from "../../types/statistics";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import {
   Box,
   Paper,
@@ -13,6 +17,8 @@ import {
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
+import { format, differenceInDays, parseISO } from "date-fns";
+import { pl } from "date-fns/locale/pl";
 import {
   LineChart,
   Line,
@@ -25,12 +31,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { format, differenceInDays, parseISO } from "date-fns";
-import { pl } from "date-fns/locale/pl";
-import type { VariantSalesOverTimeDTO, LinearRegressionLineDTO } from "../../types/statistics";
 
 interface SalesChartProps {
   salesData: VariantSalesOverTimeDTO | null;
@@ -82,9 +82,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
           borderColor: "divider",
         }}
       >
-        <ShoppingCartIcon
-          sx={{ fontSize: 60, color: "text.secondary", mb: 2 }}
-        />
+        <ShoppingCartIcon sx={{ fontSize: 60, color: "text.secondary", mb: 2 }} />
         <Typography variant="h6" color="text.secondary">
           Brak danych sprzedażowych
         </Typography>
@@ -107,16 +105,12 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
   }));
 
   // Calculate KPIs
-  const totalQuantity = salesData.dataPoints.reduce(
-    (sum, point) => sum + point.quantity,
-    0,
-  );
+  const totalQuantity = salesData.dataPoints.reduce((sum, point) => sum + point.quantity, 0);
   const totalRevenue = salesData.dataPoints.reduce(
     (sum, point) => sum + Number(point.totalRevenue),
     0,
   );
-  const averagePrice =
-    totalQuantity > 0 ? totalRevenue / totalQuantity : 0;
+  const averagePrice = totalQuantity > 0 ? totalRevenue / totalQuantity : 0;
 
   // Calculate trend
   const recentSales = salesData.dataPoints.slice(-7);
@@ -124,16 +118,15 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
     Math.max(0, salesData.dataPoints.length - 14),
     Math.max(0, salesData.dataPoints.length - 7),
   );
-  const recentAvg =
-    recentSales.reduce((sum, p) => sum + p.quantity, 0) / recentSales.length;
-  const olderAvg =
-    olderSales.reduce((sum, p) => sum + p.quantity, 0) /
-    (olderSales.length || 1);
-  const trendPercentage =
-    olderAvg > 0 ? ((recentAvg - olderAvg) / olderAvg) * 100 : 0;
+  const recentAvg = recentSales.reduce((sum, p) => sum + p.quantity, 0) / recentSales.length;
+  const olderAvg = olderSales.reduce((sum, p) => sum + p.quantity, 0) / (olderSales.length || 1);
+  const trendPercentage = olderAvg > 0 ? ((recentAvg - olderAvg) / olderAvg) * 100 : 0;
 
   // Calculate regression line points for visualization
-  const getRegressionLineData = (regression: LinearRegressionLineDTO, dataType: 'quantity' | 'revenue') => {
+  const getRegressionLineData = (
+    regression: LinearRegressionLineDTO,
+    dataType: "quantity" | "revenue",
+  ) => {
     const validFrom = parseISO(regression.validFrom);
     const validTo = parseISO(regression.validTo);
 
@@ -163,7 +156,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
   };
 
   // Custom tooltip
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
@@ -177,13 +170,9 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
           <Typography variant="body2" sx={{ mb: 1, fontWeight: "bold" }}>
             {payload[0].payload.fullDate}
           </Typography>
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          {}
           {payload.map((entry: any, index: number) => (
-            <Typography
-              key={index}
-              variant="body2"
-              sx={{ color: entry.color }}
-            >
+            <Typography key={index} variant="body2" sx={{ color: entry.color }}>
               {entry.name}:{" "}
               <strong>
                 {entry.name === "Przychód"
@@ -343,11 +332,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis
-                dataKey="date"
-                stroke="#666"
-                style={{ fontSize: "0.85rem" }}
-              />
+              <XAxis dataKey="date" stroke="#666" style={{ fontSize: "0.85rem" }} />
               <YAxis stroke="#666" style={{ fontSize: "0.85rem" }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
@@ -364,23 +349,25 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
               />
 
               {/* Regression lines */}
-              {showRegressionLines && salesData.regressionLines && salesData.regressionLines.map((regression, index) => {
-                const lineData = getRegressionLineData(regression, 'quantity');
-                return (
-                  <Line
-                    key={`regression-${index}`}
-                    data={lineData}
-                    type="linear"
-                    dataKey="quantity"
-                    stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
-                    strokeWidth={2}
-                    dot={false}
-                    strokeDasharray="5 5"
-                    name={`Regresja ${index + 1}`}
-                    animationDuration={500}
-                  />
-                );
-              })}
+              {showRegressionLines &&
+                salesData.regressionLines &&
+                salesData.regressionLines.map((regression, index) => {
+                  const lineData = getRegressionLineData(regression, "quantity");
+                  return (
+                    <Line
+                      key={`regression-${index}`}
+                      data={lineData}
+                      type="linear"
+                      dataKey="quantity"
+                      stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
+                      strokeWidth={2}
+                      dot={false}
+                      strokeDasharray="5 5"
+                      name={`Regresja ${index + 1}`}
+                      animationDuration={500}
+                    />
+                  );
+                })}
             </LineChart>
           ) : (
             <AreaChart data={chartData}>
@@ -391,11 +378,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis
-                dataKey="date"
-                stroke="#666"
-                style={{ fontSize: "0.85rem" }}
-              />
+              <XAxis dataKey="date" stroke="#666" style={{ fontSize: "0.85rem" }} />
               <YAxis stroke="#666" style={{ fontSize: "0.85rem" }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
@@ -411,23 +394,25 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
               />
 
               {/* Regression lines */}
-              {showRegressionLines && salesData.regressionLines && salesData.regressionLines.map((regression, index) => {
-                const lineData = getRegressionLineData(regression, 'quantity');
-                return (
-                  <Line
-                    key={`regression-${index}`}
-                    data={lineData}
-                    type="linear"
-                    dataKey="quantity"
-                    stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
-                    strokeWidth={2}
-                    dot={false}
-                    strokeDasharray="5 5"
-                    name={`Regresja ${index + 1}`}
-                    animationDuration={500}
-                  />
-                );
-              })}
+              {showRegressionLines &&
+                salesData.regressionLines &&
+                salesData.regressionLines.map((regression, index) => {
+                  const lineData = getRegressionLineData(regression, "quantity");
+                  return (
+                    <Line
+                      key={`regression-${index}`}
+                      data={lineData}
+                      type="linear"
+                      dataKey="quantity"
+                      stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
+                      strokeWidth={2}
+                      dot={false}
+                      strokeDasharray="5 5"
+                      name={`Regresja ${index + 1}`}
+                      animationDuration={500}
+                    />
+                  );
+                })}
             </AreaChart>
           )}
         </ResponsiveContainer>
@@ -447,11 +432,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis
-                dataKey="date"
-                stroke="#666"
-                style={{ fontSize: "0.85rem" }}
-              />
+              <XAxis dataKey="date" stroke="#666" style={{ fontSize: "0.85rem" }} />
               <YAxis stroke="#666" style={{ fontSize: "0.85rem" }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
@@ -468,23 +449,25 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
               />
 
               {/* Regression lines */}
-              {showRegressionLines && salesData.regressionLines && salesData.regressionLines.map((regression, index) => {
-                const lineData = getRegressionLineData(regression, 'revenue');
-                return (
-                  <Line
-                    key={`regression-revenue-${index}`}
-                    data={lineData}
-                    type="linear"
-                    dataKey="revenue"
-                    stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
-                    strokeWidth={2}
-                    dot={false}
-                    strokeDasharray="5 5"
-                    name={`Regresja ${index + 1}`}
-                    animationDuration={500}
-                  />
-                );
-              })}
+              {showRegressionLines &&
+                salesData.regressionLines &&
+                salesData.regressionLines.map((regression, index) => {
+                  const lineData = getRegressionLineData(regression, "revenue");
+                  return (
+                    <Line
+                      key={`regression-revenue-${index}`}
+                      data={lineData}
+                      type="linear"
+                      dataKey="revenue"
+                      stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
+                      strokeWidth={2}
+                      dot={false}
+                      strokeDasharray="5 5"
+                      name={`Regresja ${index + 1}`}
+                      animationDuration={500}
+                    />
+                  );
+                })}
             </LineChart>
           ) : (
             <AreaChart data={chartData}>
@@ -495,11 +478,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis
-                dataKey="date"
-                stroke="#666"
-                style={{ fontSize: "0.85rem" }}
-              />
+              <XAxis dataKey="date" stroke="#666" style={{ fontSize: "0.85rem" }} />
               <YAxis stroke="#666" style={{ fontSize: "0.85rem" }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
@@ -515,23 +494,25 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
               />
 
               {/* Regression lines */}
-              {showRegressionLines && salesData.regressionLines && salesData.regressionLines.map((regression, index) => {
-                const lineData = getRegressionLineData(regression, 'revenue');
-                return (
-                  <Line
-                    key={`regression-revenue-${index}`}
-                    data={lineData}
-                    type="linear"
-                    dataKey="revenue"
-                    stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
-                    strokeWidth={2}
-                    dot={false}
-                    strokeDasharray="5 5"
-                    name={`Regresja ${index + 1}`}
-                    animationDuration={500}
-                  />
-                );
-              })}
+              {showRegressionLines &&
+                salesData.regressionLines &&
+                salesData.regressionLines.map((regression, index) => {
+                  const lineData = getRegressionLineData(regression, "revenue");
+                  return (
+                    <Line
+                      key={`regression-revenue-${index}`}
+                      data={lineData}
+                      type="linear"
+                      dataKey="revenue"
+                      stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
+                      strokeWidth={2}
+                      dot={false}
+                      strokeDasharray="5 5"
+                      name={`Regresja ${index + 1}`}
+                      animationDuration={500}
+                    />
+                  );
+                })}
             </AreaChart>
           )}
         </ResponsiveContainer>

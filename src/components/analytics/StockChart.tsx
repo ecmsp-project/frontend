@@ -1,4 +1,9 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
+import type { StockLevelOverTimeDTO, LinearRegressionLineDTO } from "../../types/statistics";
+import AssessmentIcon from "@mui/icons-material/Assessment";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import TrendingDownIcon from "@mui/icons-material/TrendingDown";
+import WarningIcon from "@mui/icons-material/Warning";
 import {
   Box,
   Paper,
@@ -15,6 +20,8 @@ import {
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
+import { format, differenceInDays, parseISO } from "date-fns";
+import { pl } from "date-fns/locale/pl";
 import {
   LineChart,
   Line,
@@ -28,16 +35,6 @@ import {
   ResponsiveContainer,
   ReferenceLine,
 } from "recharts";
-import InventoryIcon from "@mui/icons-material/Inventory";
-import TrendingDownIcon from "@mui/icons-material/TrendingDown";
-import WarningIcon from "@mui/icons-material/Warning";
-import AssessmentIcon from "@mui/icons-material/Assessment";
-import { format, differenceInDays, parseISO } from "date-fns";
-import { pl } from "date-fns/locale/pl";
-import type {
-  StockLevelOverTimeDTO,
-  LinearRegressionLineDTO,
-} from "../../types/statistics";
 
 interface StockChartProps {
   stockData: StockLevelOverTimeDTO | null;
@@ -95,9 +92,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
           borderColor: "divider",
         }}
       >
-        <InventoryIcon
-          sx={{ fontSize: 60, color: "text.secondary", mb: 2 }}
-        />
+        <InventoryIcon sx={{ fontSize: 60, color: "text.secondary", mb: 2 }} />
         <Typography variant="h6" color="text.secondary">
           Brak danych magazynowych
         </Typography>
@@ -117,8 +112,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
   }));
 
   // Calculate KPIs
-  const currentStock =
-    stockData.dataPoints[stockData.dataPoints.length - 1]?.stockLevel || 0;
+  const currentStock = stockData.dataPoints[stockData.dataPoints.length - 1]?.stockLevel || 0;
 
   // Average daily change from trend line
   const averageDailyChange = stockData.trendLine?.slope || 0;
@@ -131,9 +125,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
     ? parseISO(stockData.trendLine.estimatedDepletionDate)
     : null;
 
-  const daysToDepletion = depletionDate
-    ? differenceInDays(depletionDate, new Date())
-    : null;
+  const daysToDepletion = depletionDate ? differenceInDays(depletionDate, new Date()) : null;
 
   // Determine alert severity based on days to depletion
   const getAlertSeverity = () => {
@@ -195,7 +187,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
   }
 
   // Custom tooltip
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
@@ -209,13 +201,9 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
           <Typography variant="body2" sx={{ mb: 1, fontWeight: "bold" }}>
             {payload[0].payload.fullDate}
           </Typography>
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          {}
           {payload.map((entry: any, index: number) => (
-            <Typography
-              key={index}
-              variant="body2"
-              sx={{ color: entry.color }}
-            >
+            <Typography key={index} variant="body2" sx={{ color: entry.color }}>
               Stan magazynowy: <strong>{entry.value} szt.</strong>
             </Typography>
           ))}
@@ -237,9 +225,13 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
                 ? "Niski stan magazynowy"
                 : "Informacja o stanie magazynowym"}
           </AlertTitle>
-          Szacowana data wyczerpania produktu: <strong>{format(depletionDate, "dd MMMM yyyy", { locale: pl })}</strong>
+          Szacowana data wyczerpania produktu:{" "}
+          <strong>{format(depletionDate, "dd MMMM yyyy", { locale: pl })}</strong>
           {daysToDepletion !== null && (
-            <> (za <strong>{daysToDepletion}</strong> {daysToDepletion === 1 ? "dzień" : "dni"})</>
+            <>
+              {" "}
+              (za <strong>{daysToDepletion}</strong> {daysToDepletion === 1 ? "dzień" : "dni"})
+            </>
           )}
           <br />
           <Typography variant="caption">
@@ -278,9 +270,10 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
         <Box sx={{ flex: 1 }}>
           <Card
             sx={{
-              background: averageDailyChange < 0
-                ? "linear-gradient(135deg, #ff9800 0%, #f57c00 100%)"
-                : "linear-gradient(135deg, #4caf50 0%, #388e3c 100%)",
+              background:
+                averageDailyChange < 0
+                  ? "linear-gradient(135deg, #ff9800 0%, #f57c00 100%)"
+                  : "linear-gradient(135deg, #4caf50 0%, #388e3c 100%)",
               color: "white",
               height: "100%",
             }}
@@ -407,11 +400,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis
-                dataKey="date"
-                stroke="#666"
-                style={{ fontSize: "0.85rem" }}
-              />
+              <XAxis dataKey="date" stroke="#666" style={{ fontSize: "0.85rem" }} />
               <YAxis stroke="#666" style={{ fontSize: "0.85rem" }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
@@ -430,41 +419,44 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
               />
 
               {/* Regression lines */}
-              {showRegressionLines && stockData.regressionLines.map((regression, index) => {
-                const lineData = getRegressionLineData(regression);
-                return (
-                  <Line
-                    key={`regression-${index}`}
-                    data={lineData}
-                    type="linear"
-                    dataKey="stockLevel"
-                    stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
-                    strokeWidth={2}
-                    dot={false}
-                    strokeDasharray="5 5"
-                    name={`Regresja ${index + 1}`}
-                    animationDuration={500}
-                  />
-                );
-              })}
+              {showRegressionLines &&
+                stockData.regressionLines.map((regression, index) => {
+                  const lineData = getRegressionLineData(regression);
+                  return (
+                    <Line
+                      key={`regression-${index}`}
+                      data={lineData}
+                      type="linear"
+                      dataKey="stockLevel"
+                      stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
+                      strokeWidth={2}
+                      dot={false}
+                      strokeDasharray="5 5"
+                      name={`Regresja ${index + 1}`}
+                      animationDuration={500}
+                    />
+                  );
+                })}
 
               {/* Trend line */}
-              {showRegressionLines && stockData.trendLine && (() => {
-                const trendData = getRegressionLineData(stockData.trendLine);
-                return (
-                  <Line
-                    data={trendData}
-                    type="linear"
-                    dataKey="stockLevel"
-                    stroke={TREND_LINE_COLOR}
-                    strokeWidth={3}
-                    dot={false}
-                    strokeDasharray="10 5"
-                    name="Trend (ostatnie dni)"
-                    animationDuration={500}
-                  />
-                );
-              })()}
+              {showRegressionLines &&
+                stockData.trendLine &&
+                (() => {
+                  const trendData = getRegressionLineData(stockData.trendLine);
+                  return (
+                    <Line
+                      data={trendData}
+                      type="linear"
+                      dataKey="stockLevel"
+                      stroke={TREND_LINE_COLOR}
+                      strokeWidth={3}
+                      dot={false}
+                      strokeDasharray="10 5"
+                      name="Trend (ostatnie dni)"
+                      animationDuration={500}
+                    />
+                  );
+                })()}
 
               {/* Depletion date reference line */}
               {depletionDate && showRegressionLines && (
@@ -492,11 +484,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis
-                dataKey="date"
-                stroke="#666"
-                style={{ fontSize: "0.85rem" }}
-              />
+              <XAxis dataKey="date" stroke="#666" style={{ fontSize: "0.85rem" }} />
               <YAxis stroke="#666" style={{ fontSize: "0.85rem" }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
@@ -514,41 +502,44 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
               />
 
               {/* Regression lines */}
-              {showRegressionLines && stockData.regressionLines.map((regression, index) => {
-                const lineData = getRegressionLineData(regression);
-                return (
-                  <Line
-                    key={`regression-${index}`}
-                    data={lineData}
-                    type="linear"
-                    dataKey="stockLevel"
-                    stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
-                    strokeWidth={2}
-                    dot={false}
-                    strokeDasharray="5 5"
-                    name={`Regresja ${index + 1}`}
-                    animationDuration={500}
-                  />
-                );
-              })}
+              {showRegressionLines &&
+                stockData.regressionLines.map((regression, index) => {
+                  const lineData = getRegressionLineData(regression);
+                  return (
+                    <Line
+                      key={`regression-${index}`}
+                      data={lineData}
+                      type="linear"
+                      dataKey="stockLevel"
+                      stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
+                      strokeWidth={2}
+                      dot={false}
+                      strokeDasharray="5 5"
+                      name={`Regresja ${index + 1}`}
+                      animationDuration={500}
+                    />
+                  );
+                })}
 
               {/* Trend line */}
-              {showRegressionLines && stockData.trendLine && (() => {
-                const trendData = getRegressionLineData(stockData.trendLine);
-                return (
-                  <Line
-                    data={trendData}
-                    type="linear"
-                    dataKey="stockLevel"
-                    stroke={TREND_LINE_COLOR}
-                    strokeWidth={3}
-                    dot={false}
-                    strokeDasharray="10 5"
-                    name="Trend (ostatnie dni)"
-                    animationDuration={500}
-                  />
-                );
-              })()}
+              {showRegressionLines &&
+                stockData.trendLine &&
+                (() => {
+                  const trendData = getRegressionLineData(stockData.trendLine);
+                  return (
+                    <Line
+                      data={trendData}
+                      type="linear"
+                      dataKey="stockLevel"
+                      stroke={TREND_LINE_COLOR}
+                      strokeWidth={3}
+                      dot={false}
+                      strokeDasharray="10 5"
+                      name="Trend (ostatnie dni)"
+                      animationDuration={500}
+                    />
+                  );
+                })()}
 
               {/* Depletion date reference line */}
               {depletionDate && showRegressionLines && (

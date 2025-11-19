@@ -1,4 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { getAvailableVariants } from "../../api/statistics-service";
+import type { VariantInfoDTO, RecentlyViewedVariant } from "../../types/statistics";
+import HistoryIcon from "@mui/icons-material/History";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import SearchIcon from "@mui/icons-material/Search";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import SortIcon from "@mui/icons-material/Sort";
 import {
   Autocomplete,
   TextField,
@@ -12,13 +19,6 @@ import {
   ToggleButton,
   Stack,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import HistoryIcon from "@mui/icons-material/History";
-import InventoryIcon from "@mui/icons-material/Inventory";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import SortIcon from "@mui/icons-material/Sort";
-import type { VariantInfoDTO, RecentlyViewedVariant } from "../../types/statistics";
-import { getAvailableVariants } from "../../api/statistics-service";
 
 interface VariantSearchAutocompleteProps {
   onVariantSelect: (variant: VariantInfoDTO | null) => void;
@@ -42,9 +42,7 @@ const VariantSearchAutocomplete: React.FC<VariantSearchAutocompleteProps> = ({
   const [inputValue, setInputValue] = useState("");
   const [filter, setFilter] = useState<FilterType>("all");
   const [sortBy, setSortBy] = useState<SortType>("name");
-  const [recentVariants, setRecentVariants] = useState<RecentlyViewedVariant[]>(
-    [],
-  );
+  const [recentVariants, setRecentVariants] = useState<RecentlyViewedVariant[]>([]);
 
   // Load variants on mount
   useEffect(() => {
@@ -114,10 +112,7 @@ const VariantSearchAutocomplete: React.FC<VariantSearchAutocompleteProps> = ({
         case "lastSale":
           if (!a.lastSaleDate) return 1;
           if (!b.lastSaleDate) return -1;
-          return (
-            new Date(b.lastSaleDate).getTime() -
-            new Date(a.lastSaleDate).getTime()
-          );
+          return new Date(b.lastSaleDate).getTime() - new Date(a.lastSaleDate).getTime();
         case "stock":
           return (b.currentStock || 0) - (a.currentStock || 0);
         default:
@@ -128,10 +123,7 @@ const VariantSearchAutocomplete: React.FC<VariantSearchAutocompleteProps> = ({
     return filtered;
   }, [variants, filter, sortBy]);
 
-  const handleVariantChange = (
-    _event: React.SyntheticEvent,
-    value: VariantInfoDTO | null,
-  ) => {
+  const handleVariantChange = (_event: React.SyntheticEvent, value: VariantInfoDTO | null) => {
     onVariantSelect(value);
     if (value) {
       saveRecentVariant(value);
@@ -230,9 +222,7 @@ const VariantSearchAutocomplete: React.FC<VariantSearchAutocompleteProps> = ({
                 ),
                 endAdornment: (
                   <>
-                    {loading ? (
-                      <CircularProgress color="inherit" size={20} />
-                    ) : null}
+                    {loading ? <CircularProgress color="inherit" size={20} /> : null}
                     {params.InputProps.endAdornment}
                   </>
                 ),
@@ -256,12 +246,7 @@ const VariantSearchAutocomplete: React.FC<VariantSearchAutocompleteProps> = ({
                 <Typography variant="body1">{option.productName}</Typography>
                 <Box sx={{ display: "flex", gap: 0.5, mt: 0.5 }}>
                   {option.hasSalesData && (
-                    <Chip
-                      label="Sprzedaż"
-                      size="small"
-                      color="success"
-                      variant="outlined"
-                    />
+                    <Chip label="Sprzedaż" size="small" color="success" variant="outlined" />
                   )}
                   {option.hasStockData && (
                     <Chip
@@ -275,10 +260,12 @@ const VariantSearchAutocomplete: React.FC<VariantSearchAutocompleteProps> = ({
                       }}
                       sx={{
                         cursor: onStockChipClick ? "pointer" : "default",
-                        "&:hover": onStockChipClick ? {
-                          bgcolor: "info.main",
-                          color: "info.contrastText",
-                        } : {},
+                        "&:hover": onStockChipClick
+                          ? {
+                              bgcolor: "info.main",
+                              color: "info.contrastText",
+                            }
+                          : {},
                       }}
                     />
                   )}

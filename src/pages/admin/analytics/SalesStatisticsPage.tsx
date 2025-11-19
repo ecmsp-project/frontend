@@ -1,48 +1,29 @@
 import React, { useState, useEffect } from "react";
-import {
-  Container,
-  Typography,
-  Paper,
-  Box,
-  Alert,
-  Fade,
-  Grow,
-  Tabs,
-  Tab,
-} from "@mui/material";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import InventoryIcon from "@mui/icons-material/Inventory";
-import AdminLayout from "../../../components/layout/AdminLayout";
-import Breadcrumbs from "../../../components/common/Breadcrumbs";
-import VariantSearchAutocomplete from "../../../components/analytics/VariantSearchAutocomplete";
+import { getVariantSalesOverTime, getVariantStockOverTime } from "../../../api/statistics-service";
 import DateRangeSelector from "../../../components/analytics/DateRangeSelector";
 import SalesChart from "../../../components/analytics/SalesChart";
 import StockChart from "../../../components/analytics/StockChart";
+import VariantSearchAutocomplete from "../../../components/analytics/VariantSearchAutocomplete";
+import Breadcrumbs from "../../../components/common/Breadcrumbs";
+import AdminLayout from "../../../components/layout/AdminLayout";
 import type {
   VariantInfoDTO,
   VariantSalesOverTimeDTO,
   StockLevelOverTimeDTO,
   DateRange,
 } from "../../../types/statistics";
-import {
-  getVariantSalesOverTime,
-  getVariantStockOverTime,
-} from "../../../api/statistics-service";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { Container, Typography, Paper, Box, Alert, Fade, Grow, Tabs, Tab } from "@mui/material";
 
 type TabValue = "sales" | "stock";
 
 const SalesStatisticsPage: React.FC = () => {
-  const [selectedVariant, setSelectedVariant] = useState<VariantInfoDTO | null>(
-    null,
-  );
+  const [selectedVariant, setSelectedVariant] = useState<VariantInfoDTO | null>(null);
   const [activeTab, setActiveTab] = useState<TabValue>("sales");
-  const [salesData, setSalesData] = useState<VariantSalesOverTimeDTO | null>(
-    null,
-  );
-  const [stockData, setStockData] = useState<StockLevelOverTimeDTO | null>(
-    null,
-  );
+  const [salesData, setSalesData] = useState<VariantSalesOverTimeDTO | null>(null);
+  const [stockData, setStockData] = useState<StockLevelOverTimeDTO | null>(null);
   const [salesLoading, setSalesLoading] = useState(false);
   const [stockLoading, setStockLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -82,9 +63,7 @@ const SalesStatisticsPage: React.FC = () => {
       setSalesData(data);
     } catch (err) {
       console.error("Error loading sales data:", err);
-      setError(
-        "Nie udało się załadować danych sprzedażowych. Sprawdź połączenie z serwerem.",
-      );
+      setError("Nie udało się załadować danych sprzedażowych. Sprawdź połączenie z serwerem.");
     } finally {
       setSalesLoading(false);
     }
@@ -103,9 +82,7 @@ const SalesStatisticsPage: React.FC = () => {
       setStockData(data);
     } catch (err) {
       console.error("Error loading stock data:", err);
-      setError(
-        "Nie udało się załadować danych magazynowych. Sprawdź połączenie z serwerem.",
-      );
+      setError("Nie udało się załadować danych magazynowych. Sprawdź połączenie z serwerem.");
     } finally {
       setStockLoading(false);
     }
@@ -152,8 +129,7 @@ const SalesStatisticsPage: React.FC = () => {
             Statystyki produktów
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Wyszukaj produkt, aby wyświetlić szczegółowe statystyki sprzedaży i
-            stanów magazynowych
+            Wyszukaj produkt, aby wyświetlić szczegółowe statystyki sprzedaży i stanów magazynowych
           </Typography>
         </Box>
 
@@ -180,10 +156,7 @@ const SalesStatisticsPage: React.FC = () => {
         {selectedVariant && (
           <Fade in>
             <Box sx={{ mb: 3 }}>
-              <DateRangeSelector
-                dateRange={dateRange}
-                onDateRangeChange={handleDateRangeChange}
-              />
+              <DateRangeSelector dateRange={dateRange} onDateRangeChange={handleDateRangeChange} />
             </Box>
           </Fade>
         )}
@@ -232,10 +205,7 @@ const SalesStatisticsPage: React.FC = () => {
                 <Fade in key="sales">
                   <Box>
                     {selectedVariant.hasSalesData ? (
-                      <SalesChart
-                        salesData={salesData}
-                        loading={salesLoading}
-                      />
+                      <SalesChart salesData={salesData} loading={salesLoading} />
                     ) : (
                       <Paper
                         sx={{
@@ -246,9 +216,7 @@ const SalesStatisticsPage: React.FC = () => {
                           borderColor: "divider",
                         }}
                       >
-                        <ShoppingCartIcon
-                          sx={{ fontSize: 60, color: "text.secondary", mb: 2 }}
-                        />
+                        <ShoppingCartIcon sx={{ fontSize: 60, color: "text.secondary", mb: 2 }} />
                         <Typography variant="h6" color="text.secondary">
                           Brak danych sprzedażowych
                         </Typography>
@@ -263,10 +231,7 @@ const SalesStatisticsPage: React.FC = () => {
                 <Fade in key="stock">
                   <Box>
                     {selectedVariant.hasStockData ? (
-                      <StockChart
-                        stockData={stockData}
-                        loading={stockLoading}
-                      />
+                      <StockChart stockData={stockData} loading={stockLoading} />
                     ) : (
                       <Paper
                         sx={{
@@ -277,9 +242,7 @@ const SalesStatisticsPage: React.FC = () => {
                           borderColor: "divider",
                         }}
                       >
-                        <InventoryIcon
-                          sx={{ fontSize: 60, color: "text.secondary", mb: 2 }}
-                        />
+                        <InventoryIcon sx={{ fontSize: 60, color: "text.secondary", mb: 2 }} />
                         <Typography variant="h6" color="text.secondary">
                           Brak danych magazynowych
                         </Typography>
@@ -331,12 +294,11 @@ const SalesStatisticsPage: React.FC = () => {
                 Zacznij od wyszukania produktu
               </Typography>
               <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-                Użyj wyszukiwarki powyżej, aby znaleźć produkt i wyświetlić jego
-                statystyki
+                Użyj wyszukiwarki powyżej, aby znaleźć produkt i wyświetlić jego statystyki
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Możesz filtrować produkty, sortować wyniki i korzystać z historii
-                ostatnio przeglądanych
+                Możesz filtrować produkty, sortować wyniki i korzystać z historii ostatnio
+                przeglądanych
               </Typography>
             </Paper>
           </Fade>
