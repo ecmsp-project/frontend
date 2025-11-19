@@ -17,12 +17,12 @@ export interface SalesDataPointDTO {
 }
 
 export interface LinearRegressionLineDTO {
-  startDate: string;
-  endDate: string;
-  startValue: number;
-  endValue: number;
   slope: number;
   intercept: number;
+  validFrom: string;
+  validTo: string;
+  estimatedDepletionDate: string | null;
+  rSquared: number;
 }
 
 export interface VariantSalesOverTimeDTO {
@@ -36,6 +36,32 @@ export interface SalesFilters {
   fromDate?: string;
   toDate?: string;
   trendDays?: number;
+}
+
+// Stock data DTOs
+export interface StockDataPointDTO {
+  date: string;
+  stockLevel: number;
+}
+
+export interface StockLevelOverTimeDTO {
+  variantId: string;
+  productName: string;
+  dataPoints: StockDataPointDTO[];
+  regressionLines: LinearRegressionLineDTO[];
+  trendLine: LinearRegressionLineDTO | null;
+}
+
+export interface StockFilters {
+  fromDate?: string;
+  toDate?: string;
+  trendDays?: number;
+}
+
+// Date range types
+export interface DateRange {
+  fromDate: Date | null;
+  toDate: Date | null;
 }
 
 // Local storage types

@@ -10,6 +10,8 @@ import {
   CardContent,
   Stack,
   Chip,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 import {
   LineChart,
@@ -26,7 +28,9 @@ import {
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import type { VariantSalesOverTimeDTO } from "../../types/statistics";
+import { format, differenceInDays, parseISO } from "date-fns";
+import { pl } from "date-fns/locale/pl";
+import type { VariantSalesOverTimeDTO, LinearRegressionLineDTO } from "../../types/statistics";
 
 interface SalesChartProps {
   salesData: VariantSalesOverTimeDTO | null;
@@ -35,8 +39,18 @@ interface SalesChartProps {
 
 type ChartType = "line" | "area";
 
+// Color palette for regression lines
+const REGRESSION_COLORS = [
+  "#ff9800", // Orange
+  "#9c27b0", // Purple
+  "#e91e63", // Pink
+  "#f44336", // Red
+  "#3f51b5", // Indigo
+];
+
 const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
   const [chartType, setChartType] = useState<ChartType>("area");
+  const [showRegressionLines, setShowRegressionLines] = useState(false);
 
   if (loading) {
     return (
@@ -117,6 +131,36 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
     (olderSales.length || 1);
   const trendPercentage =
     olderAvg > 0 ? ((recentAvg - olderAvg) / olderAvg) * 100 : 0;
+
+  // Calculate regression line points for visualization
+  const getRegressionLineData = (regression: LinearRegressionLineDTO, dataType: 'quantity' | 'revenue') => {
+    const validFrom = parseISO(regression.validFrom);
+    const validTo = parseISO(regression.validTo);
+
+    // Find the reference date (earliest date in the dataset)
+    const referenceDate = new Date(salesData.dataPoints[0].date);
+
+    // Calculate y values for the start and end of the regression period
+    const calculateY = (date: Date) => {
+      const daysSinceReference = differenceInDays(date, referenceDate);
+      return regression.slope * daysSinceReference + regression.intercept;
+    };
+
+    return [
+      {
+        date: format(validFrom, "dd MMM", { locale: pl }),
+        fullDate: format(validFrom, "dd.MM.yyyy", { locale: pl }),
+        [dataType]: calculateY(validFrom),
+        timestamp: validFrom.getTime(),
+      },
+      {
+        date: format(validTo, "dd MMM", { locale: pl }),
+        fullDate: format(validTo, "dd.MM.yyyy", { locale: pl }),
+        [dataType]: calculateY(validTo),
+        timestamp: validTo.getTime(),
+      },
+    ];
+  };
 
   // Custom tooltip
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -254,18 +298,34 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
           justifyContent: "space-between",
           alignItems: "center",
           mb: 2,
+          flexWrap: "wrap",
+          gap: 2,
         }}
       >
         <Typography variant="h6">{salesData.productName}</Typography>
-        <ToggleButtonGroup
-          value={chartType}
-          exclusive
-          onChange={(_e, newType) => newType && setChartType(newType)}
-          size="small"
-        >
-          <ToggleButton value="line">Linia</ToggleButton>
-          <ToggleButton value="area">Obszar</ToggleButton>
-        </ToggleButtonGroup>
+        <Stack direction="row" spacing={2} alignItems="center">
+          {salesData.regressionLines && salesData.regressionLines.length > 0 && (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={showRegressionLines}
+                  onChange={(e) => setShowRegressionLines(e.target.checked)}
+                  size="small"
+                />
+              }
+              label="Pokaż linie regresji"
+            />
+          )}
+          <ToggleButtonGroup
+            value={chartType}
+            exclusive
+            onChange={(_e, newType) => newType && setChartType(newType)}
+            size="small"
+          >
+            <ToggleButton value="line">Linia</ToggleButton>
+            <ToggleButton value="area">Obszar</ToggleButton>
+          </ToggleButtonGroup>
+        </Stack>
       </Box>
 
       {/* Charts */}
@@ -302,6 +362,25 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 animationDuration={1000}
                 animationEasing="ease-in-out"
               />
+
+              {/* Regression lines */}
+              {showRegressionLines && salesData.regressionLines && salesData.regressionLines.map((regression, index) => {
+                const lineData = getRegressionLineData(regression, 'quantity');
+                return (
+                  <Line
+                    key={`regression-${index}`}
+                    data={lineData}
+                    type="linear"
+                    dataKey="quantity"
+                    stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
+                    strokeWidth={2}
+                    dot={false}
+                    strokeDasharray="5 5"
+                    name={`Regresja ${index + 1}`}
+                    animationDuration={500}
+                  />
+                );
+              })}
             </LineChart>
           ) : (
             <AreaChart data={chartData}>
@@ -330,6 +409,25 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 animationDuration={1000}
                 animationEasing="ease-in-out"
               />
+
+              {/* Regression lines */}
+              {showRegressionLines && salesData.regressionLines && salesData.regressionLines.map((regression, index) => {
+                const lineData = getRegressionLineData(regression, 'quantity');
+                return (
+                  <Line
+                    key={`regression-${index}`}
+                    data={lineData}
+                    type="linear"
+                    dataKey="quantity"
+                    stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
+                    strokeWidth={2}
+                    dot={false}
+                    strokeDasharray="5 5"
+                    name={`Regresja ${index + 1}`}
+                    animationDuration={500}
+                  />
+                );
+              })}
             </AreaChart>
           )}
         </ResponsiveContainer>
@@ -368,6 +466,25 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 animationDuration={1000}
                 animationEasing="ease-in-out"
               />
+
+              {/* Regression lines */}
+              {showRegressionLines && salesData.regressionLines && salesData.regressionLines.map((regression, index) => {
+                const lineData = getRegressionLineData(regression, 'revenue');
+                return (
+                  <Line
+                    key={`regression-revenue-${index}`}
+                    data={lineData}
+                    type="linear"
+                    dataKey="revenue"
+                    stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
+                    strokeWidth={2}
+                    dot={false}
+                    strokeDasharray="5 5"
+                    name={`Regresja ${index + 1}`}
+                    animationDuration={500}
+                  />
+                );
+              })}
             </LineChart>
           ) : (
             <AreaChart data={chartData}>
@@ -396,6 +513,25 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 animationDuration={1000}
                 animationEasing="ease-in-out"
               />
+
+              {/* Regression lines */}
+              {showRegressionLines && salesData.regressionLines && salesData.regressionLines.map((regression, index) => {
+                const lineData = getRegressionLineData(regression, 'revenue');
+                return (
+                  <Line
+                    key={`regression-revenue-${index}`}
+                    data={lineData}
+                    type="linear"
+                    dataKey="revenue"
+                    stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
+                    strokeWidth={2}
+                    dot={false}
+                    strokeDasharray="5 5"
+                    name={`Regresja ${index + 1}`}
+                    animationDuration={500}
+                  />
+                );
+              })}
             </AreaChart>
           )}
         </ResponsiveContainer>

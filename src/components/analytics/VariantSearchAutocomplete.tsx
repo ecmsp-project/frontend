@@ -23,6 +23,7 @@ import { getAvailableVariants } from "../../api/statistics-service";
 interface VariantSearchAutocompleteProps {
   onVariantSelect: (variant: VariantInfoDTO | null) => void;
   selectedVariant: VariantInfoDTO | null;
+  onStockChipClick?: () => void;
 }
 
 type FilterType = "all" | "sales" | "stock";
@@ -34,6 +35,7 @@ const MAX_RECENT_ITEMS = 5;
 const VariantSearchAutocomplete: React.FC<VariantSearchAutocompleteProps> = ({
   onVariantSelect,
   selectedVariant,
+  onStockChipClick,
 }) => {
   const [variants, setVariants] = useState<VariantInfoDTO[]>([]);
   const [loading, setLoading] = useState(false);
@@ -267,6 +269,17 @@ const VariantSearchAutocomplete: React.FC<VariantSearchAutocompleteProps> = ({
                       size="small"
                       color="info"
                       variant="outlined"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onStockChipClick?.();
+                      }}
+                      sx={{
+                        cursor: onStockChipClick ? "pointer" : "default",
+                        "&:hover": onStockChipClick ? {
+                          bgcolor: "info.main",
+                          color: "info.contrastText",
+                        } : {},
+                      }}
                     />
                   )}
                   {option.lastSaleDate && (

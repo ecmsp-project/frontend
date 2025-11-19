@@ -7,46 +7,75 @@ import {
   Alert,
   Fade,
   Grow,
+  Tabs,
+  Tab,
 } from "@mui/material";
 import BarChartIcon from "@mui/icons-material/BarChart";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import InventoryIcon from "@mui/icons-material/Inventory";
 import AdminLayout from "../../../components/layout/AdminLayout";
 import Breadcrumbs from "../../../components/common/Breadcrumbs";
 import VariantSearchAutocomplete from "../../../components/analytics/VariantSearchAutocomplete";
+import DateRangeSelector from "../../../components/analytics/DateRangeSelector";
 import SalesChart from "../../../components/analytics/SalesChart";
-import type { VariantInfoDTO, VariantSalesOverTimeDTO } from "../../../types/statistics";
-import { getVariantSalesOverTime } from "../../../api/statistics-service";
+import StockChart from "../../../components/analytics/StockChart";
+import type {
+  VariantInfoDTO,
+  VariantSalesOverTimeDTO,
+  StockLevelOverTimeDTO,
+  DateRange,
+} from "../../../types/statistics";
+import {
+  getVariantSalesOverTime,
+  getVariantStockOverTime,
+} from "../../../api/statistics-service";
+
+type TabValue = "sales" | "stock";
 
 const SalesStatisticsPage: React.FC = () => {
   const [selectedVariant, setSelectedVariant] = useState<VariantInfoDTO | null>(
     null,
   );
+  const [activeTab, setActiveTab] = useState<TabValue>("sales");
   const [salesData, setSalesData] = useState<VariantSalesOverTimeDTO | null>(
     null,
   );
-  const [loading, setLoading] = useState(false);
+  const [stockData, setStockData] = useState<StockLevelOverTimeDTO | null>(
+    null,
+  );
+  const [salesLoading, setSalesLoading] = useState(false);
+  const [stockLoading, setStockLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load sales data when variant is selected
+  // Date range state - default to last 90 days
+  const [dateRange, setDateRange] = useState<DateRange>(() => {
+    const today = new Date();
+    const fromDate = new Date();
+    fromDate.setDate(today.getDate() - 90);
+    return { fromDate, toDate: today };
+  });
+
+  // Load data when variant or date range changes
   useEffect(() => {
     if (selectedVariant) {
-      loadSalesData(selectedVariant.variantId);
+      if (activeTab === "sales") {
+        loadSalesData(selectedVariant.variantId);
+      } else {
+        loadStockData(selectedVariant.variantId);
+      }
     } else {
       setSalesData(null);
+      setStockData(null);
     }
-  }, [selectedVariant]);
+  }, [selectedVariant, dateRange, activeTab]);
 
   const loadSalesData = async (variantId: string) => {
-    setLoading(true);
+    setSalesLoading(true);
     setError(null);
     try {
-      // Get sales data for last 90 days with 30-day trend
-      const toDate = new Date();
-      const fromDate = new Date();
-      fromDate.setDate(fromDate.getDate() - 90);
-
       const data = await getVariantSalesOverTime(variantId, {
-        fromDate: fromDate.toISOString().split("T")[0],
-        toDate: toDate.toISOString().split("T")[0],
+        fromDate: dateRange.fromDate?.toISOString().split("T")[0],
+        toDate: dateRange.toDate?.toISOString().split("T")[0],
         trendDays: 30,
       });
 
@@ -57,12 +86,47 @@ const SalesStatisticsPage: React.FC = () => {
         "Nie udało się załadować danych sprzedażowych. Sprawdź połączenie z serwerem.",
       );
     } finally {
-      setLoading(false);
+      setSalesLoading(false);
+    }
+  };
+
+  const loadStockData = async (variantId: string) => {
+    setStockLoading(true);
+    setError(null);
+    try {
+      const data = await getVariantStockOverTime(variantId, {
+        fromDate: dateRange.fromDate?.toISOString().split("T")[0],
+        toDate: dateRange.toDate?.toISOString().split("T")[0],
+        trendDays: 30,
+      });
+
+      setStockData(data);
+    } catch (err) {
+      console.error("Error loading stock data:", err);
+      setError(
+        "Nie udało się załadować danych magazynowych. Sprawdź połączenie z serwerem.",
+      );
+    } finally {
+      setStockLoading(false);
     }
   };
 
   const handleVariantSelect = (variant: VariantInfoDTO | null) => {
     setSelectedVariant(variant);
+  };
+
+  const handleStockChipClick = () => {
+    if (selectedVariant?.hasStockData) {
+      setActiveTab("stock");
+    }
+  };
+
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
+    setActiveTab(newValue);
+  };
+
+  const handleDateRangeChange = (newRange: DateRange) => {
+    setDateRange(newRange);
   };
 
   return (
@@ -73,7 +137,7 @@ const SalesStatisticsPage: React.FC = () => {
           items={[
             { label: "Panel administracyjny", path: "/admin" },
             { label: "Analytics", path: "/admin/analytics" },
-            { label: "Statystyki Sprzedaży" },
+            { label: "Statystyki" },
           ]}
         />
 
@@ -85,11 +149,11 @@ const SalesStatisticsPage: React.FC = () => {
             sx={{ display: "flex", alignItems: "center", gap: 1 }}
           >
             <BarChartIcon fontSize="large" />
-            Statystyki Sprzedaży
+            Statystyki produktów
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Wyszukaj produkt, aby wyświetlić szczegółowe statystyki sprzedaży,
-            przychody i trendy
+            Wyszukaj produkt, aby wyświetlić szczegółowe statystyki sprzedaży i
+            stanów magazynowych
           </Typography>
         </Box>
 
@@ -98,7 +162,7 @@ const SalesStatisticsPage: React.FC = () => {
           elevation={3}
           sx={{
             p: 3,
-            mb: 3,
+            mb: 2,
             position: "sticky",
             top: 70,
             zIndex: 10,
@@ -108,8 +172,21 @@ const SalesStatisticsPage: React.FC = () => {
           <VariantSearchAutocomplete
             onVariantSelect={handleVariantSelect}
             selectedVariant={selectedVariant}
+            onStockChipClick={handleStockChipClick}
           />
         </Paper>
+
+        {/* Date Range Selector */}
+        {selectedVariant && (
+          <Fade in>
+            <Box sx={{ mb: 3 }}>
+              <DateRangeSelector
+                dateRange={dateRange}
+                onDateRangeChange={handleDateRangeChange}
+              />
+            </Box>
+          </Fade>
+        )}
 
         {/* Error Alert */}
         {error && (
@@ -120,11 +197,100 @@ const SalesStatisticsPage: React.FC = () => {
           </Fade>
         )}
 
-        {/* Charts Section */}
+        {/* Tabs and Charts Section */}
         {selectedVariant ? (
           <Grow in timeout={500}>
             <Box>
-              <SalesChart salesData={salesData} loading={loading} />
+              {/* Tabs */}
+              <Paper elevation={2} sx={{ mb: 3 }}>
+                <Tabs
+                  value={activeTab}
+                  onChange={handleTabChange}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  variant="fullWidth"
+                >
+                  <Tab
+                    label="Sprzedaż"
+                    value="sales"
+                    icon={<ShoppingCartIcon />}
+                    iconPosition="start"
+                    disabled={!selectedVariant.hasSalesData}
+                  />
+                  <Tab
+                    label="Stan magazynowy"
+                    value="stock"
+                    icon={<InventoryIcon />}
+                    iconPosition="start"
+                    disabled={!selectedVariant.hasStockData}
+                  />
+                </Tabs>
+              </Paper>
+
+              {/* Chart Content */}
+              {activeTab === "sales" ? (
+                <Fade in key="sales">
+                  <Box>
+                    {selectedVariant.hasSalesData ? (
+                      <SalesChart
+                        salesData={salesData}
+                        loading={salesLoading}
+                      />
+                    ) : (
+                      <Paper
+                        sx={{
+                          p: 4,
+                          textAlign: "center",
+                          bgcolor: "background.default",
+                          border: "2px dashed",
+                          borderColor: "divider",
+                        }}
+                      >
+                        <ShoppingCartIcon
+                          sx={{ fontSize: 60, color: "text.secondary", mb: 2 }}
+                        />
+                        <Typography variant="h6" color="text.secondary">
+                          Brak danych sprzedażowych
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Ten produkt nie ma jeszcze żadnych danych sprzedażowych
+                        </Typography>
+                      </Paper>
+                    )}
+                  </Box>
+                </Fade>
+              ) : (
+                <Fade in key="stock">
+                  <Box>
+                    {selectedVariant.hasStockData ? (
+                      <StockChart
+                        stockData={stockData}
+                        loading={stockLoading}
+                      />
+                    ) : (
+                      <Paper
+                        sx={{
+                          p: 4,
+                          textAlign: "center",
+                          bgcolor: "background.default",
+                          border: "2px dashed",
+                          borderColor: "divider",
+                        }}
+                      >
+                        <InventoryIcon
+                          sx={{ fontSize: 60, color: "text.secondary", mb: 2 }}
+                        />
+                        <Typography variant="h6" color="text.secondary">
+                          Brak danych magazynowych
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Ten produkt nie ma jeszcze żadnych danych magazynowych
+                        </Typography>
+                      </Paper>
+                    )}
+                  </Box>
+                </Fade>
+              )}
             </Box>
           </Grow>
         ) : (
@@ -166,7 +332,7 @@ const SalesStatisticsPage: React.FC = () => {
               </Typography>
               <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
                 Użyj wyszukiwarki powyżej, aby znaleźć produkt i wyświetlić jego
-                statystyki sprzedaży
+                statystyki
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 Możesz filtrować produkty, sortować wyniki i korzystać z historii
