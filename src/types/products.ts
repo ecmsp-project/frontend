@@ -46,6 +46,7 @@ export interface GetProductsResponseDTO {
 
 export interface ProductRepresentationDTO {
   productId: string;
+  name: string;
   variantDetail: VariantDetailDTO;
 }
 

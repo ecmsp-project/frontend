@@ -201,7 +201,7 @@ export const getProductsByCategory = async (
   request: GetProductsRequestDTO,
 ): Promise<GetProductsResponseDTO> => {
   try {
-    const url = new URL(`${PRODUCT_API}/products`);
+    const url = new URL(PRODUCT_API);
     url.searchParams.set("categoryId", categoryId);
 
     const response = await apiCall(url.toString(), {
@@ -216,6 +216,30 @@ export const getProductsByCategory = async (
     return await response.json();
   } catch (error) {
     console.error("API Error fetching products:", error);
+    throw error;
+  }
+};
+
+export const searchProducts = async (
+  query: string,
+  request: GetProductsRequestDTO,
+): Promise<GetProductsResponseDTO> => {
+  try {
+    const url = new URL(`${PRODUCT_API}/search`);
+    url.searchParams.set("query", query);
+
+    const response = await apiCall(url.toString(), {
+      method: "POST",
+      body: JSON.stringify(request),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to search products: ${response.status} ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("API Error searching products:", error);
     throw error;
   }
 };

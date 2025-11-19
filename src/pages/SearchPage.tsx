@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { getProductsByCategory, searchProducts } from "../api/product-service";
 import MainLayout from "../components/layout/MainLayout";
-import type { Product } from "../types/products.ts";
+import { useProductContext } from "../contexts/ProductContext.tsx";
+import type { ProductRepresentationDTO } from "../types/products.ts";
 import {
   Box,
   Typography,
@@ -11,42 +13,12 @@ import {
   ListItem,
   ListItemText,
   Divider,
-  Rating,
   Button,
+  CircularProgress,
 } from "@mui/material";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
-const mockProducts: Product[] = [
-  {
-    id: 1,
-    name: "Laptop Gamingowy X",
-    price: 4999.99,
-    description: "Potężny laptop do gier i pracy.",
-    image: "https://via.placeholder.com/100x100?text=Produkt+1",
-    rating: 4.5,
-    reviews: 120,
-  },
-  {
-    id: 2,
-    name: "T-Shirt Bawełniany",
-    price: 79.5,
-    description: "Wygodny, 100% bawełna.",
-    image: "https://via.placeholder.com/100x100?text=Produkt+2",
-    rating: 4.2,
-    reviews: 55,
-  },
-  {
-    id: 3,
-    name: "Krem Nawilżający Ultra",
-    price: 120.0,
-    description: "Intensywne nawilżenie na cały dzień.",
-    image: "https://via.placeholder.com/100x100?text=Produkt+3",
-    rating: 4.8,
-    reviews: 300,
-  },
-];
-
-const ProductListItem: React.FC<{ product: Product }> = ({ product }) => (
+const ProductListItem: React.FC<{ product: ProductRepresentationDTO }> = ({ product }) => (
   <Paper
     sx={{
       p: 2,
@@ -59,8 +31,8 @@ const ProductListItem: React.FC<{ product: Product }> = ({ product }) => (
   >
     <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
       <img
-        src={product.image}
-        alt={product.name}
+        src={product.variantDetail.imageUrl}
+        alt={product.variantDetail.description}
         style={{
           width: 100,
           height: 100,
@@ -84,14 +56,8 @@ const ProductListItem: React.FC<{ product: Product }> = ({ product }) => (
             whiteSpace: "nowrap",
           }}
         >
-          {product.description}
+          Stan magazynowy: {product.variantDetail.stockQuantity}
         </Typography>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Rating value={product.rating} readOnly size="small" precision={0.1} />
-          <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
-            ({product.reviews} opinii)
-          </Typography>
-        </Box>
       </Box>
     </Box>
 
@@ -104,7 +70,7 @@ const ProductListItem: React.FC<{ product: Product }> = ({ product }) => (
       }}
     >
       <Typography variant="h5" color="primary.main" sx={{ fontWeight: 700, mb: 1 }}>
-        {product.price.toFixed(2)} PLN
+        {product.variantDetail.price.toFixed(2)} PLN
       </Typography>
       <Button variant="contained" color="primary" size="small">
         Do Koszyka
@@ -115,20 +81,75 @@ const ProductListItem: React.FC<{ product: Product }> = ({ product }) => (
 
 const SearchPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [products, setProducts] = useState<ProductRepresentationDTO[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [categoryId, setCategoryId] = useState<string | null>(null);
   const location = useLocation();
+  const { categories } = useProductContext();
+  const params = useParams<{ slug: string }>();
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const queryParam = searchParams.get("query");
-    setSearchTerm(queryParam || "");
-  }, [location.search]);
+
+    if (queryParam) {
+      setSearchTerm(queryParam);
+      setCategoryId(null);
+      loadSearchResults(queryParam);
+    } else if (params.slug) {
+      setSearchTerm("");
+      setCategoryId(params.slug);
+      loadProductsByCategory(params.slug);
+    } else {
+      setSearchTerm("");
+      setCategoryId(null);
+      setProducts([]);
+    }
+  }, [location.search, location.pathname, params.slug]);
+
+  const loadProductsByCategory = async (catId: string) => {
+    setLoading(true);
+    try {
+      const response = await getProductsByCategory(catId, {
+        pageNumber: 0,
+        pageSize: 20,
+      });
+      setProducts(response.productsRepresentation || []);
+    } catch (error) {
+      console.error("Error loading products by category:", error);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadSearchResults = async (query: string) => {
+    setLoading(true);
+    try {
+      const response = await searchProducts(query, {
+        pageNumber: 0,
+        pageSize: 20,
+      });
+      setProducts(response.productsRepresentation || []);
+    } catch (error) {
+      console.error("Error searching products:", error);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <MainLayout>
       <Container maxWidth="lg">
         {searchTerm && (
           <Typography padding={4} paddingBottom={0} variant="h4" component="h1" gutterBottom>
-            Wyniki wyszukiwania dla {searchTerm}
+            Wyniki wyszukiwania dla "{searchTerm}"
+          </Typography>
+        )}
+        {categoryId && !searchTerm && (
+          <Typography padding={4} paddingBottom={0} variant="h4" component="h1" gutterBottom>
+            Produkty z kategorii {categories.find((category) => category.id === categoryId)?.name}
           </Typography>
         )}
 
@@ -160,15 +181,29 @@ const SearchPage: React.FC = () => {
             </Paper>
           </Grid>
           <Grid size={{ xs: 12, md: 9 }}>
-            <Typography variant="subtitle1" gutterBottom color="text.secondary">
-              Znaleziono {mockProducts.length} produkty
-            </Typography>
+            {loading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+                <CircularProgress />
+              </Box>
+            ) : (
+              <>
+                <Typography variant="subtitle1" gutterBottom color="text.secondary">
+                  Znaleziono {products.length} {products.length === 1 ? "produkt" : "produktów"}
+                </Typography>
 
-            <Box>
-              {mockProducts.map((product) => (
-                <ProductListItem key={product.id} product={product} />
-              ))}
-            </Box>
+                <Box>
+                  {products.length > 0 ? (
+                    products.map((product) => (
+                      <ProductListItem key={product.variantDetail.variant_id} product={product} />
+                    ))
+                  ) : (
+                    <Typography variant="body1" color="text.secondary" sx={{ mt: 4 }}>
+                      Brak produktów do wyświetlenia
+                    </Typography>
+                  )}
+                </Box>
+              </>
+            )}
           </Grid>
         </Grid>
       </Container>
