@@ -29,7 +29,6 @@ export interface VariantSalesOverTimeDTO {
   variantId: string;
   productName: string;
   dataPoints: SalesDataPointDTO[];
-  regressionLines: LinearRegressionLineDTO[];
 }
 
 export interface SalesFilters {
@@ -48,7 +47,6 @@ export interface StockLevelOverTimeDTO {
   variantId: string;
   productName: string;
   dataPoints: StockDataPointDTO[];
-  regressionLines: LinearRegressionLineDTO[];
   trendLine: LinearRegressionLineDTO | null;
 }
 

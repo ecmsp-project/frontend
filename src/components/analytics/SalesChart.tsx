@@ -1,8 +1,4 @@
 import React, { useState } from "react";
-import type { VariantSalesOverTimeDTO, LinearRegressionLineDTO } from "../../types/statistics";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import {
   Box,
   Paper,
@@ -14,11 +10,11 @@ import {
   CardContent,
   Stack,
   Chip,
-  Checkbox,
-  FormControlLabel,
+  Button,
+  Alert,
+  Grow,
+  Divider,
 } from "@mui/material";
-import { format, differenceInDays, parseISO } from "date-fns";
-import { pl } from "date-fns/locale/pl";
 import {
   LineChart,
   Line,
@@ -30,7 +26,14 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  ReferenceArea,
 } from "recharts";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import CalculateIcon from "@mui/icons-material/Calculate";
+import ClearIcon from "@mui/icons-material/Clear";
+import type { VariantSalesOverTimeDTO } from "../../types/statistics";
 
 interface SalesChartProps {
   salesData: VariantSalesOverTimeDTO | null;
@@ -39,18 +42,19 @@ interface SalesChartProps {
 
 type ChartType = "line" | "area";
 
-// Color palette for regression lines
-const REGRESSION_COLORS = [
-  "#ff9800", // Orange
-  "#9c27b0", // Purple
-  "#e91e63", // Pink
-  "#f44336", // Red
-  "#3f51b5", // Indigo
-];
-
 const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
   const [chartType, setChartType] = useState<ChartType>("area");
-  const [showRegressionLines, setShowRegressionLines] = useState(false);
+
+  // Integration mode state
+  const [integrationMode, setIntegrationMode] = useState(false);
+  const [refAreaLeft, setRefAreaLeft] = useState<string | null>(null);
+  const [refAreaRight, setRefAreaRight] = useState<string | null>(null);
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [integrationResult, setIntegrationResult] = useState<{
+    quantity: number;
+    revenue: number;
+    days: number;
+  } | null>(null);
 
   if (loading) {
     return (
@@ -82,7 +86,9 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
           borderColor: "divider",
         }}
       >
-        <ShoppingCartIcon sx={{ fontSize: 60, color: "text.secondary", mb: 2 }} />
+        <ShoppingCartIcon
+          sx={{ fontSize: 60, color: "text.secondary", mb: 2 }}
+        />
         <Typography variant="h6" color="text.secondary">
           Brak danych sprzedażowych
         </Typography>
@@ -105,12 +111,16 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
   }));
 
   // Calculate KPIs
-  const totalQuantity = salesData.dataPoints.reduce((sum, point) => sum + point.quantity, 0);
+  const totalQuantity = salesData.dataPoints.reduce(
+    (sum, point) => sum + point.quantity,
+    0,
+  );
   const totalRevenue = salesData.dataPoints.reduce(
     (sum, point) => sum + Number(point.totalRevenue),
     0,
   );
-  const averagePrice = totalQuantity > 0 ? totalRevenue / totalQuantity : 0;
+  const averagePrice =
+    totalQuantity > 0 ? totalRevenue / totalQuantity : 0;
 
   // Calculate trend
   const recentSales = salesData.dataPoints.slice(-7);
@@ -118,45 +128,74 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
     Math.max(0, salesData.dataPoints.length - 14),
     Math.max(0, salesData.dataPoints.length - 7),
   );
-  const recentAvg = recentSales.reduce((sum, p) => sum + p.quantity, 0) / recentSales.length;
-  const olderAvg = olderSales.reduce((sum, p) => sum + p.quantity, 0) / (olderSales.length || 1);
-  const trendPercentage = olderAvg > 0 ? ((recentAvg - olderAvg) / olderAvg) * 100 : 0;
+  const recentAvg =
+    recentSales.reduce((sum, p) => sum + p.quantity, 0) / recentSales.length;
+  const olderAvg =
+    olderSales.reduce((sum, p) => sum + p.quantity, 0) /
+    (olderSales.length || 1);
+  const trendPercentage =
+    olderAvg > 0 ? ((recentAvg - olderAvg) / olderAvg) * 100 : 0;
 
-  // Calculate regression line points for visualization
-  const getRegressionLineData = (
-    regression: LinearRegressionLineDTO,
-    dataType: "quantity" | "revenue",
-  ) => {
-    const validFrom = parseISO(regression.validFrom);
-    const validTo = parseISO(regression.validTo);
+  // Integration mode handlers
+  const handleMouseDown = (e: any) => {
+    if (integrationMode && e && e.activeLabel) {
+      setRefAreaLeft(e.activeLabel);
+      setRefAreaRight(null);
+      setIntegrationResult(null);
+      setIsSelecting(true);
+    }
+  };
 
-    // Find the reference date (earliest date in the dataset)
-    const referenceDate = new Date(salesData.dataPoints[0].date);
+  const handleMouseMove = (e: any) => {
+    if (integrationMode && isSelecting && refAreaLeft && e && e.activeLabel) {
+      setRefAreaRight(e.activeLabel);
+    }
+  };
 
-    // Calculate y values for the start and end of the regression period
-    const calculateY = (date: Date) => {
-      const daysSinceReference = differenceInDays(date, referenceDate);
-      return regression.slope * daysSinceReference + regression.intercept;
-    };
+  const handleMouseUp = () => {
+    if (integrationMode && isSelecting && refAreaLeft && refAreaRight && refAreaLeft !== refAreaRight) {
+      calculateIntegration();
+    }
+    setIsSelecting(false);
+  };
 
-    return [
-      {
-        date: format(validFrom, "dd MMM", { locale: pl }),
-        fullDate: format(validFrom, "dd.MM.yyyy", { locale: pl }),
-        [dataType]: calculateY(validFrom),
-        timestamp: validFrom.getTime(),
-      },
-      {
-        date: format(validTo, "dd MMM", { locale: pl }),
-        fullDate: format(validTo, "dd.MM.yyyy", { locale: pl }),
-        [dataType]: calculateY(validTo),
-        timestamp: validTo.getTime(),
-      },
-    ];
+  const calculateIntegration = () => {
+    if (!refAreaLeft || !refAreaRight) return;
+
+    const leftIndex = chartData.findIndex((d) => d.date === refAreaLeft);
+    const rightIndex = chartData.findIndex((d) => d.date === refAreaRight);
+
+    const startIndex = Math.min(leftIndex, rightIndex);
+    const endIndex = Math.max(leftIndex, rightIndex);
+
+    if (startIndex === -1 || endIndex === -1) return;
+
+    const selectedData = chartData.slice(startIndex, endIndex + 1);
+    const totalQuantity = selectedData.reduce((sum, d) => sum + d.quantity, 0);
+    const totalRevenue = selectedData.reduce((sum, d) => sum + d.revenue, 0);
+    const days = selectedData.length;
+
+    setIntegrationResult({
+      quantity: totalQuantity,
+      revenue: totalRevenue,
+      days: days,
+    });
+  };
+
+  const clearIntegration = () => {
+    setRefAreaLeft(null);
+    setRefAreaRight(null);
+    setIntegrationResult(null);
+    setIsSelecting(false);
+  };
+
+  const toggleIntegrationMode = () => {
+    setIntegrationMode(!integrationMode);
+    clearIntegration();
   };
 
   // Custom tooltip
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
@@ -170,9 +209,13 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
           <Typography variant="body2" sx={{ mb: 1, fontWeight: "bold" }}>
             {payload[0].payload.fullDate}
           </Typography>
-          {}
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {payload.map((entry: any, index: number) => (
-            <Typography key={index} variant="body2" sx={{ color: entry.color }}>
+            <Typography
+              key={index}
+              variant="body2"
+              sx={{ color: entry.color }}
+            >
               {entry.name}:{" "}
               <strong>
                 {entry.name === "Przychód"
@@ -293,17 +336,24 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
       >
         <Typography variant="h6">{salesData.productName}</Typography>
         <Stack direction="row" spacing={2} alignItems="center">
-          {salesData.regressionLines && salesData.regressionLines.length > 0 && (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={showRegressionLines}
-                  onChange={(e) => setShowRegressionLines(e.target.checked)}
-                  size="small"
-                />
-              }
-              label="Pokaż linie regresji"
-            />
+          <Button
+            variant={integrationMode ? "contained" : "outlined"}
+            size="small"
+            startIcon={integrationMode ? <ClearIcon /> : <CalculateIcon />}
+            onClick={toggleIntegrationMode}
+            color={integrationMode ? "secondary" : "primary"}
+          >
+            {integrationMode ? "Anuluj całkowanie" : "Całkowanie"}
+          </Button>
+          {integrationMode && refAreaLeft && refAreaRight && (
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<ClearIcon />}
+              onClick={clearIntegration}
+            >
+              Wyczyść zaznaczenie
+            </Button>
           )}
           <ToggleButtonGroup
             value={chartType}
@@ -317,14 +367,162 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
         </Stack>
       </Box>
 
+      {/* Integration Instructions */}
+      {integrationMode && !integrationResult && (
+        <Alert severity="info" sx={{ mb: 2 }}>
+          Kliknij i przeciągnij na wykresie, aby zaznaczyć okres do obliczenia całki
+        </Alert>
+      )}
+
+      {/* Integration Result */}
+      {integrationResult && (
+        <Grow in timeout={500}>
+          <Paper
+            sx={{
+              p: 3,
+              mb: 2,
+              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              color: "white",
+              borderRadius: 2,
+              boxShadow: 3
+            }}
+          >
+            <Typography variant="h6" gutterBottom fontWeight="bold" sx={{ mb: 2 }}>
+              📊 Wyniki całkowania ({integrationResult.days} dni)
+            </Typography>
+            <Stack
+              direction={{ xs: "column", md: "row" }}
+              spacing={2}
+              divider={<Divider orientation="vertical" flexItem sx={{ bgcolor: "rgba(255,255,255,0.3)" }} />}
+            >
+              <Card
+                sx={{
+                  flex: 1,
+                  background: "rgba(255, 255, 255, 0.15)",
+                  backdropFilter: "blur(10px)",
+                  color: "white",
+                  transition: "transform 0.2s",
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)"
+                  }
+                }}
+              >
+                <CardContent>
+                  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                    <ShoppingCartIcon sx={{ mr: 1, fontSize: 28 }} />
+                    <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                      Suma sprzedanych sztuk
+                    </Typography>
+                  </Box>
+                  <Typography variant="h4" fontWeight="bold">
+                    {integrationResult.quantity} szt.
+                  </Typography>
+                </CardContent>
+              </Card>
+
+              <Card
+                sx={{
+                  flex: 1,
+                  background: "rgba(255, 255, 255, 0.15)",
+                  backdropFilter: "blur(10px)",
+                  color: "white",
+                  transition: "transform 0.2s",
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)"
+                  }
+                }}
+              >
+                <CardContent>
+                  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                    <AttachMoneyIcon sx={{ mr: 1, fontSize: 28 }} />
+                    <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                      Suma przychodu
+                    </Typography>
+                  </Box>
+                  <Typography variant="h4" fontWeight="bold">
+                    {integrationResult.revenue.toFixed(2)} zł
+                  </Typography>
+                </CardContent>
+              </Card>
+
+              <Card
+                sx={{
+                  flex: 1,
+                  background: "rgba(255, 255, 255, 0.15)",
+                  backdropFilter: "blur(10px)",
+                  color: "white",
+                  transition: "transform 0.2s",
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)"
+                  }
+                }}
+              >
+                <CardContent>
+                  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                    <TrendingUpIcon sx={{ mr: 1, fontSize: 28 }} />
+                    <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                      Średnia dzienna (ilość)
+                    </Typography>
+                  </Box>
+                  <Typography variant="h4" fontWeight="bold">
+                    {(integrationResult.quantity / integrationResult.days).toFixed(1)} szt./dzień
+                  </Typography>
+                </CardContent>
+              </Card>
+
+              <Card
+                sx={{
+                  flex: 1,
+                  background: "rgba(255, 255, 255, 0.15)",
+                  backdropFilter: "blur(10px)",
+                  color: "white",
+                  transition: "transform 0.2s",
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)"
+                  }
+                }}
+              >
+                <CardContent>
+                  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                    <AttachMoneyIcon sx={{ mr: 1, fontSize: 28 }} />
+                    <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                      Średnia dzienna (przychód)
+                    </Typography>
+                  </Box>
+                  <Typography variant="h4" fontWeight="bold">
+                    {(integrationResult.revenue / integrationResult.days).toFixed(2)} zł/dzień
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Stack>
+          </Paper>
+        </Grow>
+      )}
+
       {/* Charts */}
       <Paper sx={{ p: 2, mb: 3 }}>
         <Typography variant="subtitle1" gutterBottom>
           Ilość sprzedanych sztuk w czasie
         </Typography>
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer
+          width="100%"
+          height={300}
+          style={{
+            userSelect: isSelecting ? 'none' : 'auto',
+            cursor: integrationMode ? 'crosshair' : 'default'
+          }}
+        >
           {chartType === "line" ? (
-            <LineChart data={chartData}>
+            <LineChart
+              data={chartData}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+            >
               <defs>
                 <linearGradient id="colorQuantity" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
@@ -332,10 +530,25 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis dataKey="date" stroke="#666" style={{ fontSize: "0.85rem" }} />
+              <XAxis
+                dataKey="date"
+                stroke="#666"
+                style={{ fontSize: "0.85rem" }}
+              />
               <YAxis stroke="#666" style={{ fontSize: "0.85rem" }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
+
+              {refAreaLeft && refAreaRight && (
+                <ReferenceArea
+                  x1={refAreaLeft}
+                  x2={refAreaRight}
+                  strokeOpacity={0.3}
+                  fill="#8884d8"
+                  fillOpacity={0.3}
+                />
+              )}
+
               <Line
                 type="monotone"
                 dataKey="quantity"
@@ -348,29 +561,14 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 animationEasing="ease-in-out"
               />
 
-              {/* Regression lines */}
-              {showRegressionLines &&
-                salesData.regressionLines &&
-                salesData.regressionLines.map((regression, index) => {
-                  const lineData = getRegressionLineData(regression, "quantity");
-                  return (
-                    <Line
-                      key={`regression-${index}`}
-                      data={lineData}
-                      type="linear"
-                      dataKey="quantity"
-                      stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
-                      strokeWidth={2}
-                      dot={false}
-                      strokeDasharray="5 5"
-                      name={`Regresja ${index + 1}`}
-                      animationDuration={500}
-                    />
-                  );
-                })}
             </LineChart>
           ) : (
-            <AreaChart data={chartData}>
+            <AreaChart
+              data={chartData}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+            >
               <defs>
                 <linearGradient id="colorQuantity" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
@@ -378,10 +576,25 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis dataKey="date" stroke="#666" style={{ fontSize: "0.85rem" }} />
+              <XAxis
+                dataKey="date"
+                stroke="#666"
+                style={{ fontSize: "0.85rem" }}
+              />
               <YAxis stroke="#666" style={{ fontSize: "0.85rem" }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
+
+              {refAreaLeft && refAreaRight && (
+                <ReferenceArea
+                  x1={refAreaLeft}
+                  x2={refAreaRight}
+                  strokeOpacity={0.3}
+                  fill="#8884d8"
+                  fillOpacity={0.3}
+                />
+              )}
+
               <Area
                 type="monotone"
                 dataKey="quantity"
@@ -393,26 +606,6 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 animationEasing="ease-in-out"
               />
 
-              {/* Regression lines */}
-              {showRegressionLines &&
-                salesData.regressionLines &&
-                salesData.regressionLines.map((regression, index) => {
-                  const lineData = getRegressionLineData(regression, "quantity");
-                  return (
-                    <Line
-                      key={`regression-${index}`}
-                      data={lineData}
-                      type="linear"
-                      dataKey="quantity"
-                      stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
-                      strokeWidth={2}
-                      dot={false}
-                      strokeDasharray="5 5"
-                      name={`Regresja ${index + 1}`}
-                      animationDuration={500}
-                    />
-                  );
-                })}
             </AreaChart>
           )}
         </ResponsiveContainer>
@@ -422,9 +615,21 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
         <Typography variant="subtitle1" gutterBottom>
           Przychód w czasie
         </Typography>
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer
+          width="100%"
+          height={300}
+          style={{
+            userSelect: isSelecting ? 'none' : 'auto',
+            cursor: integrationMode ? 'crosshair' : 'default'
+          }}
+        >
           {chartType === "line" ? (
-            <LineChart data={chartData}>
+            <LineChart
+              data={chartData}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+            >
               <defs>
                 <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
@@ -432,10 +637,25 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis dataKey="date" stroke="#666" style={{ fontSize: "0.85rem" }} />
+              <XAxis
+                dataKey="date"
+                stroke="#666"
+                style={{ fontSize: "0.85rem" }}
+              />
               <YAxis stroke="#666" style={{ fontSize: "0.85rem" }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
+
+              {refAreaLeft && refAreaRight && (
+                <ReferenceArea
+                  x1={refAreaLeft}
+                  x2={refAreaRight}
+                  strokeOpacity={0.3}
+                  fill="#82ca9d"
+                  fillOpacity={0.3}
+                />
+              )}
+
               <Line
                 type="monotone"
                 dataKey="revenue"
@@ -448,29 +668,14 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 animationEasing="ease-in-out"
               />
 
-              {/* Regression lines */}
-              {showRegressionLines &&
-                salesData.regressionLines &&
-                salesData.regressionLines.map((regression, index) => {
-                  const lineData = getRegressionLineData(regression, "revenue");
-                  return (
-                    <Line
-                      key={`regression-revenue-${index}`}
-                      data={lineData}
-                      type="linear"
-                      dataKey="revenue"
-                      stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
-                      strokeWidth={2}
-                      dot={false}
-                      strokeDasharray="5 5"
-                      name={`Regresja ${index + 1}`}
-                      animationDuration={500}
-                    />
-                  );
-                })}
             </LineChart>
           ) : (
-            <AreaChart data={chartData}>
+            <AreaChart
+              data={chartData}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+            >
               <defs>
                 <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
@@ -478,10 +683,25 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis dataKey="date" stroke="#666" style={{ fontSize: "0.85rem" }} />
+              <XAxis
+                dataKey="date"
+                stroke="#666"
+                style={{ fontSize: "0.85rem" }}
+              />
               <YAxis stroke="#666" style={{ fontSize: "0.85rem" }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
+
+              {refAreaLeft && refAreaRight && (
+                <ReferenceArea
+                  x1={refAreaLeft}
+                  x2={refAreaRight}
+                  strokeOpacity={0.3}
+                  fill="#82ca9d"
+                  fillOpacity={0.3}
+                />
+              )}
+
               <Area
                 type="monotone"
                 dataKey="revenue"
@@ -493,26 +713,6 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 animationEasing="ease-in-out"
               />
 
-              {/* Regression lines */}
-              {showRegressionLines &&
-                salesData.regressionLines &&
-                salesData.regressionLines.map((regression, index) => {
-                  const lineData = getRegressionLineData(regression, "revenue");
-                  return (
-                    <Line
-                      key={`regression-revenue-${index}`}
-                      data={lineData}
-                      type="linear"
-                      dataKey="revenue"
-                      stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
-                      strokeWidth={2}
-                      dot={false}
-                      strokeDasharray="5 5"
-                      name={`Regresja ${index + 1}`}
-                      animationDuration={500}
-                    />
-                  );
-                })}
             </AreaChart>
           )}
         </ResponsiveContainer>
