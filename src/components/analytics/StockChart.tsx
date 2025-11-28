@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import type { StockLevelOverTimeDTO, LinearRegressionLineDTO } from "../../types/statistics";
+import type { StockLevelOverTimeDTO } from "../../types/statistics";
 import AssessmentIcon from "@mui/icons-material/Assessment";
+import CalculateIcon from "@mui/icons-material/Calculate";
+import ClearIcon from "@mui/icons-material/Clear";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import WarningIcon from "@mui/icons-material/Warning";
 import {
   Box,
@@ -14,11 +17,11 @@ import {
   Card,
   CardContent,
   Stack,
-  Chip,
   Alert,
   AlertTitle,
-  Checkbox,
-  FormControlLabel,
+  Button,
+  Grow,
+  Divider,
 } from "@mui/material";
 import { format, differenceInDays, parseISO } from "date-fns";
 import { pl } from "date-fns/locale/pl";
@@ -33,7 +36,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  ReferenceLine,
+  ReferenceArea,
 } from "recharts";
 
 interface StockChartProps {
@@ -43,20 +46,20 @@ interface StockChartProps {
 
 type ChartType = "line" | "area";
 
-// Color palette for regression lines
-const REGRESSION_COLORS = [
-  "#ff9800", // Orange
-  "#9c27b0", // Purple
-  "#e91e63", // Pink
-  "#f44336", // Red
-  "#3f51b5", // Indigo
-];
-
-const TREND_LINE_COLOR = "#4caf50"; // Green
-
 const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
   const [chartType, setChartType] = useState<ChartType>("area");
-  const [showRegressionLines, setShowRegressionLines] = useState(true);
+
+  // Integration mode state
+  const [integrationMode, setIntegrationMode] = useState(false);
+  const [refAreaLeft, setRefAreaLeft] = useState<string | null>(null);
+  const [refAreaRight, setRefAreaRight] = useState<string | null>(null);
+  const [isSelecting, setIsSelecting] = useState(false);
+  const [integrationResult, setIntegrationResult] = useState<{
+    averageStock: number;
+    minStock: number;
+    maxStock: number;
+    days: number;
+  } | null>(null);
 
   if (loading) {
     return (
@@ -111,6 +114,73 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
     timestamp: parseISO(point.date).getTime(),
   }));
 
+  // Integration mode handlers
+  const handleMouseDown = (e: any) => {
+    if (integrationMode && e && e.activeLabel) {
+      setRefAreaLeft(e.activeLabel);
+      setRefAreaRight(null);
+      setIntegrationResult(null);
+      setIsSelecting(true);
+    }
+  };
+
+  const handleMouseMove = (e: any) => {
+    if (integrationMode && isSelecting && refAreaLeft && e && e.activeLabel) {
+      setRefAreaRight(e.activeLabel);
+    }
+  };
+
+  const handleMouseUp = () => {
+    if (
+      integrationMode &&
+      isSelecting &&
+      refAreaLeft &&
+      refAreaRight &&
+      refAreaLeft !== refAreaRight
+    ) {
+      calculateIntegration();
+    }
+    setIsSelecting(false);
+  };
+
+  const calculateIntegration = () => {
+    if (!refAreaLeft || !refAreaRight) return;
+
+    const leftIndex = chartData.findIndex((d) => d.date === refAreaLeft);
+    const rightIndex = chartData.findIndex((d) => d.date === refAreaRight);
+
+    const startIndex = Math.min(leftIndex, rightIndex);
+    const endIndex = Math.max(leftIndex, rightIndex);
+
+    if (startIndex === -1 || endIndex === -1) return;
+
+    const selectedData = chartData.slice(startIndex, endIndex + 1);
+    const stockLevels = selectedData.map((d) => d.stockLevel);
+    const averageStock = stockLevels.reduce((sum, level) => sum + level, 0) / stockLevels.length;
+    const minStock = Math.min(...stockLevels);
+    const maxStock = Math.max(...stockLevels);
+    const days = selectedData.length;
+
+    setIntegrationResult({
+      averageStock,
+      minStock,
+      maxStock,
+      days,
+    });
+  };
+
+  const clearIntegration = () => {
+    setRefAreaLeft(null);
+    setRefAreaRight(null);
+    setIntegrationResult(null);
+    setIsSelecting(false);
+  };
+
+  const toggleIntegrationMode = () => {
+    setIntegrationMode(!integrationMode);
+    clearIntegration();
+  };
+
   // Calculate KPIs
   const currentStock = stockData.dataPoints[stockData.dataPoints.length - 1]?.stockLevel || 0;
 
@@ -135,39 +205,9 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
     return "info";
   };
 
-  // Calculate regression line points for visualization
-  const getRegressionLineData = (regression: LinearRegressionLineDTO) => {
-    const validFrom = parseISO(regression.validFrom);
-    const validTo = parseISO(regression.validTo);
-
-    // Find the reference date (earliest date in the dataset)
-    const referenceDate = parseISO(stockData.dataPoints[0].date);
-
-    // Calculate y values for the start and end of the regression period
-    const calculateY = (date: Date) => {
-      const daysSinceReference = differenceInDays(date, referenceDate);
-      return regression.slope * daysSinceReference + regression.intercept;
-    };
-
-    return [
-      {
-        date: format(validFrom, "dd MMM", { locale: pl }),
-        fullDate: format(validFrom, "dd.MM.yyyy", { locale: pl }),
-        stockLevel: calculateY(validFrom),
-        timestamp: validFrom.getTime(),
-      },
-      {
-        date: format(validTo, "dd MMM", { locale: pl }),
-        fullDate: format(validTo, "dd.MM.yyyy", { locale: pl }),
-        stockLevel: calculateY(validTo),
-        timestamp: validTo.getTime(),
-      },
-    ];
-  };
-
   // Extend chart domain to include depletion date if needed
   let extendedChartData = chartData;
-  if (depletionDate && showRegressionLines) {
+  if (depletionDate) {
     const lastDataPoint = chartData[chartData.length - 1];
     const lastTimestamp = lastDataPoint.timestamp;
     const depletionTimestamp = depletionDate.getTime();
@@ -366,16 +406,25 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
       >
         <Typography variant="h6">{stockData.productName} - Stan magazynowy</Typography>
         <Stack direction="row" spacing={2} alignItems="center">
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={showRegressionLines}
-                onChange={(e) => setShowRegressionLines(e.target.checked)}
-                size="small"
-              />
-            }
-            label="Pokaż linie regresji"
-          />
+          <Button
+            variant={integrationMode ? "contained" : "outlined"}
+            size="small"
+            startIcon={integrationMode ? <ClearIcon /> : <CalculateIcon />}
+            onClick={toggleIntegrationMode}
+            color={integrationMode ? "secondary" : "primary"}
+          >
+            {integrationMode ? "Anuluj całkowanie" : "Całkowanie"}
+          </Button>
+          {integrationMode && refAreaLeft && refAreaRight && (
+            <Button
+              variant="outlined"
+              size="small"
+              startIcon={<ClearIcon />}
+              onClick={clearIntegration}
+            >
+              Wyczyść zaznaczenie
+            </Button>
+          )}
           <ToggleButtonGroup
             value={chartType}
             exclusive
@@ -388,11 +437,139 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
         </Stack>
       </Box>
 
+      {/* Integration Instructions */}
+      {integrationMode && !integrationResult && (
+        <Alert severity="info" sx={{ mb: 2 }}>
+          Kliknij i przeciągnij na wykresie, aby zaznaczyć okres do obliczenia statystyk
+        </Alert>
+      )}
+
+      {/* Integration Result */}
+      {integrationResult && (
+        <Grow in timeout={500}>
+          <Paper
+            sx={{
+              p: 3,
+              mb: 2,
+              background: "linear-gradient(135deg, #2196f3 0%, #1976d2 100%)",
+              color: "white",
+              borderRadius: 2,
+              boxShadow: 3,
+            }}
+          >
+            <Typography variant="h6" gutterBottom fontWeight="bold" sx={{ mb: 2 }}>
+              📊 Statystyki dla zaznaczonego okresu ({integrationResult.days} dni)
+            </Typography>
+            <Stack
+              direction={{ xs: "column", md: "row" }}
+              spacing={2}
+              divider={
+                <Divider
+                  orientation="vertical"
+                  flexItem
+                  sx={{ bgcolor: "rgba(255,255,255,0.3)" }}
+                />
+              }
+            >
+              <Card
+                sx={{
+                  flex: 1,
+                  background: "rgba(255, 255, 255, 0.15)",
+                  backdropFilter: "blur(10px)",
+                  color: "white",
+                  transition: "transform 0.2s",
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)",
+                  },
+                }}
+              >
+                <CardContent>
+                  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                    <InventoryIcon sx={{ mr: 1, fontSize: 28 }} />
+                    <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                      Średni stan
+                    </Typography>
+                  </Box>
+                  <Typography variant="h4" fontWeight="bold">
+                    {integrationResult.averageStock.toFixed(1)} szt.
+                  </Typography>
+                </CardContent>
+              </Card>
+
+              <Card
+                sx={{
+                  flex: 1,
+                  background: "rgba(255, 255, 255, 0.15)",
+                  backdropFilter: "blur(10px)",
+                  color: "white",
+                  transition: "transform 0.2s",
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)",
+                  },
+                }}
+              >
+                <CardContent>
+                  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                    <TrendingDownIcon sx={{ mr: 1, fontSize: 28 }} />
+                    <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                      Minimalny stan
+                    </Typography>
+                  </Box>
+                  <Typography variant="h4" fontWeight="bold">
+                    {integrationResult.minStock} szt.
+                  </Typography>
+                </CardContent>
+              </Card>
+
+              <Card
+                sx={{
+                  flex: 1,
+                  background: "rgba(255, 255, 255, 0.15)",
+                  backdropFilter: "blur(10px)",
+                  color: "white",
+                  transition: "transform 0.2s",
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)",
+                  },
+                }}
+              >
+                <CardContent>
+                  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                    <TrendingUpIcon sx={{ mr: 1, fontSize: 28 }} />
+                    <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                      Maksymalny stan
+                    </Typography>
+                  </Box>
+                  <Typography variant="h4" fontWeight="bold">
+                    {integrationResult.maxStock} szt.
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Stack>
+          </Paper>
+        </Grow>
+      )}
+
       {/* Stock Level Chart */}
       <Paper sx={{ p: 2 }}>
-        <ResponsiveContainer width="100%" height={400}>
+        <ResponsiveContainer
+          width="100%"
+          height={400}
+          style={{
+            userSelect: isSelecting ? "none" : "auto",
+            cursor: integrationMode ? "crosshair" : "default",
+          }}
+        >
           {chartType === "line" ? (
-            <LineChart data={extendedChartData}>
+            <LineChart
+              data={extendedChartData}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+            >
               <defs>
                 <linearGradient id="colorStock" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#2196f3" stopOpacity={0.8} />
@@ -404,6 +581,16 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
               <YAxis stroke="#666" style={{ fontSize: "0.85rem" }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
+
+              {refAreaLeft && refAreaRight && (
+                <ReferenceArea
+                  x1={refAreaLeft}
+                  x2={refAreaRight}
+                  strokeOpacity={0.3}
+                  fill="#2196f3"
+                  fillOpacity={0.3}
+                />
+              )}
 
               {/* Main stock line */}
               <Line
@@ -417,66 +604,14 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
                 animationDuration={1000}
                 animationEasing="ease-in-out"
               />
-
-              {/* Regression lines */}
-              {showRegressionLines &&
-                stockData.regressionLines.map((regression, index) => {
-                  const lineData = getRegressionLineData(regression);
-                  return (
-                    <Line
-                      key={`regression-${index}`}
-                      data={lineData}
-                      type="linear"
-                      dataKey="stockLevel"
-                      stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
-                      strokeWidth={2}
-                      dot={false}
-                      strokeDasharray="5 5"
-                      name={`Regresja ${index + 1}`}
-                      animationDuration={500}
-                    />
-                  );
-                })}
-
-              {/* Trend line */}
-              {showRegressionLines &&
-                stockData.trendLine &&
-                (() => {
-                  const trendData = getRegressionLineData(stockData.trendLine);
-                  return (
-                    <Line
-                      data={trendData}
-                      type="linear"
-                      dataKey="stockLevel"
-                      stroke={TREND_LINE_COLOR}
-                      strokeWidth={3}
-                      dot={false}
-                      strokeDasharray="10 5"
-                      name="Trend (ostatnie dni)"
-                      animationDuration={500}
-                    />
-                  );
-                })()}
-
-              {/* Depletion date reference line */}
-              {depletionDate && showRegressionLines && (
-                <ReferenceLine
-                  x={format(depletionDate, "dd MMM", { locale: pl })}
-                  stroke="red"
-                  strokeDasharray="5 5"
-                  strokeWidth={2}
-                  label={{
-                    value: "⚠️ Wyczerpanie",
-                    position: "top",
-                    fill: "red",
-                    fontSize: 12,
-                  }}
-                  ifOverflow="extendDomain"
-                />
-              )}
             </LineChart>
           ) : (
-            <AreaChart data={extendedChartData}>
+            <AreaChart
+              data={extendedChartData}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+            >
               <defs>
                 <linearGradient id="colorStock" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#2196f3" stopOpacity={0.8} />
@@ -489,6 +624,16 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
               <Tooltip content={<CustomTooltip />} />
               <Legend />
 
+              {refAreaLeft && refAreaRight && (
+                <ReferenceArea
+                  x1={refAreaLeft}
+                  x2={refAreaRight}
+                  strokeOpacity={0.3}
+                  fill="#2196f3"
+                  fillOpacity={0.3}
+                />
+              )}
+
               {/* Main stock area */}
               <Area
                 type="monotone"
@@ -500,100 +645,10 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
                 animationDuration={1000}
                 animationEasing="ease-in-out"
               />
-
-              {/* Regression lines */}
-              {showRegressionLines &&
-                stockData.regressionLines.map((regression, index) => {
-                  const lineData = getRegressionLineData(regression);
-                  return (
-                    <Line
-                      key={`regression-${index}`}
-                      data={lineData}
-                      type="linear"
-                      dataKey="stockLevel"
-                      stroke={REGRESSION_COLORS[index % REGRESSION_COLORS.length]}
-                      strokeWidth={2}
-                      dot={false}
-                      strokeDasharray="5 5"
-                      name={`Regresja ${index + 1}`}
-                      animationDuration={500}
-                    />
-                  );
-                })}
-
-              {/* Trend line */}
-              {showRegressionLines &&
-                stockData.trendLine &&
-                (() => {
-                  const trendData = getRegressionLineData(stockData.trendLine);
-                  return (
-                    <Line
-                      data={trendData}
-                      type="linear"
-                      dataKey="stockLevel"
-                      stroke={TREND_LINE_COLOR}
-                      strokeWidth={3}
-                      dot={false}
-                      strokeDasharray="10 5"
-                      name="Trend (ostatnie dni)"
-                      animationDuration={500}
-                    />
-                  );
-                })()}
-
-              {/* Depletion date reference line */}
-              {depletionDate && showRegressionLines && (
-                <ReferenceLine
-                  x={format(depletionDate, "dd MMM", { locale: pl })}
-                  stroke="red"
-                  strokeDasharray="5 5"
-                  strokeWidth={2}
-                  label={{
-                    value: "⚠️ Wyczerpanie",
-                    position: "top",
-                    fill: "red",
-                    fontSize: 12,
-                  }}
-                  ifOverflow="extendDomain"
-                />
-              )}
             </AreaChart>
           )}
         </ResponsiveContainer>
       </Paper>
-
-      {/* Regression Lines Legend */}
-      {showRegressionLines && (stockData.regressionLines.length > 0 || stockData.trendLine) && (
-        <Paper sx={{ p: 2, mt: 2, bgcolor: "background.default" }}>
-          <Typography variant="subtitle2" gutterBottom>
-            Linie regresji liniowej:
-          </Typography>
-          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-            {stockData.regressionLines.map((regression, index) => (
-              <Chip
-                key={`chip-${index}`}
-                label={`Okres ${format(parseISO(regression.validFrom), "dd.MM")} - ${format(parseISO(regression.validTo), "dd.MM")} (R²=${regression.rSquared.toFixed(2)})`}
-                size="small"
-                sx={{
-                  borderLeft: "4px solid",
-                  borderColor: REGRESSION_COLORS[index % REGRESSION_COLORS.length],
-                }}
-              />
-            ))}
-            {stockData.trendLine && (
-              <Chip
-                label={`Trend ostatnie dni (R²=${stockData.trendLine.rSquared.toFixed(2)})`}
-                size="small"
-                sx={{
-                  borderLeft: "4px solid",
-                  borderColor: TREND_LINE_COLOR,
-                  fontWeight: "bold",
-                }}
-              />
-            )}
-          </Stack>
-        </Paper>
-      )}
     </Box>
   );
 };
