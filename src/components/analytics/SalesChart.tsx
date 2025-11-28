@@ -191,7 +191,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
   };
 
   // Custom tooltip
-   
+
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
@@ -205,7 +205,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
           <Typography variant="body2" sx={{ mb: 1, fontWeight: "bold" }}>
             {payload[0].payload.fullDate}
           </Typography>
-          { }
+          {}
           {payload.map((entry: any, index: number) => (
             <Typography key={index} variant="body2" sx={{ color: entry.color }}>
               {entry.name}:{" "}
