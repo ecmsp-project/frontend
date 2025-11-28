@@ -1,4 +1,10 @@
 import React, { useState } from "react";
+import type { VariantSalesOverTimeDTO } from "../../types/statistics";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import CalculateIcon from "@mui/icons-material/Calculate";
+import ClearIcon from "@mui/icons-material/Clear";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import {
   Box,
   Paper,
@@ -28,12 +34,6 @@ import {
   ResponsiveContainer,
   ReferenceArea,
 } from "recharts";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import CalculateIcon from "@mui/icons-material/Calculate";
-import ClearIcon from "@mui/icons-material/Clear";
-import type { VariantSalesOverTimeDTO } from "../../types/statistics";
 
 interface SalesChartProps {
   salesData: VariantSalesOverTimeDTO | null;
@@ -86,9 +86,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
           borderColor: "divider",
         }}
       >
-        <ShoppingCartIcon
-          sx={{ fontSize: 60, color: "text.secondary", mb: 2 }}
-        />
+        <ShoppingCartIcon sx={{ fontSize: 60, color: "text.secondary", mb: 2 }} />
         <Typography variant="h6" color="text.secondary">
           Brak danych sprzedażowych
         </Typography>
@@ -111,16 +109,12 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
   }));
 
   // Calculate KPIs
-  const totalQuantity = salesData.dataPoints.reduce(
-    (sum, point) => sum + point.quantity,
-    0,
-  );
+  const totalQuantity = salesData.dataPoints.reduce((sum, point) => sum + point.quantity, 0);
   const totalRevenue = salesData.dataPoints.reduce(
     (sum, point) => sum + Number(point.totalRevenue),
     0,
   );
-  const averagePrice =
-    totalQuantity > 0 ? totalRevenue / totalQuantity : 0;
+  const averagePrice = totalQuantity > 0 ? totalRevenue / totalQuantity : 0;
 
   // Calculate trend
   const recentSales = salesData.dataPoints.slice(-7);
@@ -128,13 +122,9 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
     Math.max(0, salesData.dataPoints.length - 14),
     Math.max(0, salesData.dataPoints.length - 7),
   );
-  const recentAvg =
-    recentSales.reduce((sum, p) => sum + p.quantity, 0) / recentSales.length;
-  const olderAvg =
-    olderSales.reduce((sum, p) => sum + p.quantity, 0) /
-    (olderSales.length || 1);
-  const trendPercentage =
-    olderAvg > 0 ? ((recentAvg - olderAvg) / olderAvg) * 100 : 0;
+  const recentAvg = recentSales.reduce((sum, p) => sum + p.quantity, 0) / recentSales.length;
+  const olderAvg = olderSales.reduce((sum, p) => sum + p.quantity, 0) / (olderSales.length || 1);
+  const trendPercentage = olderAvg > 0 ? ((recentAvg - olderAvg) / olderAvg) * 100 : 0;
 
   // Integration mode handlers
   const handleMouseDown = (e: any) => {
@@ -153,7 +143,13 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
   };
 
   const handleMouseUp = () => {
-    if (integrationMode && isSelecting && refAreaLeft && refAreaRight && refAreaLeft !== refAreaRight) {
+    if (
+      integrationMode &&
+      isSelecting &&
+      refAreaLeft &&
+      refAreaRight &&
+      refAreaLeft !== refAreaRight
+    ) {
       calculateIntegration();
     }
     setIsSelecting(false);
@@ -195,7 +191,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
   };
 
   // Custom tooltip
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
@@ -209,13 +205,9 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
           <Typography variant="body2" sx={{ mb: 1, fontWeight: "bold" }}>
             {payload[0].payload.fullDate}
           </Typography>
-          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          { }
           {payload.map((entry: any, index: number) => (
-            <Typography
-              key={index}
-              variant="body2"
-              sx={{ color: entry.color }}
-            >
+            <Typography key={index} variant="body2" sx={{ color: entry.color }}>
               {entry.name}:{" "}
               <strong>
                 {entry.name === "Przychód"
@@ -384,7 +376,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
               background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
               color: "white",
               borderRadius: 2,
-              boxShadow: 3
+              boxShadow: 3,
             }}
           >
             <Typography variant="h6" gutterBottom fontWeight="bold" sx={{ mb: 2 }}>
@@ -393,7 +385,13 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
             <Stack
               direction={{ xs: "column", md: "row" }}
               spacing={2}
-              divider={<Divider orientation="vertical" flexItem sx={{ bgcolor: "rgba(255,255,255,0.3)" }} />}
+              divider={
+                <Divider
+                  orientation="vertical"
+                  flexItem
+                  sx={{ bgcolor: "rgba(255,255,255,0.3)" }}
+                />
+              }
             >
               <Card
                 sx={{
@@ -404,8 +402,8 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                   transition: "transform 0.2s",
                   "&:hover": {
                     transform: "scale(1.05)",
-                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)"
-                  }
+                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)",
+                  },
                 }}
               >
                 <CardContent>
@@ -430,8 +428,8 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                   transition: "transform 0.2s",
                   "&:hover": {
                     transform: "scale(1.05)",
-                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)"
-                  }
+                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)",
+                  },
                 }}
               >
                 <CardContent>
@@ -456,8 +454,8 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                   transition: "transform 0.2s",
                   "&:hover": {
                     transform: "scale(1.05)",
-                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)"
-                  }
+                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)",
+                  },
                 }}
               >
                 <CardContent>
@@ -482,8 +480,8 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                   transition: "transform 0.2s",
                   "&:hover": {
                     transform: "scale(1.05)",
-                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)"
-                  }
+                    boxShadow: "0 8px 16px rgba(0,0,0,0.2)",
+                  },
                 }}
               >
                 <CardContent>
@@ -512,8 +510,8 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
           width="100%"
           height={300}
           style={{
-            userSelect: isSelecting ? 'none' : 'auto',
-            cursor: integrationMode ? 'crosshair' : 'default'
+            userSelect: isSelecting ? "none" : "auto",
+            cursor: integrationMode ? "crosshair" : "default",
           }}
         >
           {chartType === "line" ? (
@@ -530,11 +528,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis
-                dataKey="date"
-                stroke="#666"
-                style={{ fontSize: "0.85rem" }}
-              />
+              <XAxis dataKey="date" stroke="#666" style={{ fontSize: "0.85rem" }} />
               <YAxis stroke="#666" style={{ fontSize: "0.85rem" }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
@@ -560,7 +554,6 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 animationDuration={1000}
                 animationEasing="ease-in-out"
               />
-
             </LineChart>
           ) : (
             <AreaChart
@@ -576,11 +569,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis
-                dataKey="date"
-                stroke="#666"
-                style={{ fontSize: "0.85rem" }}
-              />
+              <XAxis dataKey="date" stroke="#666" style={{ fontSize: "0.85rem" }} />
               <YAxis stroke="#666" style={{ fontSize: "0.85rem" }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
@@ -605,7 +594,6 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 animationDuration={1000}
                 animationEasing="ease-in-out"
               />
-
             </AreaChart>
           )}
         </ResponsiveContainer>
@@ -619,8 +607,8 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
           width="100%"
           height={300}
           style={{
-            userSelect: isSelecting ? 'none' : 'auto',
-            cursor: integrationMode ? 'crosshair' : 'default'
+            userSelect: isSelecting ? "none" : "auto",
+            cursor: integrationMode ? "crosshair" : "default",
           }}
         >
           {chartType === "line" ? (
@@ -637,11 +625,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis
-                dataKey="date"
-                stroke="#666"
-                style={{ fontSize: "0.85rem" }}
-              />
+              <XAxis dataKey="date" stroke="#666" style={{ fontSize: "0.85rem" }} />
               <YAxis stroke="#666" style={{ fontSize: "0.85rem" }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
@@ -667,7 +651,6 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 animationDuration={1000}
                 animationEasing="ease-in-out"
               />
-
             </LineChart>
           ) : (
             <AreaChart
@@ -683,11 +666,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />
-              <XAxis
-                dataKey="date"
-                stroke="#666"
-                style={{ fontSize: "0.85rem" }}
-              />
+              <XAxis dataKey="date" stroke="#666" style={{ fontSize: "0.85rem" }} />
               <YAxis stroke="#666" style={{ fontSize: "0.85rem" }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend />
@@ -712,7 +691,6 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                 animationDuration={1000}
                 animationEasing="ease-in-out"
               />
-
             </AreaChart>
           )}
         </ResponsiveContainer>
