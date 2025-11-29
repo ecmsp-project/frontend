@@ -5,6 +5,8 @@ import type {
 } from "../types/category";
 import type { GetCategoriesResponse, CategoryFromAPI } from "../types/cms";
 import type {
+  GetProductsRequestDTO,
+  GetProductsResponseDTO,
   ProductCreateRequestDTO,
   ProductCreateResponseDTO,
   VariantCreateRequestDTO,
@@ -190,6 +192,54 @@ export const deleteCategory = async (categoryId: string): Promise<void> => {
     }
   } catch (error) {
     console.error("API Error deleting category:", error);
+    throw error;
+  }
+};
+
+export const getProductsByCategory = async (
+  categoryId: string,
+  request: GetProductsRequestDTO,
+): Promise<GetProductsResponseDTO> => {
+  try {
+    const url = new URL(PRODUCT_API);
+    url.searchParams.set("categoryId", categoryId);
+
+    const response = await apiCall(url.toString(), {
+      method: "POST",
+      body: JSON.stringify(request),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch products: ${response.status} ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("API Error fetching products:", error);
+    throw error;
+  }
+};
+
+export const searchProducts = async (
+  query: string,
+  request: GetProductsRequestDTO,
+): Promise<GetProductsResponseDTO> => {
+  try {
+    const url = new URL(`${PRODUCT_API}/search`);
+    url.searchParams.set("query", query);
+
+    const response = await apiCall(url.toString(), {
+      method: "POST",
+      body: JSON.stringify(request),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to search products: ${response.status} ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("API Error searching products:", error);
     throw error;
   }
 };
