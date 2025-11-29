@@ -295,7 +295,7 @@ const SearchPage: React.FC = () => {
   const [priceMenuAnchor, setPriceMenuAnchor] = useState<null | HTMLElement>(null);
   const [categoryMenuAnchor, setCategoryMenuAnchor] = useState<null | HTMLElement>(null);
   const [sortMenuAnchor, setSortMenuAnchor] = useState<null | HTMLElement>(null);
-  const [sortBy, setSortBy] = useState<string>("relevance");
+  const [sortBy, setSortBy] = useState<string>("price-asc");
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [pageSize] = useState<number>(20);
   const [nextPageNumber, setNextPageNumber] = useState<number | null>(null);
@@ -318,9 +318,8 @@ const SearchPage: React.FC = () => {
         return sorted.sort((a, b) => a.variantDetail.price - b.variantDetail.price);
       case "price-desc":
         return sorted.sort((a, b) => b.variantDetail.price - a.variantDetail.price);
-      case "relevance":
       default:
-        return sorted; // Domyślnie bez sortowania (zachowaj kolejność z API)
+        return sorted;
     }
   };
 
@@ -529,15 +528,6 @@ const SearchPage: React.FC = () => {
           open={Boolean(sortMenuAnchor)}
           onClose={() => setSortMenuAnchor(null)}
         >
-          <MenuItem
-            selected={sortBy === "relevance"}
-            onClick={() => {
-              setSortBy("relevance");
-              setSortMenuAnchor(null);
-            }}
-          >
-            Trafność
-          </MenuItem>
           <MenuItem
             selected={sortBy === "price-asc"}
             onClick={() => {
