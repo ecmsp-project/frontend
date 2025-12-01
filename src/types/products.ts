@@ -54,7 +54,15 @@ export interface VariantDetailDTO {
   variant_id: string;
   price: number;
   stockQuantity: number;
-  imageUrl: string;
   description: string;
+  variantImages: VariantImageResponseDTO[];
   additionalProperties: Record<string, any>;
+}
+
+export interface VariantImageResponseDTO {
+  id: string;
+  variantId: string;
+  url: string;
+  isMain: boolean;
+  position: number;
 }

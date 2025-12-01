@@ -237,7 +237,7 @@ const ProductListItem: React.FC<{ product: ProductRepresentationDTO }> = ({ prod
   >
     <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center" }}>
       <img
-        src={product.variantDetail.imageUrl}
+        src={product.variantDetail.variantImages[0].url}
         alt={product.variantDetail.description}
         style={{
           width: 100,
