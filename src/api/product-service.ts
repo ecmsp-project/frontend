@@ -250,21 +250,19 @@ export const getVariantDetails = async (variantId: string): Promise<GetVariantRe
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to get all variant details: ${response.status} ${response.statusText}`,
-      );
+      throw new Error(`Failed to get variant details: ${response.status} ${response.statusText}`);
     }
 
     return await response.json();
   } catch (error) {
-    console.error("API Error getting all variant details:", error);
+    console.error("API Error getting variant details:", error);
     throw error;
   }
 };
 
 export const getVariantProperties = async (
   variantId: string,
-): Promise<Map<string, VariantPropertyResponseDTO[]>> => {
+): Promise<Record<string, VariantPropertyResponseDTO[]>> => {
   try {
     const response = await apiCall(`${VARIANT_API}/${variantId}/properties`, {
       method: "GET",
@@ -272,13 +270,13 @@ export const getVariantProperties = async (
 
     if (!response.ok) {
       throw new Error(
-        `Failed to get all variant details: ${response.status} ${response.statusText}`,
+        `Failed to get variant properties: ${response.status} ${response.statusText}`,
       );
     }
 
     return await response.json();
   } catch (error) {
-    console.error("API Error getting all variant details:", error);
+    console.error("API Error getting variant properties:", error);
     throw error;
   }
 };

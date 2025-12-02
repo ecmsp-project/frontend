@@ -52,6 +52,7 @@ export interface ProductRepresentationDTO {
 
 export interface VariantDetailDTO {
   variantId: string;
+  name: string;
   price: number;
   stockQuantity: number;
   description: string;
