@@ -31,7 +31,9 @@ const ProductPage: React.FC = () => {
     variant,
     selectablePropertyNames,
     selectedProperties,
-    properties,
+    selectableProperties,
+    requiredProperties,
+    infoProperties,
     loading,
     error,
     showMoreParams,
@@ -69,9 +71,9 @@ const ProductPage: React.FC = () => {
           })
       : ["https://via.placeholder.com/600x600?text=Brak+obrazu"];
 
-  const requiredParams = properties.required || [];
-  const infoParams = properties.info || [];
-  const displayedParams = showMoreParams ? [...requiredParams, ...infoParams] : requiredParams;
+  const displayedParams = showMoreParams
+    ? [...selectableProperties, ...requiredProperties, ...infoProperties]
+    : [...requiredProperties, ...selectableProperties];
 
   const descriptionPoints = variant?.description
     ? variant.description.split("\n").filter((line) => line.trim())
@@ -191,13 +193,21 @@ const ProductPage: React.FC = () => {
                     );
                   })}
                 </List>
-                {infoParams.length > 0 && (
+                {(selectableProperties.length > 0 || infoProperties.length > 0) && (
                   <Button
                     variant="text"
                     onClick={() => setShowMoreParams(!showMoreParams)}
-                    sx={{ mt: 2 }}
+                    sx={{
+                      mt: 2,
+                      textTransform: "uppercase",
+                      fontWeight: 600,
+                      color: "primary.main",
+                      "&:hover": {
+                        backgroundColor: "action.hover",
+                      },
+                    }}
                   >
-                    {showMoreParams ? "Pokaż mniej" : "Pokaż więcej"}
+                    {showMoreParams ? "Pokaż mniej" : "WSZYSTKIE PARAMETRY"}
                   </Button>
                 )}
               </Paper>
@@ -222,10 +232,8 @@ const ProductPage: React.FC = () => {
           <Box ref={sidebarWrapperRef} sx={{ position: "relative" }}>
             <Box
               sx={{
-                position: { xs: "static", md: "sticky" },
-                top: 60,
+                position: "static",
                 height: "fit-content",
-                zIndex: 5,
               }}
             >
               <Paper elevation={4} sx={{ p: 3, borderRadius: 3, mb: 3 }}>

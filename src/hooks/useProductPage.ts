@@ -20,7 +20,11 @@ export const useProductPage = () => {
   const [selectablePropertyNames, setSelectablePropertyNames] = useState<string[]>([]);
   const [allVariants, setAllVariants] = useState<Record<string, any>[]>([]);
   const [selectedProperties, setSelectedProperties] = useState<SelectedProperties>({});
-  const [properties, setProperties] = useState<Record<string, VariantPropertyResponseDTO[]>>({});
+  const [selectableProperties, setSelectableProperties] = useState<VariantPropertyResponseDTO[]>(
+    [],
+  );
+  const [requiredProperties, setRequiredProperties] = useState<VariantPropertyResponseDTO[]>([]);
+  const [infoProperties, setInfoProperties] = useState<VariantPropertyResponseDTO[]>([]);
   const [showMoreParams, setShowMoreParams] = useState(false);
 
   const getAvailableValues = useCallback(
@@ -75,7 +79,9 @@ export const useProductPage = () => {
   const loadVariantProperties = useCallback(async (id: string) => {
     try {
       const props = await getVariantProperties(id);
-      setProperties(props);
+      setSelectableProperties(props.selectable || []);
+      setRequiredProperties(props.required || []);
+      setInfoProperties(props.info || []);
     } catch (err) {
       console.error("Error loading variant properties:", err);
     }
@@ -163,7 +169,9 @@ export const useProductPage = () => {
     variant,
     selectablePropertyNames,
     selectedProperties,
-    properties,
+    selectableProperties,
+    requiredProperties,
+    infoProperties,
     loading,
     error,
     showMoreParams,
