@@ -163,6 +163,7 @@ export const useProductSearch = () => {
     sortBy,
     currentPage,
     nextPageNumber,
+    navigate,
 
     setPriceRange,
     setPriceMenuAnchor,
