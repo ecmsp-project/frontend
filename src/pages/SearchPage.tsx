@@ -1,149 +1,38 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { getProductsByCategory, searchProducts } from "../api/product-service";
+import React from "react";
 import MainLayout from "../components/layout/MainLayout";
 import CategoryFilter from "../components/search/CategoryFilter";
 import PriceFilter from "../components/search/PriceFilter";
 import ProductListItem from "../components/search/ProductListItem";
 import SearchFilters from "../components/search/SearchFilters";
-import SortFilter, { type SortOption } from "../components/search/SortFilter";
+import SortFilter from "../components/search/SortFilter";
 import { useProductContext } from "../contexts/ProductContext.tsx";
-import type { ProductRepresentationDTO } from "../types/products.ts";
+import { useProductSearch } from "../hooks/useProductSearch";
 import { Box, Typography, Container, CircularProgress, Menu, Pagination } from "@mui/material";
-import { useLocation, useParams, useNavigate } from "react-router-dom";
 
 const SearchPage: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [products, setProducts] = useState<ProductRepresentationDTO[]>([]);
-  const [sortedProducts, setSortedProducts] = useState<ProductRepresentationDTO[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [categoryId, setCategoryId] = useState<string | null>(null);
-  const [priceRange, setPriceRange] = useState<number[]>([0, 15_000]);
-  const [priceMenuAnchor, setPriceMenuAnchor] = useState<null | HTMLElement>(null);
-  const [categoryMenuAnchor, setCategoryMenuAnchor] = useState<null | HTMLElement>(null);
-  const [sortMenuAnchor, setSortMenuAnchor] = useState<null | HTMLElement>(null);
-  const [sortBy, setSortBy] = useState<SortOption>("price-asc");
-  const [currentPage, setCurrentPage] = useState<number>(0);
-  const [pageSize] = useState<number>(20);
-  const [nextPageNumber, setNextPageNumber] = useState<number | null>(null);
-  const location = useLocation();
-  const navigate = useNavigate();
   const { categories } = useProductContext();
-  const params = useParams<{ slug: string }>();
-
-  const handleCategoryClick = (categoryId: string) => {
-    navigate(`/category/${categoryId}`);
-  };
-
-  const sortProducts = (
-    productsToSort: ProductRepresentationDTO[],
-    sortOption: SortOption,
-  ): ProductRepresentationDTO[] => {
-    const sorted = [...productsToSort];
-    switch (sortOption) {
-      case "price-asc":
-        return sorted.sort((a, b) => a.variantDetail.price - b.variantDetail.price);
-      case "price-desc":
-        return sorted.sort((a, b) => b.variantDetail.price - a.variantDetail.price);
-      default:
-        return sorted;
-    }
-  };
-
-  const loadProductsByCategory = useCallback(
-    async (catId: string, page: number = 0) => {
-      setLoading(true);
-      try {
-        const response = await getProductsByCategory(catId, {
-          pageNumber: page,
-          pageSize: pageSize,
-        });
-        const loadedProducts = response.productsRepresentation || [];
-        setProducts(loadedProducts);
-        setNextPageNumber(response.nextPageNumber);
-      } catch (error) {
-        console.error("Error loading products by category:", error);
-        setProducts([]);
-        setNextPageNumber(null);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [pageSize],
-  );
-
-  const loadSearchResults = useCallback(
-    async (query: string, page: number = 0) => {
-      setLoading(true);
-      try {
-        const response = await searchProducts(query, {
-          pageNumber: page,
-          pageSize: pageSize,
-        });
-        const loadedProducts = response.productsRepresentation || [];
-        setProducts(loadedProducts);
-        setNextPageNumber(response.nextPageNumber);
-      } catch (error) {
-        console.error("Error searching products:", error);
-        setProducts([]);
-        setNextPageNumber(null);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [pageSize],
-  );
-
-  const handlePageChange = (_event: React.ChangeEvent<unknown>, page: number) => {
-    setCurrentPage(page - 1);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    if (products.length > 0) {
-      const filtered = products.filter((product) => {
-        const price = product.variantDetail.price;
-        return price >= priceRange[0] && price <= priceRange[1];
-      });
-
-      const sorted = sortProducts(filtered, sortBy);
-      setSortedProducts(sorted);
-    } else {
-      setSortedProducts([]);
-    }
-  }, [products, sortBy, priceRange]);
-
-  useEffect(() => {
-    setCurrentPage(0);
-  }, [location.search, location.pathname, params.slug]);
-
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const queryParam = searchParams.get("query");
-
-    if (queryParam) {
-      setSearchTerm(queryParam);
-      setCategoryId(null);
-      loadSearchResults(queryParam, currentPage);
-      return;
-    }
-    if (params.slug) {
-      setSearchTerm("");
-      setCategoryId(params.slug);
-      loadProductsByCategory(params.slug, currentPage);
-      return;
-    }
-    setSearchTerm("");
-    setCategoryId(null);
-    setProducts([]);
-    setNextPageNumber(null);
-  }, [
-    location.search,
-    location.pathname,
-    params.slug,
+  const {
+    searchTerm,
+    sortedProducts,
+    loading,
+    categoryId,
+    priceRange,
+    priceMenuAnchor,
+    categoryMenuAnchor,
+    sortMenuAnchor,
+    sortBy,
     currentPage,
-    loadProductsByCategory,
-    loadSearchResults,
-  ]);
+    nextPageNumber,
+    setPriceRange,
+    setPriceMenuAnchor,
+    setCategoryMenuAnchor,
+    setSortMenuAnchor,
+    handleCategoryClick,
+    handlePageChange,
+    handleSortChange,
+    handleCategoryChipDelete,
+    handlePriceChipDelete,
+  } = useProductSearch();
 
   return (
     <MainLayout>
@@ -167,11 +56,8 @@ const SearchPage: React.FC = () => {
             onSortMenuOpen={(e) => setSortMenuAnchor(e.currentTarget)}
             onCategoryMenuOpen={(e) => setCategoryMenuAnchor(e.currentTarget)}
             onPriceMenuOpen={(e) => setPriceMenuAnchor(e.currentTarget)}
-            onCategoryChipDelete={() => {
-              setCategoryId(null);
-              navigate("/search");
-            }}
-            onPriceChipDelete={() => setPriceRange([0, 15_000])}
+            onCategoryChipDelete={handleCategoryChipDelete}
+            onPriceChipDelete={handlePriceChipDelete}
           />
 
           <Typography variant="body2" color="text.secondary">
@@ -181,10 +67,7 @@ const SearchPage: React.FC = () => {
 
         <SortFilter
           sortBy={sortBy}
-          onSortChange={(option) => {
-            setSortBy(option);
-            setSortMenuAnchor(null);
-          }}
+          onSortChange={handleSortChange}
           anchorEl={sortMenuAnchor}
           onClose={() => setSortMenuAnchor(null)}
         />

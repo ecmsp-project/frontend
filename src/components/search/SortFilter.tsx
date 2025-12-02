@@ -36,4 +36,3 @@ const SortFilter: React.FC<SortFilterProps> = ({ sortBy, onSortChange, anchorEl,
 };
 
 export default SortFilter;
-
