@@ -25,6 +25,7 @@ import {
   alpha,
   CircularProgress,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 // Mapowanie nazw ikon z API na komponenty Material-UI
 const iconMap: { [key: string]: React.ComponentType } = {
@@ -103,6 +104,7 @@ const features = [
 ];
 
 const HomePage: React.FC = () => {
+  const navigate = useNavigate();
   const [homeContent, setHomeContent] = useState<HomePageContent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [categoriesFromAPI, setCategoriesFromAPI] = useState<CategoryFromAPI[]>([]);
@@ -373,7 +375,7 @@ const HomePage: React.FC = () => {
                       },
                     },
                   }}
-                  onClick={() => console.log(`Przejdź do kategorii: ${category.name}`)}
+                  onClick={() => navigate(`/category/${category.id}`)}
                 >
                   <CardMedia
                     component="img"
@@ -417,6 +419,10 @@ const HomePage: React.FC = () => {
                       </Typography>
                       <Button
                         variant="contained"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/category/${category.id}`);
+                        }}
                         sx={{
                           bgcolor: "white",
                           color: categoryColor,
