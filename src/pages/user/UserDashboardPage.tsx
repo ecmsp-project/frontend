@@ -1,44 +1,51 @@
 import React from "react";
 import Breadcrumbs from "../../components/common/Breadcrumbs";
-import UserLayout from "../../components/layout/UserLayout";
+import MainLayout from "../../components/layout/MainLayout";
 import { useIndividualUser } from "../../contexts/IndividualUserContext";
-import { Typography, Paper, Grid, CircularProgress, Alert, Box } from "@mui/material";
+import { Typography, Paper, Grid, CircularProgress, Alert, Box, Container } from "@mui/material";
 
 const UserDashboardPage: React.FC = () => {
   const { currentUser, loading, error } = useIndividualUser();
 
   if (loading) {
     return (
-      <UserLayout>
-        <Box sx={{ display: "flex", justifyContent: "center", py: 5 }}>
-          <CircularProgress />
-        </Box>
-      </UserLayout>
+      <MainLayout>
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+          <Box sx={{ display: "flex", justifyContent: "center", py: 5 }}>
+            <CircularProgress />
+          </Box>
+        </Container>
+      </MainLayout>
     );
   }
 
   if (error) {
     return (
-      <UserLayout>
-        <Alert severity="error" sx={{ my: 3 }}>
-          {error}
-        </Alert>
-      </UserLayout>
+      <MainLayout>
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+          <Alert severity="error" sx={{ my: 3 }}>
+            {error}
+          </Alert>
+        </Container>
+      </MainLayout>
     );
   }
 
   if (!currentUser) {
     return (
-      <UserLayout>
-        <Alert severity="warning" sx={{ my: 3 }}>
-          Nie jesteś zalogowany. Proszę się zalogować.
-        </Alert>
-      </UserLayout>
+      <MainLayout>
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+          <Alert severity="warning" sx={{ my: 3 }}>
+            Nie jesteś zalogowany. Proszę się zalogować.
+          </Alert>
+        </Container>
+      </MainLayout>
     );
   }
 
   return (
-    <UserLayout>
+    <MainLayout>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
       <Breadcrumbs items={[{ label: "Moje konto" }]} />
       <Box sx={{ mb: 4 }}>
         <Typography variant="h4" gutterBottom fontWeight={700}>
@@ -156,7 +163,8 @@ const UserDashboardPage: React.FC = () => {
           </Paper>
         </Grid>
       </Grid>
-    </UserLayout>
+      </Container>
+    </MainLayout>
   );
 };
 

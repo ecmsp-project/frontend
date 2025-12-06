@@ -1,6 +1,6 @@
 import React from "react";
 import Breadcrumbs from "../../components/common/Breadcrumbs";
-import UserLayout from "../../components/layout/UserLayout";
+import MainLayout from "../../components/layout/MainLayout";
 import {
   Typography,
   Paper,
@@ -10,11 +10,13 @@ import {
   Divider,
   Switch,
   FormControlLabel,
+  Container,
 } from "@mui/material";
 
 const UserSettingsPage: React.FC = () => {
   return (
-    <UserLayout>
+    <MainLayout>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
       <Breadcrumbs items={[{ label: "Moje konto", path: "/user" }, { label: "Ustawienia" }]} />
       <Typography variant="h4" gutterBottom>
         Ustawienia
@@ -78,7 +80,8 @@ const UserSettingsPage: React.FC = () => {
           Usuń konto
         </Button>
       </Paper>
-    </UserLayout>
+      </Container>
+    </MainLayout>
   );
 };
 

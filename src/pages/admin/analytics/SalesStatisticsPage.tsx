@@ -5,7 +5,7 @@ import SalesChart from "../../../components/analytics/SalesChart";
 import StockChart from "../../../components/analytics/StockChart";
 import VariantSearchAutocomplete from "../../../components/analytics/VariantSearchAutocomplete";
 import Breadcrumbs from "../../../components/common/Breadcrumbs";
-import AdminLayout from "../../../components/layout/AdminLayout";
+import MainLayout from "../../../components/layout/MainLayout";
 import type {
   VariantInfoDTO,
   VariantSalesOverTimeDTO,
@@ -107,8 +107,8 @@ const SalesStatisticsPage: React.FC = () => {
   };
 
   return (
-    <AdminLayout>
-      <Container maxWidth="xl" sx={{ py: 3 }}>
+    <MainLayout>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
         {/* Breadcrumbs */}
         <Breadcrumbs
           items={[
@@ -304,7 +304,7 @@ const SalesStatisticsPage: React.FC = () => {
           </Fade>
         )}
       </Container>
-    </AdminLayout>
+    </MainLayout>
   );
 };
 

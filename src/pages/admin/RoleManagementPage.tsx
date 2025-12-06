@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Breadcrumbs from "../../components/common/Breadcrumbs";
-import AdminLayout from "../../components/layout/AdminLayout";
+import MainLayout from "../../components/layout/MainLayout";
 import { useIndividualUser } from "../../contexts/IndividualUserContext";
 import { useRoleContext } from "../../contexts/RoleContext";
 import { PERMISSIONS } from "../../types/permissions";
@@ -87,8 +87,8 @@ const RoleManagementPage: React.FC = () => {
   };
 
   return (
-    <AdminLayout>
-      <Container maxWidth="lg" sx={{ py: 3 }}>
+    <MainLayout>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
         <Breadcrumbs
           items={[
             { label: "Panel administracyjny", path: "/admin" },
@@ -259,7 +259,7 @@ const RoleManagementPage: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </AdminLayout>
+    </MainLayout>
   );
 };
 

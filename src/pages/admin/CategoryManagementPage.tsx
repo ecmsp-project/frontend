@@ -3,10 +3,10 @@ import { getAllCategories, createCategory, deleteCategory } from "../../api/prod
 import CategoryDeleteDialog from "../../components/admin/categories/CategoryDeleteDialog";
 import CategoryFormDialog from "../../components/admin/categories/CategoryFormDialog";
 import CategoryTree from "../../components/admin/categories/CategoryTree";
-import AdminLayout from "../../components/layout/AdminLayout";
+import MainLayout from "../../components/layout/MainLayout";
 import type { CategoryFormDialogState, CategoryDeleteDialogState } from "../../types/category";
 import type { CategoryFromAPI } from "../../types/cms";
-import { Typography, Box, Alert, CircularProgress, Paper } from "@mui/material";
+import { Typography, Box, Alert, CircularProgress, Paper, Container } from "@mui/material";
 
 const CategoryManagementPage: React.FC = () => {
   const [categories, setCategories] = useState<CategoryFromAPI[]>([]);
@@ -138,53 +138,55 @@ const CategoryManagementPage: React.FC = () => {
   };
 
   return (
-    <AdminLayout>
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h4">Zarządzanie Kategoriami</Typography>
-      </Box>
-
-      {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
-        </Alert>
-      )}
-
-      {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", p: 5 }}>
-          <CircularProgress />
+    <MainLayout>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h4">Zarządzanie Kategoriami</Typography>
         </Box>
-      ) : (
-        <Paper elevation={2} sx={{ p: 3, height: 700 }}>
-          <CategoryTree
-            categories={categories}
-            onAddLeaf={handleOpenAddLeafDialog}
-            onAddBetween={handleOpenAddBetweenDialog}
-            onDelete={handleOpenDeleteDialog}
-            newlyAddedCategoryId={newlyAddedCategoryId}
-            onAddRootCategory={handleOpenAddRootDialog}
-            onRefresh={fetchCategories}
-          />
-        </Paper>
-      )}
 
-      <CategoryFormDialog
-        open={formDialog.open}
-        mode={formDialog.mode}
-        parentCategoryName={formDialog.parentCategoryName}
-        childCategoryName={formDialog.childCategoryName}
-        onClose={handleCloseFormDialog}
-        onSubmit={handleCreateCategory}
-        container={() => (document.fullscreenElement as HTMLElement) || document.body}
-      />
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
+        )}
 
-      <CategoryDeleteDialog
-        open={deleteDialog.open}
-        category={deleteDialog.category}
-        onClose={handleCloseDeleteDialog}
-        onConfirm={handleDeleteCategory}
-        container={() => (document.fullscreenElement as HTMLElement) || document.body}
-      />
-    </AdminLayout>
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", p: 5 }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Paper elevation={2} sx={{ p: 3, height: 700 }}>
+            <CategoryTree
+              categories={categories}
+              onAddLeaf={handleOpenAddLeafDialog}
+              onAddBetween={handleOpenAddBetweenDialog}
+              onDelete={handleOpenDeleteDialog}
+              newlyAddedCategoryId={newlyAddedCategoryId}
+              onAddRootCategory={handleOpenAddRootDialog}
+              onRefresh={fetchCategories}
+            />
+          </Paper>
+        )}
+
+        <CategoryFormDialog
+          open={formDialog.open}
+          mode={formDialog.mode}
+          parentCategoryName={formDialog.parentCategoryName}
+          childCategoryName={formDialog.childCategoryName}
+          onClose={handleCloseFormDialog}
+          onSubmit={handleCreateCategory}
+          container={() => (document.fullscreenElement as HTMLElement) || document.body}
+        />
+
+        <CategoryDeleteDialog
+          open={deleteDialog.open}
+          category={deleteDialog.category}
+          onClose={handleCloseDeleteDialog}
+          onConfirm={handleDeleteCategory}
+          container={() => (document.fullscreenElement as HTMLElement) || document.body}
+        />
+      </Container>
+    </MainLayout>
   );
 };
 
