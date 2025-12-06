@@ -7,6 +7,14 @@ import type { ContactPageContent } from "../types/cms";
 import { Phone as PhoneIcon, Email as EmailIcon } from "@mui/icons-material";
 import { Container, Typography, Grid, Box, Link, CircularProgress } from "@mui/material";
 
+const CACHE_KEY_CONTACT = "contact_cache";
+const CACHE_DURATION = 5 * 60 * 1000;
+
+interface CacheData<T> {
+  data: T;
+  timestamp: number;
+}
+
 const Contact: React.FC = () => {
   const [contactContent, setContactContent] = useState<ContactPageContent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -15,8 +23,31 @@ const Contact: React.FC = () => {
     const loadContactContent = async () => {
       try {
         setIsLoading(true);
-        const data = await fetchContactSettings();
-        setContactContent(data);
+
+        // Sprawdź cache
+        const cachedContact = sessionStorage.getItem(CACHE_KEY_CONTACT);
+        let contactData: ContactPageContent | null = null;
+
+        if (cachedContact) {
+          const parsed: CacheData<ContactPageContent> = JSON.parse(cachedContact);
+          if (Date.now() - parsed.timestamp < CACHE_DURATION) {
+            contactData = parsed.data;
+          }
+        }
+
+        // Jeśli nie ma cache lub cache jest stary, załaduj z API
+        if (!contactData) {
+          contactData = await fetchContactSettings();
+          sessionStorage.setItem(
+            CACHE_KEY_CONTACT,
+            JSON.stringify({
+              data: contactData,
+              timestamp: Date.now(),
+            } as CacheData<ContactPageContent>),
+          );
+        }
+
+        setContactContent(contactData);
       } catch (error) {
         console.error("Failed to load contact content from CMS:", error);
         // Fallback do domyślnych wartości

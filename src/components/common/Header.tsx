@@ -1,4 +1,6 @@
 import React, { useState, useCallback, useEffect, type KeyboardEvent } from "react";
+import { fetchHomeSettings } from "../../api/cms-service";
+import { getRootCategories } from "../../api/product-service";
 import { useCartContext } from "../../contexts/CartContext";
 import { useIndividualUser } from "../../contexts/IndividualUserContext";
 import { useProductContext } from "../../contexts/ProductContext";
@@ -81,6 +83,51 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
   });
 
   const cartItemsCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  // Prefetch HomePage data when not on homepage
+  useEffect(() => {
+    if (location.pathname !== "/") {
+      const prefetchHomeData = async () => {
+        try {
+          const CACHE_KEY_HOME = "homepage_cache";
+          const CACHE_KEY_CATEGORIES = "homepage_categories";
+          const CACHE_DURATION = 5 * 60 * 1000;
+
+          // Sprawdź cache
+          const cachedHome = sessionStorage.getItem(CACHE_KEY_HOME);
+          const cachedCategories = sessionStorage.getItem(CACHE_KEY_CATEGORIES);
+
+          // Prefetch tylko jeśli nie ma cache lub cache jest stary
+          if (!cachedHome || Date.now() - JSON.parse(cachedHome).timestamp > CACHE_DURATION) {
+            fetchHomeSettings().then((data) => {
+              sessionStorage.setItem(
+                CACHE_KEY_HOME,
+                JSON.stringify({ data, timestamp: Date.now() }),
+              );
+            });
+          }
+
+          if (
+            !cachedCategories ||
+            Date.now() - JSON.parse(cachedCategories).timestamp > CACHE_DURATION
+          ) {
+            getRootCategories().then((data) => {
+              sessionStorage.setItem(
+                CACHE_KEY_CATEGORIES,
+                JSON.stringify({ data, timestamp: Date.now() }),
+              );
+            });
+          }
+        } catch {
+          // Ignoruj błędy prefetchingu
+        }
+      };
+
+      // Prefetch po krótkim opóźnieniu, aby nie blokować głównego renderowania
+      const timeoutId = setTimeout(prefetchHomeData, 1000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
@@ -280,8 +327,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
         <Toolbar sx={{ py: 1 }}>
           <Button
             color="inherit"
-            component="a"
-            href="/"
+            onClick={() => navigate("/")}
             startIcon={<Home />}
             sx={{
               textTransform: "none",
