@@ -18,7 +18,6 @@ import {
   Container,
   Grid,
   Card,
-  CardMedia,
   Box,
   Button,
   Chip,
@@ -27,7 +26,6 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-// Mapowanie nazw ikon z API na komponenty Material-UI
 const iconMap: { [key: string]: React.ComponentType } = {
   TrendingUpIcon,
   LocalShippingIcon,
@@ -39,51 +37,6 @@ const iconMap: { [key: string]: React.ComponentType } = {
   SportsBasketballIcon,
   MenuBookIcon,
 };
-
-const categories = [
-  {
-    id: 1,
-    name: "Elektronika",
-    image: "https://via.placeholder.com/400x300/1976d2/ffffff?text=Elektronika",
-    icon: PhoneAndroidIcon,
-    color: "#1976d2",
-  },
-  {
-    id: 2,
-    name: "Ubrania",
-    image: "https://via.placeholder.com/400x300/9c27b0/ffffff?text=Ubrania",
-    icon: CheckroomIcon,
-    color: "#9c27b0",
-  },
-  {
-    id: 3,
-    name: "Kosmetyki",
-    image: "https://via.placeholder.com/400x300/e91e63/ffffff?text=Kosmetyki",
-    icon: SpaIcon,
-    color: "#e91e63",
-  },
-  {
-    id: 4,
-    name: "Dom i Ogród",
-    image: "https://via.placeholder.com/400x300/4caf50/ffffff?text=Dom+i+Ogród",
-    icon: HomeIcon,
-    color: "#4caf50",
-  },
-  {
-    id: 5,
-    name: "Sport",
-    image: "https://via.placeholder.com/400x300/ff9800/ffffff?text=Sport",
-    icon: SportsBasketballIcon,
-    color: "#ff9800",
-  },
-  {
-    id: 6,
-    name: "Książki",
-    image: "https://via.placeholder.com/400x300/795548/ffffff?text=Książki",
-    icon: MenuBookIcon,
-    color: "#795548",
-  },
-];
 
 const features = [
   {
@@ -114,7 +67,6 @@ const HomePage: React.FC = () => {
       try {
         setIsLoading(true);
 
-        // Pobierz dane CMS i kategorie z product API równolegle
         const [cmsData, categoriesResponse] = await Promise.all([
           fetchHomeSettings(),
           getRootCategories(),
@@ -124,7 +76,6 @@ const HomePage: React.FC = () => {
         setCategoriesFromAPI(categoriesResponse.categories);
       } catch (error) {
         console.error("Failed to load home content:", error);
-        // W przypadku błędu używamy fallback do domyślnych wartości
       } finally {
         setIsLoading(false);
       }
@@ -133,10 +84,9 @@ const HomePage: React.FC = () => {
     loadContent();
   }, []);
 
-  // Filtruj kategorie według selectedCategoryIds z CMS
   const getSelectedCategories = () => {
     if (!homeContent?.selectedCategoryIds || homeContent.selectedCategoryIds.length === 0) {
-      return []; // Nie wyświetlaj kategorii jeśli nie wybrano żadnych
+      return [];
     }
     return categoriesFromAPI.filter((cat) => homeContent.selectedCategoryIds?.includes(cat.id));
   };
@@ -155,7 +105,6 @@ const HomePage: React.FC = () => {
     return colors[index % colors.length];
   };
 
-  // Pokazuj loader podczas ładowania
   if (isLoading) {
     return (
       <MainLayout>
@@ -173,9 +122,8 @@ const HomePage: React.FC = () => {
     );
   }
 
-  // Przygotuj dane do wyświetlenia (z API lub fallback)
   const selectedCategories = getSelectedCategories();
-  const displayCategories = selectedCategories.length > 0 ? selectedCategories : categories;
+  const displayCategories = selectedCategories.length > 0 ? selectedCategories : [];
   const displayFeatures = homeContent?.features || features;
 
   return (
@@ -271,10 +219,8 @@ const HomePage: React.FC = () => {
       </Box>
 
       <Container maxWidth="lg" sx={{ mb: 8 }}>
-        {/* Features */}
         <Grid container spacing={3} sx={{ mb: 8 }}>
           {displayFeatures.map((feature, index) => {
-            // Handle both string icon names (from CMS) and icon components (from fallback)
             const IconComponent =
               typeof feature.icon === "string"
                 ? iconMap[feature.icon] || TrendingUpIcon
@@ -331,7 +277,6 @@ const HomePage: React.FC = () => {
           })}
         </Grid>
 
-        {/* Categories Section */}
         <Box sx={{ mb: 4 }}>
           <Typography variant="h4" component="h2" gutterBottom fontWeight={700} sx={{ mb: 1 }}>
             {homeContent?.categoriesTitle || "Popularne Kategorie"}
@@ -343,14 +288,10 @@ const HomePage: React.FC = () => {
 
         <Grid container spacing={3}>
           {displayCategories.map((category, index) => {
-            // Dla kategorii z product API używamy CategoryIcon, dla fallback używamy mapowania
             const IconComponent = (category as any).icon
               ? iconMap[(category as any).icon] || PhoneAndroidIcon
               : CategoryIcon;
             const categoryColor = getCategoryColor(index);
-            const categoryImage =
-              (category as any).image ||
-              `https://via.placeholder.com/400x300/${categoryColor.slice(1)}/ffffff?text=${encodeURIComponent(category.name)}`;
 
             return (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={category.id}>
@@ -359,102 +300,98 @@ const HomePage: React.FC = () => {
                     height: 280,
                     position: "relative",
                     cursor: "pointer",
-                    overflow: "hidden",
+                    background: `linear-gradient(135deg, ${alpha(categoryColor, 0.15)} 0%, ${alpha(categoryColor, 0.05)} 100%)`,
+                    border: `2px solid ${alpha(categoryColor, 0.2)}`,
+                    borderRadius: 3,
                     transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                     "&:hover": {
                       transform: "translateY(-8px)",
-                      boxShadow: 8,
-                      "& .category-overlay": {
-                        opacity: 1,
+                      boxShadow: `0 12px 24px ${alpha(categoryColor, 0.3)}`,
+                      borderColor: categoryColor,
+                      background: `linear-gradient(135deg, ${alpha(categoryColor, 0.2)} 0%, ${alpha(categoryColor, 0.1)} 100%)`,
+                      "& .category-icon": {
+                        transform: "scale(1.1) rotate(5deg)",
                       },
-                      "& .category-content": {
-                        transform: "translateY(0)",
-                      },
-                      "& .category-image": {
-                        transform: "scale(1.1)",
+                      "& .category-button": {
+                        bgcolor: categoryColor,
+                        color: "white",
+                        transform: "translateY(-2px)",
                       },
                     },
                   }}
                   onClick={() => navigate(`/category/${category.id}`)}
                 >
-                  <CardMedia
-                    component="img"
-                    height="280"
-                    image={categoryImage}
-                    alt={category.name}
-                    className="category-image"
-                    sx={{
-                      objectFit: "cover",
-                      transition: "transform 0.4s",
-                    }}
-                  />
                   <Box
-                    className="category-overlay"
                     sx={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      bgcolor: alpha(categoryColor, 0.85),
-                      opacity: 0,
-                      transition: "opacity 0.4s",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
+                      textAlign: "center",
+                      p: 3,
+                      width: "100%",
                     }}
                   >
                     <Box
-                      className="category-content"
+                      className="category-icon"
                       sx={{
-                        textAlign: "center",
-                        color: "white",
-                        transform: "translateY(20px)",
-                        transition: "transform 0.4s",
+                        width: 100,
+                        height: 100,
+                        borderRadius: "50%",
+                        bgcolor: alpha(categoryColor, 0.15),
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        mb: 2,
+                        mx: "auto",
+                        transition: "all 0.4s",
                       }}
                     >
-                      <IconComponent sx={{ fontSize: 60, mb: 2 }} />
-                      <Typography variant="h5" fontWeight={700} gutterBottom>
-                        {category.name}
-                      </Typography>
-                      <Button
-                        variant="contained"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate(`/category/${category.id}`);
-                        }}
+                      <IconComponent
                         sx={{
-                          bgcolor: "white",
+                          fontSize: 50,
                           color: categoryColor,
-                          mt: 2,
-                          "&:hover": {
-                            bgcolor: "rgba(255,255,255,0.9)",
-                          },
                         }}
-                      >
-                        Przeglądaj
-                      </Button>
-                      {(category as CategoryFromAPI).productCount !== undefined && (
-                        <Typography variant="body2" sx={{ mt: 1, opacity: 0.9 }}>
-                          {(category as CategoryFromAPI).productCount} produktów
-                        </Typography>
-                      )}
+                      />
                     </Box>
-                  </Box>
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      p: 2,
-                      bgcolor: alpha("#000", 0.6),
-                      backdropFilter: "blur(10px)",
-                    }}
-                  >
-                    <Typography variant="h6" color="white" fontWeight={600} align="center">
+                    <Typography
+                      variant="h5"
+                      fontWeight={700}
+                      gutterBottom
+                      sx={{ color: "text.primary" }}
+                    >
                       {category.name}
                     </Typography>
+                    {(category as CategoryFromAPI).productCount !== undefined && (
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        {(category as CategoryFromAPI).productCount} produktów
+                      </Typography>
+                    )}
+                    <Button
+                      className="category-button"
+                      variant="outlined"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/category/${category.id}`);
+                      }}
+                      sx={{
+                        borderColor: categoryColor,
+                        color: categoryColor,
+                        fontWeight: 600,
+                        px: 4,
+                        py: 1,
+                        mt: 1,
+                        transition: "all 0.3s",
+                        "&:hover": {
+                          borderColor: categoryColor,
+                          bgcolor: categoryColor,
+                          color: "white",
+                          transform: "translateY(-2px)",
+                          boxShadow: `0 4px 12px ${alpha(categoryColor, 0.4)}`,
+                        },
+                      }}
+                    >
+                      Przeglądaj
+                    </Button>
                   </Box>
                   <Chip
                     label="Popularne"
