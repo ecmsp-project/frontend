@@ -125,6 +125,10 @@ const ContactPageEditor: React.FC = () => {
 
       // Zapisz używając nowego endpointu
       await saveContactSettings(contactSettingsData);
+
+      // Wyczyść cache Contact, aby po powrocie na stronę Contact widoczne były zaktualizowane dane
+      sessionStorage.removeItem("contact_cache");
+
       setDirty(false);
       setShowSuccess(true);
     } catch (error) {

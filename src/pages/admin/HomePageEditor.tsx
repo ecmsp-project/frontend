@@ -539,6 +539,10 @@ const HomePageEditor: React.FC = () => {
       // Zapisz używając nowego endpointu
       await saveHomeSettings(homeSettings);
 
+      // Wyczyść cache, aby po powrocie na stronę główną widoczne były zaktualizowane dane
+      sessionStorage.removeItem("homepage_cache");
+      sessionStorage.removeItem("homepage_categories");
+
       // Zaktualizuj lokalny stan
       const updatedSettings = {
         ...settings,

@@ -165,6 +165,10 @@ const FaqPageEditor: React.FC = () => {
 
       // Zapisz używając nowego endpointu
       await saveFaqSettings(faqSettings);
+
+      // Wyczyść cache FAQ, aby po powrocie na stronę FAQ widoczne były zaktualizowane dane
+      sessionStorage.removeItem("faq_cache");
+
       setDirty(false);
       setShowSuccess(true);
     } catch (error) {

@@ -34,6 +34,14 @@ const defaultFaqData = [
   },
 ];
 
+const CACHE_KEY_FAQ = "faq_cache";
+const CACHE_DURATION = 5 * 60 * 1000;
+
+interface CacheData<T> {
+  data: T;
+  timestamp: number;
+}
+
 const Faq: React.FC = () => {
   const [faqContent, setFaqContent] = useState<FaqPageContent | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,8 +50,28 @@ const Faq: React.FC = () => {
     const loadFaqContent = async () => {
       try {
         setIsLoading(true);
-        const data = await fetchFaqSettings();
-        setFaqContent(data);
+
+        // Sprawdź cache
+        const cachedFaq = sessionStorage.getItem(CACHE_KEY_FAQ);
+        let faqData: FaqPageContent | null = null;
+
+        if (cachedFaq) {
+          const parsed: CacheData<FaqPageContent> = JSON.parse(cachedFaq);
+          if (Date.now() - parsed.timestamp < CACHE_DURATION) {
+            faqData = parsed.data;
+          }
+        }
+
+        // Jeśli nie ma cache lub cache jest stary, załaduj z API
+        if (!faqData) {
+          faqData = await fetchFaqSettings();
+          sessionStorage.setItem(
+            CACHE_KEY_FAQ,
+            JSON.stringify({ data: faqData, timestamp: Date.now() } as CacheData<FaqPageContent>),
+          );
+        }
+
+        setFaqContent(faqData);
       } catch (error) {
         console.error("Failed to load FAQ content from CMS:", error);
         // Fallback do domyślnych wartości
