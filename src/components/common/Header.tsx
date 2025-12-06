@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, type KeyboardEvent } from "rea
 import { useCartContext } from "../../contexts/CartContext";
 import { useIndividualUser } from "../../contexts/IndividualUserContext";
 import { useProductContext } from "../../contexts/ProductContext";
+import { Home } from "@mui/icons-material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import CategoryIcon from "@mui/icons-material/Category";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -164,25 +165,34 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
 
   return (
     <>
-      <AppBar position="static" sx={{ bgcolor: "primary.main" }}>
-        <Toolbar>
-          <Typography
-            variant="h6"
-            noWrap
+      <AppBar
+        position="static"
+        sx={{
+          bgcolor: "primary.main",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+        }}
+      >
+        <Toolbar sx={{ py: 1 }}>
+          <Button
+            color="inherit"
             component="a"
             href="/"
+            startIcon={<Home />}
             sx={{
+              textTransform: "none",
               mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".1rem",
-              color: "inherit",
-              textDecoration: "none",
+              fontWeight: 600,
+              borderRadius: 2,
+              px: 2,
+              transition: "all 0.2s ease-in-out",
+              "&:hover": {
+                bgcolor: "rgba(255, 255, 255, 0.1)",
+                transform: "translateY(-2px)",
+              },
             }}
           >
-            E-COMMERCE
-          </Typography>
+            Strona główna
+          </Button>
 
           {!minimalist && (
             <>
@@ -190,24 +200,44 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                 color="inherit"
                 startIcon={<CategoryIcon />}
                 onClick={() => setCategoriesOpen(true)}
-                sx={{ textTransform: "none", mr: 2 }}
+                sx={{
+                  textTransform: "none",
+                  mr: 2,
+                  fontWeight: 600,
+                  borderRadius: 2,
+                  px: 2,
+                  transition: "all 0.2s ease-in-out",
+                  "&:hover": {
+                    bgcolor: "rgba(255, 255, 255, 0.1)",
+                    transform: "translateY(-2px)",
+                  },
+                }}
               >
                 Kategorie
               </Button>
-              <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
+              <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center", px: 2 }}>
                 <Box
                   sx={{
                     position: "relative",
-                    borderRadius: 1,
-                    bgcolor: "rgba(255, 255, 255, 0.15)",
-                    "&:hover": {
-                      bgcolor: "rgba(255, 255, 255, 0.25)",
-                    },
-                    mr: 2,
+                    borderRadius: 2,
+                    bgcolor: "rgba(255, 255, 255, 0.1)",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(255, 255, 255, 0.2)",
                     width: "100%",
                     maxWidth: 600,
                     display: "flex",
                     alignItems: "center",
+                    transition: "all 0.3s ease-in-out",
+                    "&:hover": {
+                      bgcolor: "rgba(255, 255, 255, 0.15)",
+                      borderColor: "rgba(255, 255, 255, 0.3)",
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                    },
+                    "&:focus-within": {
+                      bgcolor: "rgba(255, 255, 255, 0.2)",
+                      borderColor: "rgba(59, 130, 246, 0.5)",
+                      boxShadow: "0 4px 16px rgba(59, 130, 246, 0.3)",
+                    },
                   }}
                 >
                   <IconButton
@@ -215,7 +245,13 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                     size="large"
                     color="inherit"
                     aria-label="search"
-                    sx={{ p: "0 12px" }}
+                    sx={{
+                      p: "8px 12px",
+                      transition: "transform 0.2s",
+                      "&:hover": {
+                        transform: "scale(1.1)",
+                      },
+                    }}
                   >
                     <SearchIcon />
                   </IconButton>
@@ -223,14 +259,28 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                   <InputBase
                     placeholder="Szukaj produktów..."
                     inputProps={{ "aria-label": "search" }}
-                    sx={{ color: "inherit", p: "8px 8px 8px 0", width: "100%" }}
+                    sx={{
+                      color: "inherit",
+                      p: "8px 8px 8px 0",
+                      width: "100%",
+                      "&::placeholder": {
+                        color: "rgba(255, 255, 255, 0.7)",
+                        opacity: 1,
+                      },
+                    }}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onKeyDown={handleKeyDown}
                   />
                 </Box>
               </Box>
-              <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", gap: 1 }}>
+              <Box
+                sx={{
+                  display: { xs: "none", md: "flex" },
+                  alignItems: "center",
+                  gap: 1.5,
+                }}
+              >
                 {isLoggedIn ? (
                   <>
                     <IconButton
@@ -238,6 +288,13 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                       aria-label="panel użytkownika"
                       color="inherit"
                       onClick={handleUserMenuOpen}
+                      sx={{
+                        transition: "all 0.2s ease-in-out",
+                        "&:hover": {
+                          bgcolor: "rgba(255, 255, 255, 0.1)",
+                          transform: "scale(1.1)",
+                        },
+                      }}
                     >
                       <AccountCircle />
                     </IconButton>
@@ -246,8 +303,24 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                       aria-label="koszyk"
                       color="inherit"
                       onClick={() => navigate("/cart")}
+                      sx={{
+                        transition: "all 0.2s ease-in-out",
+                        "&:hover": {
+                          bgcolor: "rgba(255, 255, 255, 0.1)",
+                          transform: "scale(1.1)",
+                        },
+                      }}
                     >
-                      <Badge badgeContent={cartItemsCount} color="error">
+                      <Badge
+                        badgeContent={cartItemsCount}
+                        color="error"
+                        sx={{
+                          "& .MuiBadge-badge": {
+                            fontWeight: 700,
+                            fontSize: "0.75rem",
+                          },
+                        }}
+                      >
                         <ShoppingCartIcon />
                       </Badge>
                     </IconButton>
@@ -257,7 +330,17 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                     <Button
                       color="inherit"
                       onClick={() => navigate("/login")}
-                      sx={{ textTransform: "none" }}
+                      sx={{
+                        textTransform: "none",
+                        fontWeight: 600,
+                        borderRadius: 2,
+                        px: 2.5,
+                        transition: "all 0.2s ease-in-out",
+                        "&:hover": {
+                          bgcolor: "rgba(255, 255, 255, 0.1)",
+                          transform: "translateY(-2px)",
+                        },
+                      }}
                     >
                       Zaloguj się
                     </Button>
@@ -265,7 +348,19 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                       variant="outlined"
                       color="inherit"
                       onClick={() => navigate("/register")}
-                      sx={{ textTransform: "none" }}
+                      sx={{
+                        textTransform: "none",
+                        fontWeight: 600,
+                        borderRadius: 2,
+                        px: 2.5,
+                        borderColor: "rgba(255, 255, 255, 0.3)",
+                        transition: "all 0.2s ease-in-out",
+                        "&:hover": {
+                          bgcolor: "rgba(255, 255, 255, 0.1)",
+                          borderColor: "rgba(255, 255, 255, 0.5)",
+                          transform: "translateY(-2px)",
+                        },
+                      }}
                     >
                       Zarejestruj się
                     </Button>
@@ -293,45 +388,92 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
         PaperProps={{
           sx: {
             mt: 1.5,
-            minWidth: 200,
+            minWidth: 220,
+            borderRadius: 2,
+            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
+            border: "1px solid rgba(0, 0, 0, 0.08)",
+            overflow: "hidden",
           },
         }}
       >
-        <MenuItem onClick={() => handleMenuItemClick("/user")}>
+        <MenuItem
+          onClick={() => handleMenuItemClick("/user")}
+          sx={{
+            transition: "all 0.2s ease-in-out",
+            "&:hover": {
+              bgcolor: "rgba(59, 130, 246, 0.1)",
+            },
+          }}
+        >
           <ListItemIcon>
-            <AccountCircle fontSize="small" />
+            <AccountCircle fontSize="small" sx={{ color: "primary.main" }} />
           </ListItemIcon>
-          <ListItemText>Moje konto</ListItemText>
+          <ListItemText primary="Moje konto" primaryTypographyProps={{ fontWeight: 500 }} />
         </MenuItem>
-        <MenuItem onClick={() => handleMenuItemClick("/user/orders")}>
+        <MenuItem
+          onClick={() => handleMenuItemClick("/user/orders")}
+          sx={{
+            transition: "all 0.2s ease-in-out",
+            "&:hover": {
+              bgcolor: "rgba(59, 130, 246, 0.1)",
+            },
+          }}
+        >
           <ListItemIcon>
-            <ShoppingBagIcon fontSize="small" />
+            <ShoppingBagIcon fontSize="small" sx={{ color: "primary.main" }} />
           </ListItemIcon>
-          <ListItemText>Moje zamówienia</ListItemText>
+          <ListItemText primary="Moje zamówienia" primaryTypographyProps={{ fontWeight: 500 }} />
         </MenuItem>
-        <MenuItem onClick={() => handleMenuItemClick("/user/settings")}>
+        <MenuItem
+          onClick={() => handleMenuItemClick("/user/settings")}
+          sx={{
+            transition: "all 0.2s ease-in-out",
+            "&:hover": {
+              bgcolor: "rgba(59, 130, 246, 0.1)",
+            },
+          }}
+        >
           <ListItemIcon>
-            <SettingsIcon fontSize="small" />
+            <SettingsIcon fontSize="small" sx={{ color: "primary.main" }} />
           </ListItemIcon>
-          <ListItemText>Ustawienia</ListItemText>
+          <ListItemText primary="Ustawienia" primaryTypographyProps={{ fontWeight: 500 }} />
         </MenuItem>
         {permissions.length > 0 && (
           <>
-            <Divider />
-            <MenuItem onClick={() => handleMenuItemClick("/admin")}>
+            <Divider sx={{ my: 0.5 }} />
+            <MenuItem
+              onClick={() => handleMenuItemClick("/admin")}
+              sx={{
+                transition: "all 0.2s ease-in-out",
+                "&:hover": {
+                  bgcolor: "rgba(59, 130, 246, 0.1)",
+                },
+              }}
+            >
               <ListItemIcon>
-                <WorkIcon fontSize="small" />
+                <WorkIcon fontSize="small" sx={{ color: "primary.main" }} />
               </ListItemIcon>
-              <ListItemText>Panel pracownika</ListItemText>
+              <ListItemText
+                primary="Panel pracownika"
+                primaryTypographyProps={{ fontWeight: 500 }}
+              />
             </MenuItem>
           </>
         )}
-        <Divider />
-        <MenuItem onClick={handleLogout}>
+        <Divider sx={{ my: 0.5 }} />
+        <MenuItem
+          onClick={handleLogout}
+          sx={{
+            transition: "all 0.2s ease-in-out",
+            "&:hover": {
+              bgcolor: "rgba(239, 68, 68, 0.1)",
+            },
+          }}
+        >
           <ListItemIcon>
-            <LogoutIcon fontSize="small" />
+            <LogoutIcon fontSize="small" sx={{ color: "error.main" }} />
           </ListItemIcon>
-          <ListItemText>Wyloguj się</ListItemText>
+          <ListItemText primary="Wyloguj się" primaryTypographyProps={{ fontWeight: 500 }} />
         </MenuItem>
       </Menu>
 
@@ -344,15 +486,17 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
           sx: {
             width: "100%",
             p: 4,
-            maxHeight: "80vh",
+            maxHeight: "85vh",
             overflowY: "auto",
+            background: "linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)",
+            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.12)",
           },
         }}
       >
-        <Box sx={{ px: 4 }}>
-          <Box
-            sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}
-          ></Box>
+        <Box sx={{ px: 4, py: 2 }}>
+          <Typography variant="h5" fontWeight={700} sx={{ mb: 4, color: "text.primary" }}>
+            Kategorie Produktów
+          </Typography>
           <Grid container spacing={0}>
             {categoryColumns.map((column, columnIndex) => (
               <Grid
@@ -372,20 +516,25 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                           bottom: 0,
                           width: "1px",
                           bgcolor: "divider",
-                          opacity: 0.3,
+                          opacity: 0.2,
                         }
                       : {},
                 }}
               >
                 {column.map((categoryGroup) => (
-                  <Box key={categoryGroup.main.id} sx={{ mb: 3 }}>
+                  <Box key={categoryGroup.main.id} sx={{ mb: 4 }}>
                     <Typography
                       variant="h6"
-                      fontWeight="bold"
+                      fontWeight={700}
                       sx={{
-                        mb: 1,
+                        mb: 2,
                         cursor: "pointer",
-                        "&:hover": { color: "primary.main" },
+                        color: "text.primary",
+                        transition: "all 0.2s ease-in-out",
+                        "&:hover": {
+                          color: "primary.main",
+                          transform: "translateX(4px)",
+                        },
                       }}
                       onClick={() => handleCategoryClick(categoryGroup.main.id)}
                     >
@@ -397,8 +546,13 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                           key={subcat.id}
                           disablePadding
                           sx={{
-                            cursor: "pointer",
-                            "&:hover": { color: "primary.main" },
+                            mb: 0.5,
+                            borderRadius: 1,
+                            transition: "all 0.2s ease-in-out",
+                            "&:hover": {
+                              bgcolor: "rgba(59, 130, 246, 0.08)",
+                              transform: "translateX(4px)",
+                            },
                           }}
                           onClick={() => handleCategoryClick(subcat.id)}
                         >
@@ -407,6 +561,13 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                             primaryTypographyProps={{
                               variant: "body2",
                               color: "text.secondary",
+                              fontWeight: 500,
+                              sx: {
+                                transition: "color 0.2s",
+                                "&:hover": {
+                                  color: "primary.main",
+                                },
+                              },
                             }}
                           />
                         </ListItem>
