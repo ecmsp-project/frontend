@@ -96,11 +96,13 @@ const UserOrdersManagementPage: React.FC = () => {
   return (
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Breadcrumbs items={[{ label: "Moje konto", path: "/user" }, { label: "Moje zamówienia" }]} />
-      <Typography variant="h4" gutterBottom>
-        Moje zamówienia
-      </Typography>
-      {content}
+        <Breadcrumbs
+          items={[{ label: "Moje konto", path: "/user" }, { label: "Moje zamówienia" }]}
+        />
+        <Typography variant="h4" gutterBottom>
+          Moje zamówienia
+        </Typography>
+        {content}
       </Container>
     </MainLayout>
   );
