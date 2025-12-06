@@ -1,4 +1,5 @@
 import React from "react";
+import Breadcrumbs from "../../components/common/Breadcrumbs";
 import MainLayout from "../../components/layout/MainLayout";
 import EditIcon from "@mui/icons-material/Edit";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
@@ -23,7 +24,14 @@ const CMSPage: React.FC = () => {
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" gutterBottom fontWeight={700}>
+          <Breadcrumbs
+            items={[
+              { label: "Panel administracyjny", path: "/admin" },
+              { label: "Sklep" },
+              { label: "Zarządzanie Treścią Strony" },
+            ]}
+          />
+          <Typography variant="h4" gutterBottom>
             Zarządzanie Treścią Strony
           </Typography>
           <Typography variant="body1" color="text.secondary">

@@ -7,46 +7,29 @@ import { Typography, Paper, Grid, CircularProgress, Alert, Box, Container } from
 const UserDashboardPage: React.FC = () => {
   const { currentUser, loading, error } = useIndividualUser();
 
+  let content;
+
   if (loading) {
-    return (
-      <MainLayout>
-        <Container maxWidth="lg" sx={{ py: 4 }}>
-          <Box sx={{ display: "flex", justifyContent: "center", py: 5 }}>
-            <CircularProgress />
-          </Box>
-        </Container>
-      </MainLayout>
+    content = (
+      <Box sx={{ display: "flex", justifyContent: "center", py: 5 }}>
+        <CircularProgress />
+      </Box>
     );
-  }
-
-  if (error) {
-    return (
-      <MainLayout>
-        <Container maxWidth="lg" sx={{ py: 4 }}>
-          <Alert severity="error" sx={{ my: 3 }}>
-            {error}
-          </Alert>
-        </Container>
-      </MainLayout>
+  } else if (error) {
+    content = (
+      <Alert severity="error" sx={{ my: 3 }}>
+        {error}
+      </Alert>
     );
-  }
-
-  if (!currentUser) {
-    return (
-      <MainLayout>
-        <Container maxWidth="lg" sx={{ py: 4 }}>
-          <Alert severity="warning" sx={{ my: 3 }}>
-            Nie jesteś zalogowany. Proszę się zalogować.
-          </Alert>
-        </Container>
-      </MainLayout>
+  } else if (!currentUser) {
+    content = (
+      <Alert severity="warning" sx={{ my: 3 }}>
+        Nie jesteś zalogowany. Proszę się zalogować.
+      </Alert>
     );
-  }
-
-  return (
-    <MainLayout>
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Breadcrumbs items={[{ label: "Moje konto" }]} />
+  } else {
+    content = (
+      <>
         <Box sx={{ mb: 4 }}>
           <Typography variant="h4" gutterBottom fontWeight={700}>
             Moje konto
@@ -163,6 +146,18 @@ const UserDashboardPage: React.FC = () => {
             </Paper>
           </Grid>
         </Grid>
+      </>
+    );
+  }
+
+  return (
+    <MainLayout>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Breadcrumbs items={[{ label: "Panel użytkownika" }, { label: "Moje konto" }]} />
+        <Typography variant="h4" gutterBottom>
+          Moje konto
+        </Typography>
+        {content}
       </Container>
     </MainLayout>
   );

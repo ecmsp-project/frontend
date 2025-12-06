@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchAllOrders } from "../../api/order-service";
+import Breadcrumbs from "../../components/common/Breadcrumbs";
 import MainLayout from "../../components/layout/MainLayout";
 import { OrderRow } from "../../components/orders/OrderRow";
 import { type OrderDetailsResponse } from "../../types/orders";
@@ -41,49 +42,60 @@ const OrderManagementPage: React.FC = () => {
     loadOrders();
   }, []);
 
+  let content;
+
   if (loading) {
-    return (
+    content = (
       <Box sx={{ display: "flex", justifyContent: "center", py: 5 }}>
         <CircularProgress />
       </Box>
     );
   } else if (error) {
-    return (
+    content = (
       <Alert severity="error" sx={{ my: 3 }}>
         {error}
       </Alert>
     );
   } else {
-    return (
-      <MainLayout>
-        <Container maxWidth="lg" sx={{ py: 4 }}>
-          <Typography variant="h4" gutterBottom>
-            Zarządzanie Zamówieniami
-          </Typography>
-
-          <TableContainer component={Paper} elevation={3}>
-            <Table aria-label="orders management table">
-              <TableHead sx={{ bgcolor: "grey.100" }}>
-                <TableRow>
-                  <TableCell />
-                  <TableCell>ID Zamówienia</TableCell>
-                  <TableCell>ID Klienta</TableCell>
-                  <TableCell align="right">Data</TableCell>
-                  <TableCell align="center">Status</TableCell>
-                  <TableCell align="right">Łączna kwota</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {orders.map((order) => (
-                  <OrderRow key={order.orderId} order={order} />
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Container>
-      </MainLayout>
+    content = (
+      <TableContainer component={Paper} elevation={3}>
+        <Table aria-label="orders management table">
+          <TableHead sx={{ bgcolor: "grey.100" }}>
+            <TableRow>
+              <TableCell />
+              <TableCell>ID Zamówienia</TableCell>
+              <TableCell>ID Klienta</TableCell>
+              <TableCell align="right">Data</TableCell>
+              <TableCell align="center">Status</TableCell>
+              <TableCell align="right">Łączna kwota</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {orders.map((order) => (
+              <OrderRow key={order.orderId} order={order} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     );
   }
+
+  return (
+    <MainLayout>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Breadcrumbs
+          items={[
+            { label: "Panel administracyjny", path: "/admin" },
+            { label: "Zarządzanie Zamówieniami" },
+          ]}
+        />
+        <Typography variant="h4" gutterBottom>
+          Zarządzanie Zamówieniami
+        </Typography>
+        {content}
+      </Container>
+    </MainLayout>
+  );
 };
 
 export default OrderManagementPage;

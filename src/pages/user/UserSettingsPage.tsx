@@ -17,7 +17,7 @@ const UserSettingsPage: React.FC = () => {
   return (
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Breadcrumbs items={[{ label: "Moje konto", path: "/user" }, { label: "Ustawienia" }]} />
+        <Breadcrumbs items={[{ label: "Panel użytkownika" }, { label: "Ustawienia" }]} />
         <Typography variant="h4" gutterBottom>
           Ustawienia
         </Typography>

@@ -128,6 +128,7 @@ const UserManagementPage: React.FC = () => {
         <Breadcrumbs
           items={[
             { label: "Panel administracyjny", path: "/admin" },
+            { label: "Użytkownicy" },
             { label: "Zarządzanie użytkownikami" },
           ]}
         />

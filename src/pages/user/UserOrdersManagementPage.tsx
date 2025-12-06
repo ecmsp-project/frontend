@@ -96,9 +96,7 @@ const UserOrdersManagementPage: React.FC = () => {
   return (
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Breadcrumbs
-          items={[{ label: "Moje konto", path: "/user" }, { label: "Moje zamówienia" }]}
-        />
+        <Breadcrumbs items={[{ label: "Panel użytkownika" }, { label: "Moje zamówienia" }]} />
         <Typography variant="h4" gutterBottom>
           Moje zamówienia
         </Typography>
