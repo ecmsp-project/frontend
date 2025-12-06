@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useIndividualUser } from "../../contexts/IndividualUserContext";
 import { PERMISSIONS } from "../../types/permissions";
 import type { Permission } from "../../types/permissions";
@@ -32,7 +32,7 @@ import {
   Collapse,
   Divider,
 } from "@mui/material";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 
 const drawerWidth = 260;
 
@@ -125,12 +125,32 @@ interface AdminLayoutProps {
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { currentUser, logout, hasAnyPermission } = useIndividualUser();
   const [openSections, setOpenSections] = useState<{ [key: string]: boolean }>({
     Użytkownicy: false,
     Sklep: false,
     Analytics: false,
   });
+
+  useEffect(() => {
+    const pathname = location.pathname;
+    const newOpenSections: { [key: string]: boolean } = { ...openSections };
+
+    allMenuItems.forEach((item) => {
+      if (item.children) {
+        const hasActiveChild = item.children.some(
+          (child) => child.path && pathname.startsWith(child.path),
+        );
+        if (hasActiveChild) {
+          newOpenSections[item.text] = true;
+        }
+      }
+    });
+
+    setOpenSections(newOpenSections);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
 
   const handleLogout = () => {
     logout();
@@ -142,6 +162,12 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       ...prev,
       [sectionName]: !prev[sectionName],
     }));
+  };
+
+  const isParentActive = (item: MenuItem): boolean => {
+    if (!item.children) return false;
+    const pathname = location.pathname;
+    return item.children.some((child) => child.path && pathname.startsWith(child.path));
   };
 
   const filterVisibleItems = (items: MenuItem[]): MenuItem[] => {
@@ -228,6 +254,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           <List>
             {visibleMenuItems.map((item, index) => {
               if (item.children) {
+                const isActive = isParentActive(item);
                 return (
                   <React.Fragment key={item.text}>
                     <ListItemButton
@@ -241,6 +268,17 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                           backgroundColor: "rgba(255, 255, 255, 0.1)",
                           transform: "translateX(4px)",
                         },
+                        ...(isActive && {
+                          backgroundColor: "rgba(59, 130, 246, 0.15)",
+                          borderLeft: "3px solid #3b82f6",
+                          "& .MuiListItemIcon-root": {
+                            color: "#60a5fa",
+                          },
+                          "& .MuiListItemText-primary": {
+                            color: "#93c5fd",
+                            fontWeight: 600,
+                          },
+                        }),
                       }}
                     >
                       <ListItemIcon
@@ -339,6 +377,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                   key={item.text}
                   component={NavLink}
                   to={item.path!}
+                  end={item.path === "/admin"}
                   sx={{
                     mx: 1,
                     borderRadius: 2,
