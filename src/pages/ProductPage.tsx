@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
+import Breadcrumbs from "../components/common/Breadcrumbs";
 import Gallery from "../components/common/Gallery";
 import MainLayout from "../components/layout/MainLayout.tsx";
+import { useProductContext } from "../contexts/ProductContext";
 import { useProductPage } from "../hooks/useProductPage";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -23,9 +25,12 @@ import {
   CircularProgress,
   Alert,
 } from "@mui/material";
+import { useSearchParams } from "react-router-dom";
 
 const ProductPage: React.FC = () => {
   const [quantity, setQuantity] = useState(1);
+  const [searchParams] = useSearchParams();
+  const { categories } = useProductContext();
 
   const {
     variant,
@@ -41,6 +46,14 @@ const ProductPage: React.FC = () => {
     handlePropertyChange,
     getAvailableValues,
   } = useProductPage();
+
+  // Pobierz categoryId z URL params lub z localStorage (jeśli użytkownik przyszedł z kategorii)
+  const categoryIdFromUrl = searchParams.get("categoryId");
+  const [productCategoryId, setProductCategoryId] = useState<string | null>(
+    categoryIdFromUrl ||
+      (variant?.variantId ? localStorage.getItem(`product_${variant.variantId}_category`) : null) ||
+      null,
+  );
 
   const leftRef = useRef<HTMLDivElement | null>(null);
   const sidebarWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -59,6 +72,22 @@ const ProductPage: React.FC = () => {
     setTimeout(syncHeights, 500);
     return () => window.removeEventListener("resize", syncHeights);
   }, [variant]);
+
+  useEffect(() => {
+    if (categoryIdFromUrl && variant?.variantId) {
+      localStorage.setItem(`product_${variant.variantId}_category`, categoryIdFromUrl);
+      setProductCategoryId(categoryIdFromUrl);
+    } else if (variant?.variantId && !productCategoryId) {
+      const savedCategoryId = localStorage.getItem(`product_${variant.variantId}_category`);
+      if (savedCategoryId) {
+        setProductCategoryId(savedCategoryId);
+      }
+    }
+  }, [categoryIdFromUrl, variant?.variantId, productCategoryId]);
+
+  const categoryName = productCategoryId
+    ? categories.find((cat) => cat.id === productCategoryId)?.name
+    : null;
 
   const productImages =
     variant?.variantImages && variant.variantImages.length > 0
@@ -112,6 +141,14 @@ const ProductPage: React.FC = () => {
           width: "100%",
         }}
       >
+        <Breadcrumbs
+          items={[
+            ...(categoryName
+              ? [{ label: categoryName, path: `/category/${productCategoryId}` }]
+              : []),
+            { label: variant.name },
+          ]}
+        />
         <Typography variant="caption" color="text.secondary" sx={{ mb: 2, display: "block" }}>
           E-COMMERCE
         </Typography>
