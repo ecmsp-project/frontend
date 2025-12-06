@@ -125,7 +125,6 @@ const SalesStatisticsPage: React.FC = () => {
             gutterBottom
             sx={{ display: "flex", alignItems: "center", gap: 1 }}
           >
-            <BarChartIcon fontSize="large" />
             Statystyki produktów
           </Typography>
           <Typography variant="body2" color="text.secondary">

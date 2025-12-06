@@ -1,4 +1,5 @@
 import React from "react";
+import Breadcrumbs from "../components/common/Breadcrumbs";
 import MainLayout from "../components/layout/MainLayout";
 import CategoryFilter from "../components/search/CategoryFilter";
 import PriceFilter from "../components/search/PriceFilter";
@@ -37,38 +38,48 @@ const SearchPage: React.FC = () => {
   } = useProductSearch();
 
   const handleProductClick = (product: ProductRepresentationDTO) => {
-    navigate(`/product/${product.variantDetail.variantId}`);
+    const url = categoryId
+      ? `/product/${product.variantDetail.variantId}?categoryId=${categoryId}`
+      : `/product/${product.variantDetail.variantId}`;
+    navigate(url);
   };
+
+  const categoryName = categoryId
+    ? categories.find((category) => category.id === categoryId)?.name
+    : null;
 
   return (
     <MainLayout>
       <Container maxWidth="lg">
-        {searchTerm && (
-          <Typography padding={4} paddingBottom={0} variant="h4" component="h1" gutterBottom>
-            Wyniki wyszukiwania dla "{searchTerm}"
-          </Typography>
-        )}
-        {categoryId && !searchTerm && (
-          <Typography padding={4} paddingBottom={0} variant="h4" component="h1" gutterBottom>
-            Produkty z kategorii {categories.find((category) => category.id === categoryId)?.name}
-          </Typography>
-        )}
+        <Box sx={{ px: 4, pt: 4 }}>
+          {categoryId && <Breadcrumbs items={[{ label: categoryName || "Kategoria" }]} />}
+          {searchTerm && (
+            <Typography variant="h4" component="h1" gutterBottom sx={{ mt: categoryId ? 2 : 0 }}>
+              Wyniki wyszukiwania dla "{searchTerm}"
+            </Typography>
+          )}
+          {categoryId && !searchTerm && (
+            <Typography variant="h4" component="h1" gutterBottom sx={{ mt: 2 }}>
+              Produkty z kategorii {categoryName}
+            </Typography>
+          )}
 
-        <Box padding={4} paddingBottom={2}>
-          <SearchFilters
-            categoryId={categoryId}
-            categories={categories}
-            priceRange={priceRange}
-            onSortMenuOpen={(e) => setSortMenuAnchor(e.currentTarget)}
-            onCategoryMenuOpen={(e) => setCategoryMenuAnchor(e.currentTarget)}
-            onPriceMenuOpen={(e) => setPriceMenuAnchor(e.currentTarget)}
-            onCategoryChipDelete={handleCategoryChipDelete}
-            onPriceChipDelete={handlePriceChipDelete}
-          />
+          <Box sx={{ pt: searchTerm || categoryId ? 2 : 0, pb: 2 }}>
+            <SearchFilters
+              categoryId={categoryId}
+              categories={categories}
+              priceRange={priceRange}
+              onSortMenuOpen={(e) => setSortMenuAnchor(e.currentTarget)}
+              onCategoryMenuOpen={(e) => setCategoryMenuAnchor(e.currentTarget)}
+              onPriceMenuOpen={(e) => setPriceMenuAnchor(e.currentTarget)}
+              onCategoryChipDelete={handleCategoryChipDelete}
+              onPriceChipDelete={handlePriceChipDelete}
+            />
 
-          <Typography variant="body2" color="text.secondary">
-            Liczba produktów: {sortedProducts.length}
-          </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Liczba produktów: {sortedProducts.length}
+            </Typography>
+          </Box>
         </Box>
 
         <SortFilter
@@ -108,7 +119,7 @@ const SearchPage: React.FC = () => {
           onClose={() => setPriceMenuAnchor(null)}
         />
 
-        <Box padding={4} paddingTop={0}>
+        <Box sx={{ px: 4 }}>
           {loading ? (
             <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
               <CircularProgress />

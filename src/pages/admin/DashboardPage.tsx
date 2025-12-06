@@ -1,4 +1,5 @@
 import React from "react";
+import Breadcrumbs from "../../components/common/Breadcrumbs";
 import MainLayout from "../../components/layout/MainLayout";
 import { Typography, Paper, Grid, Container } from "@mui/material";
 
@@ -6,6 +7,9 @@ const DashboardPage: React.FC = () => {
   return (
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Breadcrumbs
+          items={[{ label: "Panel administracyjny" }, { label: "Pulpit Administratora" }]}
+        />
         <Typography variant="h4" gutterBottom>
           Pulpit Administratora
         </Typography>

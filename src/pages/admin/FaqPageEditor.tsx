@@ -3,7 +3,6 @@ import { saveFaqSettings, fetchFaqSettings } from "../../api/cms-service";
 import CMSToolbar from "../../components/cms/CMSToolbar";
 import EditableText from "../../components/cms/EditableText";
 import Accordion from "../../components/common/Accordion";
-import MainLayout from "../../components/layout/MainLayout";
 import { useCMS } from "../../contexts/CMSContext";
 import type { FaqItem } from "../../types/cms";
 import AddIcon from "@mui/icons-material/Add";
@@ -209,162 +208,160 @@ const FaqPageEditor: React.FC = () => {
     <>
       <CMSToolbar onSave={handleSave} isDirty={isDirty} isSaving={isSaving} />
 
-      <MainLayout>
-        <Box sx={{ pt: 16 }}>
-          <Container
-            sx={{
-              maxWidth: "50rem",
-              margin: "0 auto",
-              padding: "0 1.5rem",
-            }}
-          >
-            <Box sx={{ textAlign: "center", mb: 6, pt: 4 }}>
-              <Typography
-                variant="h2"
-                sx={{
-                  fontSize: "2rem",
-                  fontWeight: "bold",
-                  color: "text.primary",
-                  mb: 2,
-                  lineHeight: 1.2,
+      <Box sx={{ pt: 16 }}>
+        <Container
+          sx={{
+            maxWidth: "50rem",
+            margin: "0 auto",
+            padding: "0 1.5rem",
+          }}
+        >
+          <Box sx={{ textAlign: "center", mb: 6, pt: 4 }}>
+            <Typography
+              variant="h2"
+              sx={{
+                fontSize: "2rem",
+                fontWeight: "bold",
+                color: "text.primary",
+                mb: 2,
+                lineHeight: 1.2,
+              }}
+            >
+              <EditableText
+                value={settings.faqPage.pageTitle}
+                onChange={(value) => {
+                  setSettings({
+                    ...settings,
+                    faqPage: { ...settings.faqPage!, pageTitle: value },
+                  });
+                  setDirty(true);
                 }}
-              >
-                <EditableText
-                  value={settings.faqPage.pageTitle}
-                  onChange={(value) => {
-                    setSettings({
-                      ...settings,
-                      faqPage: { ...settings.faqPage!, pageTitle: value },
-                    });
-                    setDirty(true);
-                  }}
-                  isEditMode={true}
-                />
-              </Typography>
+                isEditMode={true}
+              />
+            </Typography>
 
-              <Typography
-                variant="body2"
-                sx={{
-                  fontSize: "1rem",
-                  color: "text.secondary",
-                  maxWidth: "37.5rem",
-                  margin: "0 auto",
-                  lineHeight: 1.6,
+            <Typography
+              variant="body2"
+              sx={{
+                fontSize: "1rem",
+                color: "text.secondary",
+                maxWidth: "37.5rem",
+                margin: "0 auto",
+                lineHeight: 1.6,
+              }}
+            >
+              <EditableText
+                value={settings.faqPage.pageSubtitle}
+                onChange={(value) => {
+                  setSettings({
+                    ...settings,
+                    faqPage: { ...settings.faqPage!, pageSubtitle: value },
+                  });
+                  setDirty(true);
                 }}
-              >
-                <EditableText
-                  value={settings.faqPage.pageSubtitle}
-                  onChange={(value) => {
-                    setSettings({
-                      ...settings,
-                      faqPage: { ...settings.faqPage!, pageSubtitle: value },
-                    });
-                    setDirty(true);
-                  }}
-                  multiline
-                  isEditMode={true}
-                />{" "}
-                <Link
-                  href="/contact"
-                  sx={{
-                    color: "primary.main",
-                    textDecoration: "underline",
-                    cursor: "pointer",
-                  }}
-                >
-                  Skontaktuj się z nami!
-                </Link>
-              </Typography>
-            </Box>
-
-            <Box sx={{ mb: 4 }}>
-              {settings.faqPage.faqItems.map((faq, index) => (
-                <Box key={faq.id} sx={{ position: "relative", mb: 2 }}>
-                  <IconButton
-                    size="small"
-                    sx={{
-                      position: "absolute",
-                      top: 8,
-                      right: 8,
-                      zIndex: 10,
-                      bgcolor: "error.main",
-                      color: "white",
-                      "&:hover": { bgcolor: "error.dark" },
-                    }}
-                    onClick={() => handleDeleteFaq(index)}
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-
-                  <Accordion
-                    title={
-                      <EditableText
-                        value={faq.question}
-                        onChange={(value) => {
-                          const newFaqItems = [...settings.faqPage!.faqItems];
-                          newFaqItems[index] = { ...newFaqItems[index], question: value };
-                          setSettings({
-                            ...settings,
-                            faqPage: { ...settings.faqPage!, faqItems: newFaqItems },
-                          });
-                          setDirty(true);
-                        }}
-                        isEditMode={true}
-                      />
-                    }
-                    content={
-                      <EditableText
-                        value={faq.answer}
-                        onChange={(value) => {
-                          const newFaqItems = [...settings.faqPage!.faqItems];
-                          newFaqItems[index] = { ...newFaqItems[index], answer: value };
-                          setSettings({
-                            ...settings,
-                            faqPage: { ...settings.faqPage!, faqItems: newFaqItems },
-                          });
-                          setDirty(true);
-                        }}
-                        multiline
-                        isEditMode={true}
-                      />
-                    }
-                    defaultExpanded={faq.expanded}
-                  />
-                </Box>
-              ))}
-
-              {/* Przycisk dodawania nowego FAQ */}
-              <Card
-                elevation={0}
+                multiline
+                isEditMode={true}
+              />{" "}
+              <Link
+                href="/contact"
                 sx={{
-                  textAlign: "center",
-                  p: 3,
-                  bgcolor: (theme) => alpha(theme.palette.success.main, 0.05),
-                  border: "2px dashed",
-                  borderColor: "success.main",
+                  color: "primary.main",
+                  textDecoration: "underline",
                   cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  minHeight: 100,
-                  mt: 2,
-                  "&:hover": {
-                    bgcolor: (theme) => alpha(theme.palette.success.main, 0.1),
-                  },
                 }}
-                onClick={handleAddFaq}
               >
-                <Box>
-                  <AddIcon sx={{ fontSize: 48, color: "success.main", mb: 1 }} />
-                  <Typography variant="h6" color="success.main">
-                    Dodaj Pytanie
-                  </Typography>
-                </Box>
-              </Card>
-            </Box>
-          </Container>
-        </Box>
-      </MainLayout>
+                Skontaktuj się z nami!
+              </Link>
+            </Typography>
+          </Box>
+
+          <Box sx={{ mb: 4 }}>
+            {settings.faqPage.faqItems.map((faq, index) => (
+              <Box key={faq.id} sx={{ position: "relative", mb: 2 }}>
+                <IconButton
+                  size="small"
+                  sx={{
+                    position: "absolute",
+                    top: 8,
+                    right: 8,
+                    zIndex: 10,
+                    bgcolor: "error.main",
+                    color: "white",
+                    "&:hover": { bgcolor: "error.dark" },
+                  }}
+                  onClick={() => handleDeleteFaq(index)}
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+
+                <Accordion
+                  title={
+                    <EditableText
+                      value={faq.question}
+                      onChange={(value) => {
+                        const newFaqItems = [...settings.faqPage!.faqItems];
+                        newFaqItems[index] = { ...newFaqItems[index], question: value };
+                        setSettings({
+                          ...settings,
+                          faqPage: { ...settings.faqPage!, faqItems: newFaqItems },
+                        });
+                        setDirty(true);
+                      }}
+                      isEditMode={true}
+                    />
+                  }
+                  content={
+                    <EditableText
+                      value={faq.answer}
+                      onChange={(value) => {
+                        const newFaqItems = [...settings.faqPage!.faqItems];
+                        newFaqItems[index] = { ...newFaqItems[index], answer: value };
+                        setSettings({
+                          ...settings,
+                          faqPage: { ...settings.faqPage!, faqItems: newFaqItems },
+                        });
+                        setDirty(true);
+                      }}
+                      multiline
+                      isEditMode={true}
+                    />
+                  }
+                  defaultExpanded={faq.expanded}
+                />
+              </Box>
+            ))}
+
+            {/* Przycisk dodawania nowego FAQ */}
+            <Card
+              elevation={0}
+              sx={{
+                textAlign: "center",
+                p: 3,
+                bgcolor: (theme) => alpha(theme.palette.success.main, 0.05),
+                border: "2px dashed",
+                borderColor: "success.main",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 100,
+                mt: 2,
+                "&:hover": {
+                  bgcolor: (theme) => alpha(theme.palette.success.main, 0.1),
+                },
+              }}
+              onClick={handleAddFaq}
+            >
+              <Box>
+                <AddIcon sx={{ fontSize: 48, color: "success.main", mb: 1 }} />
+                <Typography variant="h6" color="success.main">
+                  Dodaj Pytanie
+                </Typography>
+              </Box>
+            </Card>
+          </Box>
+        </Container>
+      </Box>
 
       <Snackbar
         open={showSuccess}

@@ -3,6 +3,7 @@ import { getAllCategories, createCategory, deleteCategory } from "../../api/prod
 import CategoryDeleteDialog from "../../components/admin/categories/CategoryDeleteDialog";
 import CategoryFormDialog from "../../components/admin/categories/CategoryFormDialog";
 import CategoryTree from "../../components/admin/categories/CategoryTree";
+import Breadcrumbs from "../../components/common/Breadcrumbs";
 import MainLayout from "../../components/layout/MainLayout";
 import type { CategoryFormDialogState, CategoryDeleteDialogState } from "../../types/category";
 import type { CategoryFromAPI } from "../../types/cms";
@@ -141,7 +142,16 @@ const CategoryManagementPage: React.FC = () => {
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Box sx={{ mb: 3 }}>
-          <Typography variant="h4">Zarządzanie Kategoriami</Typography>
+          <Breadcrumbs
+            items={[
+              { label: "Panel administracyjny", path: "/admin" },
+              { label: "Sklep" },
+              { label: "Zarządzanie Kategoriami" },
+            ]}
+          />
+          <Typography variant="h4" gutterBottom>
+            Zarządzanie Kategoriami
+          </Typography>
         </Box>
 
         {error && (
