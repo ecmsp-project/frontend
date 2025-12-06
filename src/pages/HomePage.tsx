@@ -56,6 +56,15 @@ const features = [
   },
 ];
 
+const CACHE_KEY_HOME = "homepage_cache";
+const CACHE_KEY_CATEGORIES = "homepage_categories";
+const CACHE_DURATION = 5 * 60 * 1000;
+
+interface CacheData<T> {
+  data: T;
+  timestamp: number;
+}
+
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [homeContent, setHomeContent] = useState<HomePageContent | null>(null);
@@ -67,13 +76,69 @@ const HomePage: React.FC = () => {
       try {
         setIsLoading(true);
 
-        const [cmsData, categoriesResponse] = await Promise.all([
-          fetchHomeSettings(),
-          getRootCategories(),
-        ]);
+        const cachedHome = sessionStorage.getItem(CACHE_KEY_HOME);
+        const cachedCategories = sessionStorage.getItem(CACHE_KEY_CATEGORIES);
 
-        setHomeContent(cmsData);
-        setCategoriesFromAPI(categoriesResponse.categories);
+        let cmsData: HomePageContent | null = null;
+        let categoriesResponse: { categories: CategoryFromAPI[] } | null = null;
+
+        if (cachedHome) {
+          const parsed: CacheData<HomePageContent> = JSON.parse(cachedHome);
+          if (Date.now() - parsed.timestamp < CACHE_DURATION) {
+            cmsData = parsed.data;
+          }
+        }
+
+        if (cachedCategories) {
+          const parsed: CacheData<{ categories: CategoryFromAPI[] }> = JSON.parse(cachedCategories);
+          if (Date.now() - parsed.timestamp < CACHE_DURATION) {
+            categoriesResponse = parsed.data;
+          }
+        }
+
+        const promises: Promise<any>[] = [];
+        if (!cmsData) {
+          promises.push(
+            fetchHomeSettings().then((data) => {
+              cmsData = data;
+              sessionStorage.setItem(
+                CACHE_KEY_HOME,
+                JSON.stringify({ data, timestamp: Date.now() } as CacheData<HomePageContent>),
+              );
+            }),
+          );
+        }
+        if (!categoriesResponse) {
+          promises.push(
+            getRootCategories().then((data) => {
+              categoriesResponse = data;
+              sessionStorage.setItem(
+                CACHE_KEY_CATEGORIES,
+                JSON.stringify({
+                  data,
+                  timestamp: Date.now(),
+                } as CacheData<{ categories: CategoryFromAPI[] }>),
+              );
+            }),
+          );
+        }
+
+        if (cmsData) {
+          setHomeContent(cmsData);
+        }
+        if (categoriesResponse) {
+          setCategoriesFromAPI(categoriesResponse.categories);
+        }
+
+        if (promises.length > 0) {
+          await Promise.all(promises);
+          if (cmsData) {
+            setHomeContent(cmsData);
+          }
+          if (categoriesResponse) {
+            setCategoriesFromAPI(categoriesResponse.categories);
+          }
+        }
       } catch (error) {
         console.error("Failed to load home content:", error);
       } finally {
