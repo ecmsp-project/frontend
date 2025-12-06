@@ -7,16 +7,16 @@ import type { GetCategoriesResponse, CategoryFromAPI } from "../types/cms";
 import type {
   GetProductsRequestDTO,
   GetProductsResponseDTO,
+  GetVariantResponseDTO,
   ProductCreateRequestDTO,
   ProductCreateResponseDTO,
-  VariantCreateRequestDTO,
-  VariantCreateResponseDTO,
+  VariantPropertyResponseDTO,
 } from "../types/products";
 import { apiCall } from "./utils";
 
 const PRODUCT_SERVICE_URL = "http://localhost:8400";
 const PRODUCT_API = `${PRODUCT_SERVICE_URL}/api/products`;
-const VARIANT_API = `${PRODUCT_SERVICE_URL}/api/variants`;
+const VARIANT_API = `${PRODUCT_SERVICE_URL}/api/variant`;
 const CATEGORY_API = `${PRODUCT_SERVICE_URL}/api/categories`;
 
 export const createProduct = async (
@@ -35,26 +35,6 @@ export const createProduct = async (
     return await response.json();
   } catch (error) {
     console.error("API Error creating product:", error);
-    throw error;
-  }
-};
-
-export const createVariant = async (
-  variantData: VariantCreateRequestDTO,
-): Promise<VariantCreateResponseDTO> => {
-  try {
-    const response = await apiCall(VARIANT_API, {
-      method: "POST",
-      body: JSON.stringify(variantData),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to create variant: ${response.status} ${response.statusText}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("API Error creating variant:", error);
     throw error;
   }
 };
@@ -240,6 +220,63 @@ export const searchProducts = async (
     return await response.json();
   } catch (error) {
     console.error("API Error searching products:", error);
+    throw error;
+  }
+};
+
+export const getAllVariantDetails = async (variantId: string): Promise<GetVariantResponseDTO> => {
+  try {
+    const response = await apiCall(`${VARIANT_API}/${variantId}/details`, {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to get all variant details: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("API Error getting all variant details:", error);
+    throw error;
+  }
+};
+
+export const getVariantDetails = async (variantId: string): Promise<GetVariantResponseDTO> => {
+  try {
+    const response = await apiCall(`${VARIANT_API}/${variantId}`, {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to get variant details: ${response.status} ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("API Error getting variant details:", error);
+    throw error;
+  }
+};
+
+export const getVariantProperties = async (
+  variantId: string,
+): Promise<Record<string, VariantPropertyResponseDTO[]>> => {
+  try {
+    const response = await apiCall(`${VARIANT_API}/${variantId}/properties`, {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to get variant properties: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("API Error getting variant properties:", error);
     throw error;
   }
 };

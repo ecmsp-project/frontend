@@ -5,13 +5,19 @@ import { Box, Typography, Paper, Button } from "@mui/material";
 interface ProductListItemProps {
   product: ProductRepresentationDTO;
   onAddToCart?: (product: ProductRepresentationDTO) => void;
+  onProductClick?: (product: ProductRepresentationDTO) => void;
 }
 
-const ProductListItem: React.FC<ProductListItemProps> = ({ product, onAddToCart }) => {
+const ProductListItem: React.FC<ProductListItemProps> = ({
+  product,
+  onAddToCart,
+  onProductClick,
+}) => {
   const imageUrl = product.variantDetail.variantImages?.[0]?.url || "";
 
   return (
     <Paper
+      onClick={() => onProductClick?.(product)}
       sx={{
         p: 2,
         mb: 2,

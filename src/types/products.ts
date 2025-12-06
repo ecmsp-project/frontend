@@ -51,7 +51,8 @@ export interface ProductRepresentationDTO {
 }
 
 export interface VariantDetailDTO {
-  variant_id: string;
+  variantId: string;
+  name: string;
   price: number;
   stockQuantity: number;
   description: string;
@@ -66,3 +67,25 @@ export interface VariantImageResponseDTO {
   isMain: boolean;
   position: number;
 }
+
+export interface GetVariantResponseDTO {
+  variant: VariantDetailDTO;
+  selectablePropertyNames: string[];
+  allVariants: Record<string, any>[];
+}
+
+export interface VariantPropertyResponseDTO {
+  id: string;
+  variantId: string;
+  propertyId: string;
+  propertyName: string;
+  propertyDataType: PropertyDataType;
+  valueText: string;
+  valueDecimal: number;
+  valueBoolean: boolean;
+  valueDate: Date;
+  displayText: string;
+  isDefaultPropertyOption: boolean;
+}
+
+export type PropertyDataType = "TEXT" | "NUMBER" | "BOOLEAN" | "DATE";

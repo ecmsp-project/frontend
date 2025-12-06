@@ -7,11 +7,13 @@ import SearchFilters from "../components/search/SearchFilters";
 import SortFilter from "../components/search/SortFilter";
 import { useProductContext } from "../contexts/ProductContext.tsx";
 import { useProductSearch } from "../hooks/useProductSearch";
+import type { ProductRepresentationDTO } from "../types/products.ts";
 import { Box, Typography, Container, CircularProgress, Menu, Pagination } from "@mui/material";
 
 const SearchPage: React.FC = () => {
   const { categories } = useProductContext();
   const {
+    navigate,
     searchTerm,
     sortedProducts,
     loading,
@@ -33,6 +35,10 @@ const SearchPage: React.FC = () => {
     handleCategoryChipDelete,
     handlePriceChipDelete,
   } = useProductSearch();
+
+  const handleProductClick = (product: ProductRepresentationDTO) => {
+    navigate(`/product/${product.variantDetail.variantId}`);
+  };
 
   return (
     <MainLayout>
@@ -112,7 +118,11 @@ const SearchPage: React.FC = () => {
               <Box>
                 {sortedProducts.length > 0 ? (
                   sortedProducts.map((product) => (
-                    <ProductListItem key={product.variantDetail.variant_id} product={product} />
+                    <ProductListItem
+                      key={product.variantDetail.variantId}
+                      product={product}
+                      onProductClick={handleProductClick}
+                    />
                   ))
                 ) : (
                   <Typography variant="body1" color="text.secondary" sx={{ mt: 4 }}>
