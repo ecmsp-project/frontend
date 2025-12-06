@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import {
   getAllVariantDetails,
   getVariantDetails,
@@ -15,6 +15,7 @@ export const useProductPage = () => {
   const { id: variantId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [isVariantChanging, setIsVariantChanging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [variant, setVariant] = useState<VariantDetailDTO | null>(null);
   const [selectablePropertyNames, setSelectablePropertyNames] = useState<string[]>([]);
@@ -26,6 +27,7 @@ export const useProductPage = () => {
   const [requiredProperties, setRequiredProperties] = useState<VariantPropertyResponseDTO[]>([]);
   const [infoProperties, setInfoProperties] = useState<VariantPropertyResponseDTO[]>([]);
   const [showMoreParams, setShowMoreParams] = useState(false);
+  const isInternalChangeRef = useRef(false);
 
   const getAvailableValues = useCallback(
     (propertyName: string): string[] => {
@@ -63,16 +65,25 @@ export const useProductPage = () => {
     [allVariants, selectablePropertyNames],
   );
 
-  const loadVariantDetails = useCallback(async (id: string) => {
+  const loadVariantDetails = useCallback(async (id: string, silent = false) => {
     try {
-      setLoading(true);
+      if (!silent) {
+        setIsVariantChanging(true);
+      }
       const response = await getVariantDetails(id);
-      setVariant(response.variant);
+      setVariant((prevVariant) => ({
+        ...response.variant,
+        name: response.variant.name || prevVariant?.name || "",
+      }));
     } catch (err) {
       console.error("Error loading variant details:", err);
-      setError("Nie udało się załadować szczegółów produktu");
+      if (!silent) {
+        setError("Nie udało się załadować szczegółów produktu");
+      }
     } finally {
-      setLoading(false);
+      if (!silent) {
+        setIsVariantChanging(false);
+      }
     }
   }, []);
 
@@ -141,11 +152,25 @@ export const useProductPage = () => {
       setSelectedProperties(newSelections);
 
       const newVariantId = findVariantId(newSelections);
-      if (newVariantId && newVariantId !== variantId) {
-        navigate(`/product/${newVariantId}`, { replace: true });
-        loadVariantDetails(newVariantId);
-        loadVariantProperties(newVariantId);
+      if (!(newVariantId && newVariantId !== variantId)) {
+        return;
       }
+
+      isInternalChangeRef.current = true;
+
+      const newVariantData = allVariants.find((v) => v.variantId === newVariantId);
+      if (newVariantData && variant) {
+        setVariant({
+          ...variant,
+          variantId: newVariantId,
+          name: variant.name,
+        });
+      }
+
+      navigate(`/product/${newVariantId}`, { replace: true, preventScrollReset: true });
+
+      loadVariantDetails(newVariantId, true);
+      loadVariantProperties(newVariantId);
     },
     [
       selectedProperties,
@@ -153,6 +178,8 @@ export const useProductPage = () => {
       getAvailableValues,
       findVariantId,
       variantId,
+      allVariants,
+      variant,
       navigate,
       loadVariantDetails,
       loadVariantProperties,
@@ -160,10 +187,29 @@ export const useProductPage = () => {
   );
 
   useEffect(() => {
-    if (variantId) {
+    if (!variantId) {
+      return;
+    }
+
+    if (isInternalChangeRef.current) {
+      isInternalChangeRef.current = false;
+      return;
+    }
+
+    if (allVariants.length > 0 && variant) {
+      const currentVariantInAllVariants = allVariants.find((v) => v.variantId === variantId);
+      if (currentVariantInAllVariants && variant.variantId !== variantId) {
+        loadVariantDetails(variantId, true);
+        loadVariantProperties(variantId);
+        return;
+      }
+    }
+
+    if (!variant || variant.variantId !== variantId) {
       loadAllVariantDetails(variantId);
     }
-  }, [variantId, loadAllVariantDetails]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [variantId]);
 
   return {
     variant,
@@ -173,6 +219,7 @@ export const useProductPage = () => {
     requiredProperties,
     infoProperties,
     loading,
+    isVariantChanging,
     error,
     showMoreParams,
     setShowMoreParams,
