@@ -16,6 +16,7 @@ import ProductPage from "./pages/ProductPage.tsx";
 import Register from "./pages/Register.tsx";
 import SearchPage from "./pages/SearchPage";
 import UserOrdersPage from "./pages/UserOrdersPage.tsx";
+import AddProductPage from "./pages/admin/AddProductPage.tsx";
 import CMSPage from "./pages/admin/CMSPage.tsx";
 import CategoryManagementPage from "./pages/admin/CategoryManagementPage.tsx";
 import ContactPageEditor from "./pages/admin/ContactPageEditor.tsx";
@@ -25,6 +26,8 @@ import HomePageEditor from "./pages/admin/HomePageEditor.tsx";
 import OrderManagementPage from "./pages/admin/OrderManagmentPage.tsx";
 import RoleManagementPage from "./pages/admin/RoleManagementPage.tsx";
 import UserManagementPage from "./pages/admin/UserManagementPage.tsx";
+import AnalyticsStatisticPage from "./pages/admin/analytics/AnalyticsStatisticPage.tsx";
+import RaportsStatisticPage from "./pages/admin/analytics/RaportsStatisticPage.tsx";
 import SalesStatisticsPage from "./pages/admin/analytics/SalesStatisticsPage.tsx";
 import UserDashboardPage from "./pages/user/UserDashboardPage.tsx";
 import UserOrdersManagementPage from "./pages/user/UserOrdersManagementPage.tsx";
@@ -82,9 +85,18 @@ export default function App() {
                             <Route path="/admin/users" element={<UserManagementPage />} />
                             <Route path="/admin/roles" element={<RoleManagementPage />} />
                             <Route path="/admin/orders" element={<OrderManagementPage />} />
+                            <Route path="/admin/products/add" element={<AddProductPage />} />
                             <Route
                               path="/admin/analytics/sales"
                               element={<SalesStatisticsPage />}
+                            />
+                            <Route
+                              path="/admin/analytics/reports"
+                              element={<RaportsStatisticPage />}
+                            />
+                            <Route
+                              path="/admin/analytics/products"
+                              element={<AnalyticsStatisticPage />}
                             />
                             <Route path="*" element={<div>404 Not Found</div>} />
                           </Routes>
