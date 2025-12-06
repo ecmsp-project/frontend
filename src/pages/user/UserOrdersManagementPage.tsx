@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchUserOrders } from "../../api/order-service";
 import Breadcrumbs from "../../components/common/Breadcrumbs";
-import UserLayout from "../../components/layout/UserLayout";
+import MainLayout from "../../components/layout/MainLayout";
 import { OrderRow } from "../../components/orders/OrderRow";
 import { type OrderDetailsResponse } from "../../types/orders";
 import {
@@ -17,6 +17,7 @@ import {
   TableHead,
   TableRow,
   Button,
+  Container,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -93,13 +94,17 @@ const UserOrdersManagementPage: React.FC = () => {
   }
 
   return (
-    <UserLayout>
-      <Breadcrumbs items={[{ label: "Moje konto", path: "/user" }, { label: "Moje zamówienia" }]} />
-      <Typography variant="h4" gutterBottom>
-        Moje zamówienia
-      </Typography>
-      {content}
-    </UserLayout>
+    <MainLayout>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Breadcrumbs
+          items={[{ label: "Moje konto", path: "/user" }, { label: "Moje zamówienia" }]}
+        />
+        <Typography variant="h4" gutterBottom>
+          Moje zamówienia
+        </Typography>
+        {content}
+      </Container>
+    </MainLayout>
   );
 };
 

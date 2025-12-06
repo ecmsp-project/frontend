@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchAllOrders } from "../../api/order-service";
-import AdminLayout from "../../components/layout/AdminLayout";
+import MainLayout from "../../components/layout/MainLayout";
 import { OrderRow } from "../../components/orders/OrderRow";
 import { type OrderDetailsResponse } from "../../types/orders";
 import {
@@ -55,8 +55,8 @@ const OrderManagementPage: React.FC = () => {
     );
   } else {
     return (
-      <AdminLayout>
-        <Container maxWidth="xl" sx={{ py: 3 }}>
+      <MainLayout>
+        <Container maxWidth="lg" sx={{ py: 4 }}>
           <Typography variant="h4" gutterBottom>
             Zarządzanie Zamówieniami
           </Typography>
@@ -81,7 +81,7 @@ const OrderManagementPage: React.FC = () => {
             </Table>
           </TableContainer>
         </Container>
-      </AdminLayout>
+      </MainLayout>
     );
   }
 };
