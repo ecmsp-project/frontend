@@ -1,5 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Breadcrumbs from "../components/common/Breadcrumbs.tsx";
+import InvoiceForm, {
+  type InvoiceFormValues,
+  type InvoiceFormRef,
+} from "../components/forms/InvoiceForm.tsx";
+import ShippingForm, {
+  type ShippingFormValues,
+  type ShippingFormRef,
+} from "../components/forms/ShippingForm.tsx";
 import MainLayout from "../components/layout/MainLayout.tsx";
 import { useCartContext } from "../contexts/CartContext";
 import CloseIcon from "@mui/icons-material/Close";
@@ -29,40 +37,15 @@ import {
   alpha,
   useTheme,
   IconButton,
-  Tabs,
-  Tab,
 } from "@mui/material";
-import { MuiTelInput } from "mui-tel-input";
 import { useNavigate } from "react-router-dom";
 
 const SHIPPING_COST = 19.99;
 const FREE_SHIPPING_THRESHOLD = 500;
 
-interface ShippingData {
-  firstName: string;
-  lastName: string;
-  company: string;
-  phone: string;
-  country: string;
-  street: string;
-  buildingNumber: string;
-  apartmentNumber: string;
-  postalCode: string;
-  city: string;
-}
-
-interface InvoiceData {
-  type: "company" | "personal";
-  companyName?: string;
-  nip?: string;
-  firstName?: string;
-  lastName?: string;
-  street?: string;
-  buildingNumber?: string;
-  apartmentNumber?: string;
-  postalCode?: string;
-  city?: string;
-}
+// Używamy typów z formularzy
+type ShippingData = ShippingFormValues;
+type InvoiceData = InvoiceFormValues;
 
 const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
@@ -74,7 +57,6 @@ const CheckoutPage: React.FC = () => {
   const [wantsInvoice, setWantsInvoice] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "cod">("card");
   const [discountCode, setDiscountCode] = useState("");
-  const [invoiceType, setInvoiceType] = useState<"company" | "personal">("personal");
 
   const [shippingData, setShippingData] = useState<ShippingData>({
     firstName: "",
@@ -93,38 +75,20 @@ const CheckoutPage: React.FC = () => {
     type: "personal",
   });
 
+  const shippingFormRef = useRef<ShippingFormRef>(null);
+  const invoiceFormRef = useRef<InvoiceFormRef>(null);
+
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
   const total = subtotal + shipping;
 
-  const handleShippingSubmit = () => {
-    if (
-      !shippingData.firstName ||
-      !shippingData.lastName ||
-      !shippingData.phone ||
-      !shippingData.street ||
-      !shippingData.buildingNumber ||
-      !shippingData.postalCode ||
-      !shippingData.city
-    ) {
-      alert("Proszę wypełnić wszystkie wymagane pola");
-      return;
-    }
+  const handleShippingSubmit = (values: ShippingFormValues) => {
+    setShippingData(values);
     setShippingModalOpen(false);
   };
 
-  const handleInvoiceSubmit = () => {
-    if (invoiceType === "company") {
-      if (!invoiceData.companyName || !invoiceData.nip) {
-        alert("Proszę wypełnić wszystkie wymagane pola dla faktury firmowej");
-        return;
-      }
-    } else {
-      if (!invoiceData.firstName || !invoiceData.lastName) {
-        alert("Proszę wypełnić wszystkie wymagane pola dla faktury prywatnej");
-        return;
-      }
-    }
+  const handleInvoiceSubmit = (values: InvoiceFormValues) => {
+    setInvoiceData(values);
     setInvoiceModalOpen(false);
   };
 
@@ -479,108 +443,22 @@ const CheckoutPage: React.FC = () => {
             </IconButton>
           </DialogTitle>
           <DialogContent dividers>
-            <Grid container spacing={2} sx={{ mt: 1 }}>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  label="Imię *"
-                  value={shippingData.firstName}
-                  onChange={(e) => setShippingData({ ...shippingData, firstName: e.target.value })}
-                  required
-                />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  label="Nazwisko *"
-                  value={shippingData.lastName}
-                  onChange={(e) => setShippingData({ ...shippingData, lastName: e.target.value })}
-                  required
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <TextField
-                  fullWidth
-                  label="Firma (opcjonalnie)"
-                  value={shippingData.company}
-                  onChange={(e) => setShippingData({ ...shippingData, company: e.target.value })}
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <MuiTelInput
-                  fullWidth
-                  defaultCountry="PL"
-                  label="Telefon komórkowy *"
-                  value={shippingData.phone}
-                  onChange={(value) =>
-                    setShippingData({
-                      ...shippingData,
-                      phone: value,
-                    })
-                  }
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <TextField
-                  fullWidth
-                  label="Kraj"
-                  value={shippingData.country}
-                  onChange={(e) => setShippingData({ ...shippingData, country: e.target.value })}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 8 }}>
-                <TextField
-                  fullWidth
-                  label="Ulica *"
-                  value={shippingData.street}
-                  onChange={(e) => setShippingData({ ...shippingData, street: e.target.value })}
-                  required
-                />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 4 }}>
-                <TextField
-                  fullWidth
-                  label="Nr budynku *"
-                  value={shippingData.buildingNumber}
-                  onChange={(e) =>
-                    setShippingData({ ...shippingData, buildingNumber: e.target.value })
-                  }
-                  required
-                />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  label="Nr mieszkania"
-                  value={shippingData.apartmentNumber}
-                  onChange={(e) =>
-                    setShippingData({ ...shippingData, apartmentNumber: e.target.value })
-                  }
-                />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  label="Kod pocztowy *"
-                  value={shippingData.postalCode}
-                  onChange={(e) => setShippingData({ ...shippingData, postalCode: e.target.value })}
-                  required
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <TextField
-                  fullWidth
-                  label="Miejscowość *"
-                  value={shippingData.city}
-                  onChange={(e) => setShippingData({ ...shippingData, city: e.target.value })}
-                  required
-                />
-              </Grid>
-            </Grid>
+            <ShippingForm
+              ref={shippingFormRef}
+              initialValues={shippingData}
+              onSubmit={handleShippingSubmit}
+              enableReinitialize
+              showSubmitButton={false}
+            />
           </DialogContent>
           <DialogActions sx={{ p: 2 }}>
             <Button onClick={() => setShippingModalOpen(false)}>Anuluj</Button>
-            <Button variant="contained" onClick={handleShippingSubmit}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                shippingFormRef.current?.submitForm();
+              }}
+            >
               Zatwierdź
             </Button>
           </DialogActions>
@@ -622,150 +500,26 @@ const CheckoutPage: React.FC = () => {
             </IconButton>
           </DialogTitle>
           <DialogContent dividers>
-            <Box sx={{ mb: 3 }}>
-              <Tabs
-                value={invoiceType}
-                onChange={(_, newValue) => setInvoiceType(newValue)}
-                sx={{ mb: 3 }}
-              >
-                <Tab label="Firmowa" value="company" />
-                <Tab label="Prywatna" value="personal" />
-              </Tabs>
-            </Box>
-
-            {invoiceType === "company" ? (
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 12 }}>
-                  <TextField
-                    fullWidth
-                    label="Nazwa firmy *"
-                    value={invoiceData.companyName || ""}
-                    onChange={(e) =>
-                      setInvoiceData({ ...invoiceData, companyName: e.target.value })
+            <InvoiceForm
+              ref={invoiceFormRef}
+              initialValues={invoiceData}
+              onSubmit={handleInvoiceSubmit}
+              enableReinitialize
+              shippingData={
+                shippingData.firstName
+                  ? {
+                      firstName: shippingData.firstName,
+                      lastName: shippingData.lastName,
+                      street: shippingData.street,
+                      buildingNumber: shippingData.buildingNumber,
+                      apartmentNumber: shippingData.apartmentNumber,
+                      postalCode: shippingData.postalCode,
+                      city: shippingData.city,
                     }
-                    required
-                  />
-                </Grid>
-                <Grid size={{ xs: 12 }}>
-                  <TextField
-                    fullWidth
-                    label="NIP *"
-                    value={invoiceData.nip || ""}
-                    onChange={(e) => setInvoiceData({ ...invoiceData, nip: e.target.value })}
-                    required
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 8 }}>
-                  <TextField
-                    fullWidth
-                    label="Ulica"
-                    value={invoiceData.street || ""}
-                    onChange={(e) => setInvoiceData({ ...invoiceData, street: e.target.value })}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 4 }}>
-                  <TextField
-                    fullWidth
-                    label="Nr budynku"
-                    value={invoiceData.buildingNumber || ""}
-                    onChange={(e) =>
-                      setInvoiceData({ ...invoiceData, buildingNumber: e.target.value })
-                    }
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <TextField
-                    fullWidth
-                    label="Nr mieszkania"
-                    value={invoiceData.apartmentNumber || ""}
-                    onChange={(e) =>
-                      setInvoiceData({ ...invoiceData, apartmentNumber: e.target.value })
-                    }
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <TextField
-                    fullWidth
-                    label="Kod pocztowy"
-                    value={invoiceData.postalCode || ""}
-                    onChange={(e) => setInvoiceData({ ...invoiceData, postalCode: e.target.value })}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12 }}>
-                  <TextField
-                    fullWidth
-                    label="Miejscowość"
-                    value={invoiceData.city || ""}
-                    onChange={(e) => setInvoiceData({ ...invoiceData, city: e.target.value })}
-                  />
-                </Grid>
-              </Grid>
-            ) : (
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <TextField
-                    fullWidth
-                    label="Imię *"
-                    value={invoiceData.firstName || ""}
-                    onChange={(e) => setInvoiceData({ ...invoiceData, firstName: e.target.value })}
-                    required
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <TextField
-                    fullWidth
-                    label="Nazwisko *"
-                    value={invoiceData.lastName || ""}
-                    onChange={(e) => setInvoiceData({ ...invoiceData, lastName: e.target.value })}
-                    required
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 8 }}>
-                  <TextField
-                    fullWidth
-                    label="Ulica"
-                    value={invoiceData.street || ""}
-                    onChange={(e) => setInvoiceData({ ...invoiceData, street: e.target.value })}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 4 }}>
-                  <TextField
-                    fullWidth
-                    label="Nr budynku"
-                    value={invoiceData.buildingNumber || ""}
-                    onChange={(e) =>
-                      setInvoiceData({ ...invoiceData, buildingNumber: e.target.value })
-                    }
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <TextField
-                    fullWidth
-                    label="Nr mieszkania"
-                    value={invoiceData.apartmentNumber || ""}
-                    onChange={(e) =>
-                      setInvoiceData({ ...invoiceData, apartmentNumber: e.target.value })
-                    }
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <TextField
-                    fullWidth
-                    label="Kod pocztowy"
-                    value={invoiceData.postalCode || ""}
-                    onChange={(e) => setInvoiceData({ ...invoiceData, postalCode: e.target.value })}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12 }}>
-                  <TextField
-                    fullWidth
-                    label="Miejscowość"
-                    value={invoiceData.city || ""}
-                    onChange={(e) => setInvoiceData({ ...invoiceData, city: e.target.value })}
-                  />
-                </Grid>
-              </Grid>
-            )}
+                  : undefined
+              }
+              showSubmitButton={false}
+            />
           </DialogContent>
           <DialogActions sx={{ p: 2 }}>
             <Button
@@ -778,7 +532,12 @@ const CheckoutPage: React.FC = () => {
             >
               Anuluj
             </Button>
-            <Button variant="contained" onClick={handleInvoiceSubmit}>
+            <Button
+              variant="contained"
+              onClick={() => {
+                invoiceFormRef.current?.submitForm();
+              }}
+            >
               Zatwierdź
             </Button>
           </DialogActions>
