@@ -24,7 +24,7 @@ const shippingValidationSchema = Yup.object({
   phone: Yup.string().required("Telefon jest wymagany").min(6, "Numer jest za krótki"),
   country: Yup.string().required("Kraj jest wymagany"),
   street: Yup.string().required("Ulica jest wymagana"),
-  buildingNumber: Yup.string().required("Nr budynku jest wymagany"),
+  buildingNumber: Yup.string(),
   apartmentNumber: Yup.string(),
   postalCode: Yup.string().required("Kod pocztowy jest wymagany"),
   city: Yup.string().required("Miejscowość jest wymagana"),
@@ -183,7 +183,7 @@ const ShippingForm = forwardRef<ShippingFormRef, ShippingFormProps>(
               </Grid>
               <Grid size={{ xs: 12, sm: 4 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Nr budynku *
+                  Nr budynku
                 </Typography>
                 <Field
                   as={TextField}

@@ -32,11 +32,11 @@ export interface InvoiceFormValues {
 const invoiceCompanyValidationSchema = Yup.object({
   companyName: Yup.string().required("Nazwa firmy jest wymagana"),
   nip: Yup.string().required("NIP jest wymagany"),
-  street: Yup.string(),
+  street: Yup.string().required("Ulica jest wymagana"),
   buildingNumber: Yup.string(),
   apartmentNumber: Yup.string(),
-  postalCode: Yup.string(),
-  city: Yup.string(),
+  postalCode: Yup.string().required("Kod pocztowy jest wymagany"),
+  city: Yup.string().required("Miejscowość jest wymagana"),
 });
 
 const invoicePersonalValidationSchema = Yup.object().shape({
@@ -51,11 +51,11 @@ const invoicePersonalValidationSchema = Yup.object().shape({
     then: (schema) => schema.required("Nazwisko jest wymagane"),
     otherwise: (schema) => schema,
   }),
-  street: Yup.string(),
+  street: Yup.string().required("Ulica jest wymagana"),
   buildingNumber: Yup.string(),
   apartmentNumber: Yup.string(),
-  postalCode: Yup.string(),
-  city: Yup.string(),
+  postalCode: Yup.string().required("Kod pocztowy jest wymagany"),
+  city: Yup.string().required("Miejscowość jest wymagana"),
 });
 
 const initialCompanyValues: InvoiceFormValues = {
@@ -210,13 +210,15 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
                   </Grid>
                   <Grid size={{ xs: 12, sm: 8 }}>
                     <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                      Ulica
+                      Ulica *
                     </Typography>
                     <Field
                       as={TextField}
                       fullWidth
                       name="street"
                       placeholder="Wprowadź ulicę"
+                      error={touched.street && Boolean(errors.street)}
+                      helperText={touched.street && errors.street}
                       sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
                     />
                   </Grid>
@@ -246,25 +248,29 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6 }}>
                     <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                      Kod pocztowy
+                      Kod pocztowy *
                     </Typography>
                     <Field
                       as={TextField}
                       fullWidth
                       name="postalCode"
                       placeholder="Kod pocztowy"
+                      error={touched.postalCode && Boolean(errors.postalCode)}
+                      helperText={touched.postalCode && errors.postalCode}
                       sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
                     />
                   </Grid>
                   <Grid size={{ xs: 12 }}>
                     <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                      Miejscowość
+                      Miejscowość *
                     </Typography>
                     <Field
                       as={TextField}
                       fullWidth
                       name="city"
                       placeholder="Wprowadź miejscowość"
+                      error={touched.city && Boolean(errors.city)}
+                      helperText={touched.city && errors.city}
                       sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
                     />
                   </Grid>
@@ -344,13 +350,15 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
                     </Grid>
                     <Grid size={{ xs: 12, sm: 8 }}>
                       <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                        Ulica
+                        Ulica *
                       </Typography>
                       <Field
                         as={TextField}
                         fullWidth
                         name="street"
                         placeholder="Wprowadź ulicę"
+                        error={touched.street && Boolean(errors.street)}
+                        helperText={touched.street && errors.street}
                         sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
                       />
                     </Grid>
@@ -380,25 +388,29 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6 }}>
                       <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                        Kod pocztowy
+                        Kod pocztowy *
                       </Typography>
                       <Field
                         as={TextField}
                         fullWidth
                         name="postalCode"
                         placeholder="Kod pocztowy"
+                        error={touched.postalCode && Boolean(errors.postalCode)}
+                        helperText={touched.postalCode && errors.postalCode}
                         sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
                       />
                     </Grid>
                     <Grid size={{ xs: 12 }}>
                       <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                        Miejscowość
+                        Miejscowość *
                       </Typography>
                       <Field
                         as={TextField}
                         fullWidth
                         name="city"
                         placeholder="Wprowadź miejscowość"
+                        error={touched.city && Boolean(errors.city)}
+                        helperText={touched.city && errors.city}
                         sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
                       />
                     </Grid>
