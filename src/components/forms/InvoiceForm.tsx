@@ -11,8 +11,11 @@ import {
   alpha,
   useTheme,
   Button,
+  FormControl,
+  MenuItem,
 } from "@mui/material";
 import { Formik, Form, Field, type FormikProps } from "formik";
+import countryList from "react-select-country-list";
 import * as Yup from "yup";
 
 export interface InvoiceFormValues {
@@ -21,6 +24,7 @@ export interface InvoiceFormValues {
   nip?: string;
   firstName?: string;
   lastName?: string;
+  country?: string;
   street?: string;
   buildingNumber?: string;
   apartmentNumber?: string;
@@ -29,9 +33,12 @@ export interface InvoiceFormValues {
   useShippingData?: boolean;
 }
 
+const countryOptions = countryList().getData();
+
 const invoiceCompanyValidationSchema = Yup.object({
   companyName: Yup.string().required("Nazwa firmy jest wymagana"),
   nip: Yup.string().required("NIP jest wymagany"),
+  country: Yup.string().required("Kraj jest wymagany"),
   street: Yup.string().required("Ulica jest wymagana"),
   buildingNumber: Yup.string(),
   apartmentNumber: Yup.string(),
@@ -51,6 +58,11 @@ const invoicePersonalValidationSchema = Yup.object().shape({
     then: (schema) => schema.required("Nazwisko jest wymagane"),
     otherwise: (schema) => schema,
   }),
+  country: Yup.string().when("useShippingData", {
+    is: false,
+    then: (schema) => schema.required("Kraj jest wymagany"),
+    otherwise: (schema) => schema,
+  }),
   street: Yup.string().required("Ulica jest wymagana"),
   buildingNumber: Yup.string(),
   apartmentNumber: Yup.string(),
@@ -62,6 +74,7 @@ const initialCompanyValues: InvoiceFormValues = {
   type: "company",
   companyName: "",
   nip: "",
+  country: "PL",
   street: "",
   buildingNumber: "",
   apartmentNumber: "",
@@ -73,6 +86,7 @@ const initialPersonalValues: InvoiceFormValues = {
   type: "personal",
   firstName: "",
   lastName: "",
+  country: "PL",
   street: "",
   buildingNumber: "",
   apartmentNumber: "",
@@ -92,6 +106,7 @@ interface InvoiceFormProps {
   shippingData?: {
     firstName: string;
     lastName: string;
+    country: string;
     street: string;
     buildingNumber: string;
     apartmentNumber: string;
@@ -145,6 +160,7 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
           type: "personal",
           firstName: shippingData.firstName,
           lastName: shippingData.lastName,
+          country: shippingData.country,
           street: shippingData.street,
           buildingNumber: shippingData.buildingNumber,
           apartmentNumber: shippingData.apartmentNumber,
@@ -207,6 +223,37 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
                       helperText={touched.nip && errors.nip}
                       sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
                     />
+                  </Grid>
+                  <Grid size={{ xs: 12 }}>
+                    <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                      Kraj *
+                    </Typography>
+                    <FormControl fullWidth error={touched.country && Boolean(errors.country)}>
+                      <Field
+                        as={TextField}
+                        select
+                        fullWidth
+                        name="country"
+                        error={touched.country && Boolean(errors.country)}
+                        helperText={touched.country && errors.country}
+                        sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
+                      >
+                        {countryOptions.map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </Field>
+                      {touched.country && errors.country && (
+                        <Typography
+                          variant="caption"
+                          color="error"
+                          sx={{ mt: 0.5, display: "block" }}
+                        >
+                          {errors.country}
+                        </Typography>
+                      )}
+                    </FormControl>
                   </Grid>
                   <Grid size={{ xs: 12, sm: 8 }}>
                     <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
@@ -347,6 +394,37 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
                         helperText={touched.lastName && errors.lastName}
                         sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
                       />
+                    </Grid>
+                    <Grid size={{ xs: 12 }}>
+                      <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                        Kraj *
+                      </Typography>
+                      <FormControl fullWidth error={touched.country && Boolean(errors.country)}>
+                        <Field
+                          as={TextField}
+                          select
+                          fullWidth
+                          name="country"
+                          error={touched.country && Boolean(errors.country)}
+                          helperText={touched.country && errors.country}
+                          sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
+                        >
+                          {countryOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </Field>
+                        {touched.country && errors.country && (
+                          <Typography
+                            variant="caption"
+                            color="error"
+                            sx={{ mt: 0.5, display: "block" }}
+                          >
+                            {errors.country}
+                          </Typography>
+                        )}
+                      </FormControl>
                     </Grid>
                     <Grid size={{ xs: 12, sm: 8 }}>
                       <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>

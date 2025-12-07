@@ -20,6 +20,7 @@ interface InvoiceModalProps {
   shippingData?: {
     firstName: string;
     lastName: string;
+    country: string;
     street: string;
     buildingNumber: string;
     apartmentNumber: string;

@@ -1,7 +1,8 @@
 import { useImperativeHandle, forwardRef } from "react";
-import { Grid, TextField, Typography, Button, Box } from "@mui/material";
+import { Grid, TextField, Typography, Button, Box, FormControl, MenuItem } from "@mui/material";
 import { Formik, Form, Field, type FormikProps } from "formik";
 import { MuiTelInput } from "mui-tel-input";
+import countryList from "react-select-country-list";
 import * as Yup from "yup";
 
 export interface ShippingFormValues {
@@ -30,12 +31,14 @@ const shippingValidationSchema = Yup.object({
   city: Yup.string().required("Miejscowość jest wymagana"),
 });
 
+const countryOptions = countryList().getData();
+
 const initialValues: ShippingFormValues = {
   firstName: "",
   lastName: "",
   company: "",
   phone: "",
-  country: "Polska",
+  country: "PL",
   street: "",
   buildingNumber: "",
   apartmentNumber: "",
@@ -157,15 +160,28 @@ const ShippingForm = forwardRef<ShippingFormRef, ShippingFormProps>(
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
                   Kraj *
                 </Typography>
-                <Field
-                  as={TextField}
-                  fullWidth
-                  name="country"
-                  placeholder="Wprowadź kraj"
-                  error={touched.country && Boolean(errors.country)}
-                  helperText={touched.country && errors.country}
-                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
-                />
+                <FormControl fullWidth error={touched.country && Boolean(errors.country)}>
+                  <Field
+                    as={TextField}
+                    select
+                    fullWidth
+                    name="country"
+                    error={touched.country && Boolean(errors.country)}
+                    helperText={touched.country && errors.country}
+                    sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
+                  >
+                    {countryOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </Field>
+                  {touched.country && errors.country && (
+                    <Typography variant="caption" color="error" sx={{ mt: 0.5, display: "block" }}>
+                      {errors.country}
+                    </Typography>
+                  )}
+                </FormControl>
               </Grid>
               <Grid size={{ xs: 12, sm: 8 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>

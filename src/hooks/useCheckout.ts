@@ -11,7 +11,7 @@ const initialShippingData: ShippingFormValues = {
   lastName: "",
   company: "",
   phone: "",
-  country: "Polska",
+  country: "PL",
   street: "",
   buildingNumber: "",
   apartmentNumber: "",
@@ -85,6 +85,7 @@ export const useCheckout = () => {
     | {
         firstName: string;
         lastName: string;
+        country: string;
         street: string;
         buildingNumber: string;
         apartmentNumber: string;
@@ -98,6 +99,7 @@ export const useCheckout = () => {
     return {
       firstName: shippingData.firstName,
       lastName: shippingData.lastName,
+      country: shippingData.country,
       street: shippingData.street,
       buildingNumber: shippingData.buildingNumber,
       apartmentNumber: shippingData.apartmentNumber,
