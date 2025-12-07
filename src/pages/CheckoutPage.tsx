@@ -32,6 +32,7 @@ import {
   Tabs,
   Tab,
 } from "@mui/material";
+import { MuiTelInput } from "mui-tel-input";
 import { useNavigate } from "react-router-dom";
 
 const SHIPPING_COST = 19.99;
@@ -41,7 +42,6 @@ interface ShippingData {
   firstName: string;
   lastName: string;
   company: string;
-  phoneCode: string;
   phone: string;
   country: string;
   street: string;
@@ -74,14 +74,12 @@ const CheckoutPage: React.FC = () => {
   const [wantsInvoice, setWantsInvoice] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "cod">("card");
   const [discountCode, setDiscountCode] = useState("");
-  const [giftCardCode, setGiftCardCode] = useState("");
   const [invoiceType, setInvoiceType] = useState<"company" | "personal">("personal");
 
   const [shippingData, setShippingData] = useState<ShippingData>({
     firstName: "",
     lastName: "",
     company: "",
-    phoneCode: "+48",
     phone: "",
     country: "Polska",
     street: "",
@@ -194,7 +192,7 @@ const CheckoutPage: React.FC = () => {
                     {shippingData.postalCode} {shippingData.city}
                   </Typography>
                   <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                    {shippingData.phoneCode} {shippingData.phone}
+                    {shippingData.phone}
                   </Typography>
                   <Button
                     variant="outlined"
@@ -365,24 +363,6 @@ const CheckoutPage: React.FC = () => {
                   </Button>
                 </Box>
               </Box>
-
-              <Box>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                  Karta podarunkowa
-                </Typography>
-                <Box sx={{ display: "flex", gap: 1 }}>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    placeholder="Wprowadź kod karty podarunkowej"
-                    value={giftCardCode}
-                    onChange={(e) => setGiftCardCode(e.target.value)}
-                  />
-                  <Button variant="outlined" disabled={!giftCardCode}>
-                    Zastosuj
-                  </Button>
-                </Box>
-              </Box>
             </Card>
           </Grid>
 
@@ -526,21 +506,18 @@ const CheckoutPage: React.FC = () => {
                   onChange={(e) => setShippingData({ ...shippingData, company: e.target.value })}
                 />
               </Grid>
-              <Grid size={{ xs: 12, sm: 4 }}>
-                <TextField
+              <Grid size={{ xs: 12 }}>
+                <MuiTelInput
                   fullWidth
-                  label="Kierunkowy"
-                  value={shippingData.phoneCode}
-                  onChange={(e) => setShippingData({ ...shippingData, phoneCode: e.target.value })}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 8 }}>
-                <TextField
-                  fullWidth
+                  defaultCountry="PL"
                   label="Telefon komórkowy *"
                   value={shippingData.phone}
-                  onChange={(e) => setShippingData({ ...shippingData, phone: e.target.value })}
-                  required
+                  onChange={(value) =>
+                    setShippingData({
+                      ...shippingData,
+                      phone: value,
+                    })
+                  }
                 />
               </Grid>
               <Grid size={{ xs: 12 }}>
