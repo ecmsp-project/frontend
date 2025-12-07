@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Breadcrumbs from "../components/common/Breadcrumbs.tsx";
 import MainLayout from "../components/layout/MainLayout.tsx";
 import { useCartContext, type CartItem } from "../contexts/CartContext";
 import AddIcon from "@mui/icons-material/Add";
@@ -169,7 +170,8 @@ const CartPage: React.FC = () => {
   return (
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom fontWeight={300}>
+        <Breadcrumbs items={[{ label: "Twój Koszyk" }]} />
+        <Typography variant="h4" gutterBottom>
           Twój Koszyk
         </Typography>
         <Divider sx={{ mb: 4 }} />
