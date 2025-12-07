@@ -5,6 +5,8 @@ import { useCartContext } from "../contexts/CartContext";
 
 const SHIPPING_COST = 19.99;
 const FREE_SHIPPING_THRESHOLD = 500;
+const DISCOUNT_CODE = "RABAT20";
+const DISCOUNT_PERCENTAGE = 0.2; // 20%
 
 const initialShippingData: ShippingFormValues = {
   firstName: "",
@@ -31,6 +33,8 @@ export const useCheckout = () => {
   const [wantsInvoice, setWantsInvoice] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"card" | "cod">("card");
   const [discountCode, setDiscountCode] = useState("");
+  const [isDiscountApplied, setIsDiscountApplied] = useState(false);
+  const [discountError, setDiscountError] = useState<string | null>(null);
 
   const [shippingData, setShippingData] = useState<ShippingFormValues>(initialShippingData);
   const [invoiceData, setInvoiceData] = useState<InvoiceFormValues>(initialInvoiceData);
@@ -45,7 +49,17 @@ export const useCheckout = () => {
     [subtotal],
   );
 
-  const total = useMemo(() => subtotal + shipping, [subtotal, shipping]);
+  const discountAmount = useMemo(() => {
+    if (!isDiscountApplied) return 0;
+    return subtotal * DISCOUNT_PERCENTAGE;
+  }, [subtotal, isDiscountApplied]);
+
+  const totalBeforeDiscount = useMemo(() => subtotal + shipping, [subtotal, shipping]);
+
+  const total = useMemo(
+    () => totalBeforeDiscount - discountAmount,
+    [totalBeforeDiscount, discountAmount],
+  );
 
   const handleShippingSubmit = (values: ShippingFormValues) => {
     setShippingData(values);
@@ -72,8 +86,18 @@ export const useCheckout = () => {
   };
 
   const handleApplyDiscount = () => {
-    // TODO: Implement discount logic
-    console.log("Applying discount:", discountCode);
+    const trimmedCode = discountCode.toUpperCase().trim();
+    if (trimmedCode === DISCOUNT_CODE) {
+      setIsDiscountApplied(true);
+      setDiscountError(null);
+    } else {
+      setIsDiscountApplied(false);
+      setDiscountError("Nieprawidłowy kod rabatowy");
+    }
+  };
+
+  const handleClearDiscountError = () => {
+    setDiscountError(null);
   };
 
   const handlePay = () => {
@@ -120,6 +144,10 @@ export const useCheckout = () => {
     subtotal,
     shipping,
     total,
+    totalBeforeDiscount,
+    discountAmount,
+    isDiscountApplied,
+    discountError,
     canPay: !!shippingData.firstName,
 
     // Setters
@@ -134,6 +162,7 @@ export const useCheckout = () => {
     handleInvoiceChange,
     handleInvoiceModalClose,
     handleApplyDiscount,
+    handleClearDiscountError,
     handlePay,
     getShippingDataForInvoice,
   };

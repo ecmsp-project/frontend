@@ -40,6 +40,7 @@ const PaymentMethodSection: React.FC<PaymentMethodSectionProps> = ({
         <RadioGroup
           value={paymentMethod}
           onChange={(e) => onPaymentMethodChange(e.target.value as "card" | "cod")}
+          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
         >
           <FormControlLabel
             value="card"

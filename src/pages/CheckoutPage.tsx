@@ -26,6 +26,10 @@ const CheckoutPage: React.FC = () => {
     subtotal,
     shipping,
     total,
+    totalBeforeDiscount,
+    discountAmount,
+    isDiscountApplied,
+    discountError,
     canPay,
     setShippingModalOpen,
     setInvoiceModalOpen,
@@ -36,6 +40,7 @@ const CheckoutPage: React.FC = () => {
     handleInvoiceChange,
     handleInvoiceModalClose,
     handleApplyDiscount,
+    handleClearDiscountError,
     handlePay,
     getShippingDataForInvoice,
   } = useCheckout();
@@ -85,8 +90,11 @@ const CheckoutPage: React.FC = () => {
 
             <DiscountSection
               discountCode={discountCode}
+              isDiscountApplied={isDiscountApplied}
+              discountError={discountError}
               onDiscountCodeChange={setDiscountCode}
               onApplyDiscount={handleApplyDiscount}
+              onClearError={handleClearDiscountError}
             />
           </Grid>
 
@@ -95,6 +103,9 @@ const CheckoutPage: React.FC = () => {
               subtotal={subtotal}
               shipping={shipping}
               total={total}
+              totalBeforeDiscount={totalBeforeDiscount}
+              discountAmount={discountAmount}
+              isDiscountApplied={isDiscountApplied}
               canPay={canPay}
               onPay={handlePay}
             />

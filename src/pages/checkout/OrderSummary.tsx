@@ -6,6 +6,9 @@ interface OrderSummaryProps {
   subtotal: number;
   shipping: number;
   total: number;
+  totalBeforeDiscount?: number;
+  discountAmount?: number;
+  isDiscountApplied?: boolean;
   canPay: boolean;
   onPay: () => void;
 }
@@ -14,6 +17,9 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   subtotal,
   shipping,
   total,
+  totalBeforeDiscount,
+  discountAmount = 0,
+  isDiscountApplied = false,
   canPay,
   onPay,
 }) => {
@@ -70,19 +76,48 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between",
+          flexDirection: "column",
           mb: 3,
           p: 2,
           bgcolor: alpha(theme.palette.primary.main, 0.1),
           borderRadius: 2,
         }}
       >
-        <Typography variant="h6" fontWeight={700}>
-          RAZEM:
-        </Typography>
-        <Typography variant="h5" color="primary.main" fontWeight={700}>
-          {total.toFixed(2)} PLN
-        </Typography>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Typography variant="h6" fontWeight={700}>
+            RAZEM:
+          </Typography>
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+            {isDiscountApplied && totalBeforeDiscount ? (
+              <>
+                <Typography
+                  variant="h6"
+                  color="text.secondary"
+                  fontWeight={600}
+                  sx={{
+                    textDecoration: "line-through",
+                    opacity: 0.6,
+                    mb: 0.5,
+                  }}
+                >
+                  {totalBeforeDiscount.toFixed(2)} PLN
+                </Typography>
+                <Typography variant="h5" color="success.main" fontWeight={700}>
+                  {total.toFixed(2)} PLN
+                </Typography>
+                {discountAmount > 0 && (
+                  <Typography variant="caption" color="success.main" sx={{ mt: 0.5 }}>
+                    Oszczędzasz: {discountAmount.toFixed(2)} PLN
+                  </Typography>
+                )}
+              </>
+            ) : (
+              <Typography variant="h5" color="primary.main" fontWeight={700}>
+                {total.toFixed(2)} PLN
+              </Typography>
+            )}
+          </Box>
+        </Box>
       </Box>
 
       <Button
