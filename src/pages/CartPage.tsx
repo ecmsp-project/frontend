@@ -4,7 +4,9 @@ import MainLayout from "../components/layout/MainLayout.tsx";
 import { useCartContext, type CartItem } from "../contexts/CartContext";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import RemoveIcon from "@mui/icons-material/Remove";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import {
   Box,
   Typography,
@@ -19,6 +21,10 @@ import {
   TextField,
   CircularProgress,
   Alert,
+  Paper,
+  alpha,
+  Chip,
+  useTheme,
 } from "@mui/material";
 
 const SHIPPING_COST = 19.99;
@@ -26,6 +32,7 @@ const FREE_SHIPPING_THRESHOLD = 500;
 
 const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
   const { updateProductQuantity, overwriteProductQuantity, removeProduct } = useCartContext();
+  const theme = useTheme();
 
   const [localQuantity, setLocalQuantity] = useState(String(item.quantity));
 
@@ -68,70 +75,166 @@ const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
       sx={{
         display: "flex",
         mb: 2,
+        borderRadius: 2,
         boxShadow: 1,
-        transition: "0.2s",
-        "&:hover": { boxShadow: 4 },
+        overflow: "hidden",
+        transition: "box-shadow 0.2s ease",
+        border: "1px solid",
+        borderColor: "divider",
+        "&:hover": {
+          boxShadow: 2,
+        },
       }}
     >
       <CardMedia
         component="img"
-        sx={{ width: 100, height: 100, objectFit: "cover" }}
+        sx={{
+          width: { xs: 140, sm: 180 },
+          height: "100%",
+          minHeight: { xs: 140, sm: 180 },
+          objectFit: "cover",
+          flexShrink: 0,
+        }}
         image={item.image}
         alt={item.name}
       />
-      <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1, minWidth: 0 }}>
         <CardContent
           sx={{
             flex: "1 0 auto",
             display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
             justifyContent: "space-between",
-            alignItems: "center",
-            py: 1,
+            alignItems: { xs: "flex-start", sm: "center" },
+            gap: { xs: 2, sm: 0 },
+            p: 3,
           }}
         >
-          <Box sx={{ minWidth: 200 }}>
-            <Typography component="div" variant="subtitle1" fontWeight={600}>
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Typography
+              component="div"
+              variant="h6"
+              fontWeight={600}
+              sx={{
+                mb: 0.5,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+              }}
+            >
               {item.name}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
               {item.price.toFixed(2)} PLN / szt.
             </Typography>
-          </Box>
-
-          <Box sx={{ display: "flex", alignItems: "center", mx: 2 }}>
-            <IconButton
+            <Chip
+              label={`${item.quantity} szt.`}
               size="small"
-              aria-label="decrease quantity"
-              disabled={item.quantity <= 1}
-              onClick={() => handleQuantityChange(-1)}
-            >
-              <RemoveIcon fontSize="inherit" />
-            </IconButton>
-            <TextField
-              value={localQuantity}
-              size="small"
-              variant="outlined"
-              sx={{ width: 50, mx: 0.5 }}
-              inputProps={{ style: { textAlign: "center", padding: "4px" } }}
-              onChange={handleLocalChange}
-              onBlur={handleQuantityOverwrite}
+              sx={{
+                bgcolor: alpha("#1976d2", 0.1),
+                color: "primary.main",
+                fontWeight: 600,
+              }}
             />
-            <IconButton
-              size="small"
-              aria-label="increase quantity"
-              onClick={() => handleQuantityChange(1)}
-            >
-              <AddIcon fontSize="inherit" />
-            </IconButton>
           </Box>
 
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Typography variant="h6" sx={{ minWidth: 90, textAlign: "right", fontWeight: 700 }}>
-              {(item.price * item.quantity).toFixed(2)} PLN
-            </Typography>
-            <IconButton aria-label="delete" color="error" sx={{ ml: 2 }} onClick={handleDelete}>
-              <DeleteIcon />
-            </IconButton>
+          <Box
+            sx={{
+              display: "flex",
+              gap: 1,
+              flexDirection: { xs: "row", sm: "column" },
+              alignItems: { xs: "center", sm: "flex-end" },
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                border: "1px solid",
+                borderColor: "divider",
+                borderRadius: 2,
+                p: 0.5,
+                bgcolor: "background.paper",
+              }}
+            >
+              <IconButton
+                size="small"
+                aria-label="decrease quantity"
+                disabled={item.quantity <= 1}
+                onClick={() => handleQuantityChange(-1)}
+                sx={{
+                  "&:hover": { bgcolor: alpha(theme.palette.error.main, 0.1) },
+                  "&.Mui-disabled": { opacity: 0.3 },
+                }}
+              >
+                <RemoveIcon fontSize="small" />
+              </IconButton>
+              <TextField
+                value={localQuantity}
+                size="small"
+                variant="standard"
+                sx={{
+                  width: 50,
+                  "& .MuiInput-underline:before": { display: "none" },
+                  "& .MuiInput-underline:after": { display: "none" },
+                  "& .MuiInputBase-input": {
+                    textAlign: "center",
+                    py: 0.5,
+                    fontWeight: 600,
+                  },
+                }}
+                inputProps={{ style: { textAlign: "center", padding: "4px" } }}
+                onChange={handleLocalChange}
+                onBlur={handleQuantityOverwrite}
+              />
+              <IconButton
+                size="small"
+                aria-label="increase quantity"
+                onClick={() => handleQuantityChange(1)}
+                sx={{
+                  "&:hover": { bgcolor: alpha(theme.palette.success.main, 0.1) },
+                }}
+              >
+                <AddIcon fontSize="small" />
+              </IconButton>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: { xs: "center", sm: "flex-end" },
+                gap: 1,
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 700,
+                  color: "primary.main",
+                  minWidth: { xs: "auto", sm: 100 },
+                  textAlign: { xs: "center", sm: "right" },
+                }}
+              >
+                {(item.price * item.quantity).toFixed(2)} PLN
+              </Typography>
+              <IconButton
+                aria-label="delete"
+                onClick={handleDelete}
+                sx={{
+                  color: "error.main",
+                  bgcolor: alpha(theme.palette.error.main, 0.1),
+                  "&:hover": {
+                    bgcolor: alpha(theme.palette.error.main, 0.2),
+                  },
+                  transition: "background-color 0.2s ease",
+                }}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Box>
           </Box>
         </CardContent>
       </Box>
@@ -141,6 +244,7 @@ const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
 
 const CartPage: React.FC = () => {
   const { cartItems, loading, error } = useCartContext();
+  const theme = useTheme();
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
@@ -170,73 +274,163 @@ const CartPage: React.FC = () => {
   return (
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Breadcrumbs items={[{ label: "Twój Koszyk" }]} />
-        <Typography variant="h4" gutterBottom>
-          Twój Koszyk
-        </Typography>
-        <Divider sx={{ mb: 4 }} />
+        <Box sx={{ mb: 4 }}>
+          <Breadcrumbs items={[{ label: "Twój Koszyk" }]} />
+          <Typography variant="h4" gutterBottom>
+            Twój Koszyk
+          </Typography>
+        </Box>
 
         <Grid container spacing={4}>
           <Grid size={{ xs: 12, md: 8 }}>
-            <Typography variant="h5" gutterBottom sx={{ mb: 2 }}>
-              Produkty w Koszyku ({cartItems.length})
-            </Typography>
-            {cartItems.length > 0 ? (
-              cartItems.map((item) => <CartProductCard key={item.id} item={item} />)
-            ) : (
-              <Box sx={{ p: 3, bgcolor: "grey.50", borderRadius: 1, textAlign: "center" }}>
-                <Typography variant="h6" color="text.secondary">
-                  Twój koszyk jest pusty.
-                </Typography>
-              </Box>
-            )}
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="h6" sx={{ mb: 1 }}>
+                Produkty w Koszyku
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {cartItems.length} {cartItems.length === 1 ? "produkt" : "produktów"}
+              </Typography>
+            </Box>
 
-            {FREE_SHIPPING_THRESHOLD - subtotal > 0 && (
-              <Box
+            {cartItems.length > 0 ? (
+              <>
+                {cartItems.map((item) => (
+                  <CartProductCard key={item.id} item={item} />
+                ))}
+
+                {FREE_SHIPPING_THRESHOLD - subtotal > 0 && (
+                  <Paper
+                    elevation={0}
+                    sx={{
+                      mt: 3,
+                      p: 3,
+                      bgcolor: alpha(theme.palette.primary.main, 0.05),
+                      border: "2px solid",
+                      borderColor: alpha(theme.palette.primary.main, 0.2),
+                      borderRadius: 3,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 2,
+                    }}
+                  >
+                    <LocalShippingIcon color="primary" sx={{ fontSize: 40 }} />
+                    <Box sx={{ flex: 1 }}>
+                      <Typography variant="h6" fontWeight={600} color="primary.main" gutterBottom>
+                        Darmowa wysyłka w zasięgu!
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Dodaj jeszcze produkty za{" "}
+                        <strong>{(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)} PLN</strong> i
+                        otrzymaj darmową wysyłkę!
+                      </Typography>
+                    </Box>
+                  </Paper>
+                )}
+
+                {shipping === 0 && (
+                  <Paper
+                    elevation={0}
+                    sx={{
+                      mt: 3,
+                      p: 2,
+                      bgcolor: alpha(theme.palette.success.main, 0.1),
+                      border: "1px solid",
+                      borderColor: "success.main",
+                      borderRadius: 2,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <LocalShippingIcon color="success" />
+                    <Typography variant="body2" color="success.main" fontWeight={600}>
+                      Gratulacje! Masz darmową wysyłkę!
+                    </Typography>
+                  </Paper>
+                )}
+              </>
+            ) : (
+              <Paper
+                elevation={0}
                 sx={{
-                  mt: 3,
-                  p: 2,
-                  bgcolor: "background.paper",
-                  borderRadius: 1,
-                  boxShadow: 1,
+                  p: 6,
+                  textAlign: "center",
+                  bgcolor: alpha("grey.500", 0.05),
+                  borderRadius: 3,
+                  border: "2px dashed",
+                  borderColor: "divider",
                 }}
               >
-                <Typography color="primary.main">
-                  Brakuje {(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)} PLN do darmowej wysyłki.
+                <ShoppingCartIcon sx={{ fontSize: 80, color: "text.secondary", mb: 2 }} />
+                <Typography variant="h5" color="text.secondary" gutterBottom>
+                  Twój koszyk jest pusty
                 </Typography>
-              </Box>
+                <Typography variant="body2" color="text.secondary">
+                  Dodaj produkty do koszyka, aby kontynuować zakupy
+                </Typography>
+              </Paper>
             )}
           </Grid>
 
           <Grid size={{ xs: 12, md: 4 }}>
-            <Card variant="outlined" sx={{ p: 3, position: "sticky", top: 20 }}>
-              <Typography variant="h5" gutterBottom fontWeight={500}>
-                Podsumowanie Zamówienia
+            <Card
+              elevation={4}
+              sx={{
+                p: 3,
+                position: "sticky",
+                top: 20,
+                borderRadius: 3,
+                background: `linear-gradient(135deg, ${alpha("#fff", 0.95)} 0%, ${alpha("#f5f5f5", 0.95)} 100%)`,
+                border: "1px solid",
+                borderColor: "divider",
+              }}
+            >
+              <Typography variant="h5" gutterBottom fontWeight={700} sx={{ mb: 2 }}>
+                Podsumowanie
               </Typography>
-              <Divider sx={{ mb: 2 }} />
+              <Divider sx={{ mb: 3 }} />
 
-              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-                <Typography variant="body1">Wartość Produktów:</Typography>
-                <Typography variant="body1" fontWeight={500}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+                <Typography variant="body1" color="text.secondary">
+                  Wartość produktów:
+                </Typography>
+                <Typography variant="body1" fontWeight={600}>
                   {subtotal.toFixed(2)} PLN
                 </Typography>
               </Box>
 
-              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-                <Typography variant="body1">Koszty Wysyłki:</Typography>
+              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
+                <Typography variant="body1" color="text.secondary">
+                  Koszt wysyłki:
+                </Typography>
                 <Typography
                   variant="body1"
-                  fontWeight={500}
+                  fontWeight={600}
                   color={shipping === 0 ? "success.main" : "text.primary"}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0.5,
+                  }}
                 >
+                  {shipping === 0 && <LocalShippingIcon fontSize="small" />}
                   {shipping === 0 ? "GRATIS" : `${shipping.toFixed(2)} PLN`}
                 </Typography>
               </Box>
 
-              <Divider sx={{ mb: 2 }} />
+              <Divider sx={{ mb: 3 }} />
 
-              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
-                <Typography variant="h5" fontWeight={700}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  mb: 3,
+                  p: 2,
+                  bgcolor: alpha(theme.palette.primary.main, 0.1),
+                  borderRadius: 2,
+                }}
+              >
+                <Typography variant="h6" fontWeight={700}>
                   RAZEM:
                 </Typography>
                 <Typography variant="h5" color="primary.main" fontWeight={700}>
@@ -250,6 +444,19 @@ const CartPage: React.FC = () => {
                 fullWidth
                 size="large"
                 onClick={() => console.log("Przejdź do kasy")}
+                disabled={cartItems.length === 0}
+                sx={{
+                  py: 1.5,
+                  borderRadius: 2,
+                  fontWeight: 600,
+                  fontSize: "1rem",
+                  textTransform: "none",
+                  boxShadow: 2,
+                  "&:hover": {
+                    boxShadow: 3,
+                  },
+                  transition: "box-shadow 0.2s ease",
+                }}
               >
                 Przejdź do Kasy
               </Button>
