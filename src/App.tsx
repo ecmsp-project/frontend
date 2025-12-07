@@ -17,6 +17,7 @@ const HomePage = lazy(() => import("./pages/HomePage"));
 const SearchPage = lazy(() => import("./pages/SearchPage"));
 const ProductPage = lazy(() => import("./pages/ProductPage.tsx"));
 const CartPage = lazy(() => import("./pages/CartPage.tsx"));
+const CheckoutPage = lazy(() => import("./pages/CheckoutPage.tsx"));
 const Login = lazy(() => import("./pages/Login.tsx"));
 const Register = lazy(() => import("./pages/Register.tsx"));
 const Contact = lazy(() => import("./pages/Contact.tsx"));
@@ -85,6 +86,10 @@ export default function App() {
                               <Route path="/category/:slug" element={<SearchPage />} />
                               <Route path="/product/:id" element={<ProductPage />} />
                               <Route path="/cart" element={<CartPage />} />
+                              <Route
+                                path="/transaction/:transactionId/order"
+                                element={<CheckoutPage />}
+                              />
                               <Route path="/login" element={<Login />} />
                               <Route path="/register" element={<Register />} />
                               <Route path="/contact" element={<Contact />} />

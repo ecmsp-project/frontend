@@ -26,6 +26,7 @@ import {
   Chip,
   useTheme,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const SHIPPING_COST = 19.99;
 const FREE_SHIPPING_THRESHOLD = 500;
@@ -245,10 +246,17 @@ const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
 const CartPage: React.FC = () => {
   const { cartItems, loading, error } = useCartContext();
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
   const total = subtotal + shipping;
+
+  const handleCheckout = () => {
+    // Generuj UUID dla transakcji
+    const transactionId = crypto.randomUUID();
+    navigate(`/transaction/${transactionId}/order`);
+  };
 
   if (loading) {
     return (
@@ -443,7 +451,7 @@ const CartPage: React.FC = () => {
                 color="primary"
                 fullWidth
                 size="large"
-                onClick={() => console.log("Przejdź do kasy")}
+                onClick={handleCheckout}
                 disabled={cartItems.length === 0}
                 sx={{
                   py: 1.5,
