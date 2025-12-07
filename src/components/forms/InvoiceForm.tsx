@@ -63,11 +63,23 @@ const invoicePersonalValidationSchema = Yup.object().shape({
     then: (schema) => schema.required("Kraj jest wymagany"),
     otherwise: (schema) => schema,
   }),
-  street: Yup.string().required("Ulica jest wymagana"),
+  street: Yup.string().when("useShippingData", {
+    is: false,
+    then: (schema) => schema.required("Ulica jest wymagana"),
+    otherwise: (schema) => schema,
+  }),
   buildingNumber: Yup.string(),
   apartmentNumber: Yup.string(),
-  postalCode: Yup.string().required("Kod pocztowy jest wymagany"),
-  city: Yup.string().required("Miejscowość jest wymagana"),
+  postalCode: Yup.string().when("useShippingData", {
+    is: false,
+    then: (schema) => schema.required("Kod pocztowy jest wymagany"),
+    otherwise: (schema) => schema,
+  }),
+  city: Yup.string().when("useShippingData", {
+    is: false,
+    then: (schema) => schema.required("Miejscowość jest wymagana"),
+    otherwise: (schema) => schema,
+  }),
 });
 
 const initialCompanyValues: InvoiceFormValues = {
