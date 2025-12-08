@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useRef, useEffect } from "react";
 import type { CardFormValues } from "../../hooks/usePayment";
 import { Grid, TextField, Typography, Box, Button } from "@mui/material";
-import { Formik, Form, Field, type FormikProps } from "formik";
+import { Formik, Form, Field, type FormikProps, useFormikContext } from "formik";
 import * as Yup from "yup";
 
 export interface CardFormRef {
@@ -36,6 +36,26 @@ const initialValues: CardFormValues = {
   cardholderName: "",
   expiryDate: "",
   cvv: "",
+};
+
+// Komponent pomocniczy do śledzenia walidacji
+const ValidationTracker: React.FC<{ onValidationChange?: (isValid: boolean) => void }> = ({
+  onValidationChange,
+}) => {
+  const { isValid, values } = useFormikContext<CardFormValues>();
+
+  useEffect(() => {
+    if (onValidationChange) {
+      const allFieldsFilled =
+        values.cardNumber.trim() !== "" &&
+        values.cardholderName.trim() !== "" &&
+        values.expiryDate.trim() !== "" &&
+        values.cvv.trim() !== "";
+      onValidationChange(isValid && allFieldsFilled);
+    }
+  }, [isValid, values, onValidationChange]);
+
+  return null;
 };
 
 const CardForm = forwardRef<CardFormRef, CardFormProps>(
@@ -98,21 +118,10 @@ const CardForm = forwardRef<CardFormRef, CardFormProps>(
         validationSchema={cardValidationSchema}
         onSubmit={onSubmit}
       >
-        {({ errors, touched, setFieldValue, isValid, values }) => {
-          // Informuj parent o stanie walidacji
-          useEffect(() => {
-            if (onValidationChange) {
-              const allFieldsFilled =
-                values.cardNumber.trim() !== "" &&
-                values.cardholderName.trim() !== "" &&
-                values.expiryDate.trim() !== "" &&
-                values.cvv.trim() !== "";
-              onValidationChange(isValid && allFieldsFilled);
-            }
-          }, [isValid, values, onValidationChange]);
-
+        {({ errors, touched, setFieldValue }) => {
           return (
             <Form>
+              <ValidationTracker onValidationChange={onValidationChange} />
               <Grid container spacing={2}>
                 <Grid size={{ xs: 12 }}>
                   <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>

@@ -71,7 +71,8 @@ export const usePayment = () => {
       // Płatność przeszła pomyślnie
       setIsProcessing(false);
       return true;
-    } catch (error) {
+    } catch (err) {
+      console.error("Error processing payment:", err);
       setPaymentError("Wystąpił błąd podczas przetwarzania płatności.");
       setIsProcessing(false);
       return false;
