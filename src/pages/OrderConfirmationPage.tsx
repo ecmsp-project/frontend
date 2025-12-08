@@ -23,7 +23,7 @@ const OrderConfirmationPage: React.FC = () => {
           <Breadcrumbs
             items={[
               { label: "Koszyk", path: "/cart" },
-              { label: "Dostawa i Płatność", path: "/transaction/order" },
+              { label: "Dostawa i Płatność", path: "/order" },
               { label: "Potwierdzenie zamówienia" },
             ]}
           />

@@ -260,9 +260,9 @@ const CartPage: React.FC = () => {
   const total = subtotal + shipping;
 
   const handleCheckout = () => {
-    // Generuj UUID dla transakcji
-    const transactionId = crypto.randomUUID();
-    navigate(`/transaction/${transactionId}/order`);
+    // Generuj UUID dla zamówienia
+    const orderId = crypto.randomUUID();
+    navigate(`/order/${orderId}`);
   };
 
   if (loading) {

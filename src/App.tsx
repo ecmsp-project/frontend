@@ -88,10 +88,7 @@ export default function App() {
                               <Route path="/category/:slug" element={<SearchPage />} />
                               <Route path="/product/:id" element={<ProductPage />} />
                               <Route path="/cart" element={<CartPage />} />
-                              <Route
-                                path="/transaction/:transactionId/order"
-                                element={<CheckoutPage />}
-                              />
+                              <Route path="/order/:orderId" element={<CheckoutPage />} />
                               <Route path="/payment/:paymentId" element={<PaymentPage />} />
                               <Route
                                 path="/order-confirmation/:orderId"

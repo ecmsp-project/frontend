@@ -26,7 +26,7 @@ const initialInvoiceData: InvoiceFormValues = {
   type: "personal",
 };
 
-export const useCheckout = () => {
+export const useCheckout = (initialOrderId?: string) => {
   const { cartItems } = useCartContext();
   const navigate = useNavigate();
 
@@ -40,16 +40,14 @@ export const useCheckout = () => {
 
   const [shippingData, setShippingData] = useState<ShippingFormValues>(initialShippingData);
   const [invoiceData, setInvoiceData] = useState<InvoiceFormValues>(initialInvoiceData);
-  const [orderId, setOrderId] = useState<string | null>(null);
+  const [orderId, setOrderId] = useState<string | null>(initialOrderId || null);
 
-  // Generuj numer zamówienia gdy shippingData jest wypełnione
+  // Użyj orderId z URL jeśli został przekazany, w przeciwnym razie użyj tego z state
   useEffect(() => {
-    if (shippingData.firstName && !orderId) {
-      // Generuj numer zamówienia w formacie ORD-XXXXXXXX-XXXX
-      const newOrderId = `ORD-${crypto.randomUUID().toUpperCase().replace(/-/g, "").substring(0, 13)}`;
-      setOrderId(newOrderId);
+    if (initialOrderId && !orderId) {
+      setOrderId(initialOrderId);
     }
-  }, [shippingData.firstName, orderId]);
+  }, [initialOrderId, orderId]);
 
   const subtotal = useMemo(
     () => cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
