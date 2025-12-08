@@ -1,4 +1,4 @@
-import { useImperativeHandle, forwardRef } from "react";
+import { useImperativeHandle, forwardRef, useMemo } from "react";
 import { Grid, TextField, Typography, Button, Box, FormControl, MenuItem } from "@mui/material";
 import { Formik, Form, Field, type FormikProps } from "formik";
 import { MuiTelInput } from "mui-tel-input";
@@ -69,7 +69,11 @@ const ShippingForm = forwardRef<ShippingFormRef, ShippingFormProps>(
     },
     ref,
   ) => {
-    const formInitialValues = { ...initialValues, ...customInitialValues };
+    // Użyj useMemo, żeby formInitialValues reagowało na zmiany customInitialValues
+    const formInitialValues = useMemo(
+      () => ({ ...initialValues, ...customInitialValues }),
+      [customInitialValues],
+    );
     let formikRef: FormikProps<ShippingFormValues> | null = null;
 
     useImperativeHandle(ref, () => ({

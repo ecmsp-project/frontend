@@ -46,6 +46,7 @@ const ShippingModal: React.FC<ShippingModalProps> = ({ open, shippingData, onClo
       </DialogTitle>
       <DialogContent dividers>
         <ShippingForm
+          key={JSON.stringify(shippingData)} // Wymuś remontowanie gdy dane się zmieniają
           ref={shippingFormRef}
           initialValues={shippingData}
           onSubmit={onSubmit}

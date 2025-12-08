@@ -5,28 +5,37 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HomeIcon from "@mui/icons-material/Home";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import { Box, Typography, Container, Card, Button, Divider, alpha, useTheme } from "@mui/material";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const OrderConfirmationPage: React.FC = () => {
-  const { orderId } = useParams<{ orderId: string }>();
+  const { orderId, token } = useParams<{ orderId: string; token: string }>();
   const navigate = useNavigate();
-  const location = useLocation();
   const theme = useTheme();
 
-  // Pobierz orderId z URL params lub z location state (dla płatności kartą)
-  const finalOrderId = orderId || (location.state as { orderId?: string })?.orderId || "N/A";
+  // Pobierz orderId z URL params
+  const finalOrderId = orderId || "N/A";
+
+  // Sprawdź czy token jest obecny (zabezpieczenie przed podrobieniem)
+  if (!token) {
+    return (
+      <MainLayout>
+        <Container maxWidth="md" sx={{ py: 6 }}>
+          <Typography variant="h5" color="error">
+            Nieprawidłowy link potwierdzenia zamówienia.
+          </Typography>
+          <Button variant="contained" sx={{ mt: 2 }} onClick={() => navigate("/")}>
+            Strona główna
+          </Button>
+        </Container>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
       <Container maxWidth="md" sx={{ py: 6 }}>
         <Box sx={{ mb: 4 }}>
-          <Breadcrumbs
-            items={[
-              { label: "Koszyk", path: "/cart" },
-              { label: "Dostawa i Płatność", path: "/order" },
-              { label: "Potwierdzenie zamówienia" },
-            ]}
-          />
+          <Breadcrumbs items={[{ label: "Potwierdzenie zamówienia" }]} />
         </Box>
 
         <Card
