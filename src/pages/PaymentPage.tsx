@@ -7,11 +7,15 @@ import { usePayment, type CardFormValues } from "../hooks/usePayment.ts";
 import PaymentSummary from "./payment/PaymentSummary.tsx";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import { Box, Typography, Container, Grid, Alert, Card, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const PaymentPage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { cartItems, clearCart } = useCartContext();
+  
+  // Pobierz orderId z location state
+  const orderId = (location.state as { orderId?: string })?.orderId;
   const {
     subtotal,
     shipping,
@@ -30,8 +34,13 @@ const PaymentPage: React.FC = () => {
     if (success) {
       // Wyczyść koszyk po udanej płatności
       await clearCart();
-      // Przekieruj do strony głównej
-      navigate("/");
+      // Przekieruj do strony potwierdzenia zamówienia
+      if (orderId) {
+        navigate(`/order-confirmation/${orderId}`);
+      } else {
+        // Fallback - jeśli nie ma orderId, przekieruj na stronę główną
+        navigate("/");
+      }
     }
   };
 

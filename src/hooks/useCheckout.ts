@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { InvoiceFormValues } from "../components/forms/InvoiceForm.tsx";
 import type { ShippingFormValues } from "../components/forms/ShippingForm.tsx";
 import { useCartContext } from "../contexts/CartContext";
@@ -40,6 +40,16 @@ export const useCheckout = () => {
 
   const [shippingData, setShippingData] = useState<ShippingFormValues>(initialShippingData);
   const [invoiceData, setInvoiceData] = useState<InvoiceFormValues>(initialInvoiceData);
+  const [orderId, setOrderId] = useState<string | null>(null);
+
+  // Generuj numer zamówienia gdy shippingData jest wypełnione
+  useEffect(() => {
+    if (shippingData.firstName && !orderId) {
+      // Generuj numer zamówienia w formacie ORD-XXXXXXXX-XXXX
+      const newOrderId = `ORD-${crypto.randomUUID().toUpperCase().replace(/-/g, "").substring(0, 13)}`;
+      setOrderId(newOrderId);
+    }
+  }, [shippingData.firstName, orderId]);
 
   const subtotal = useMemo(
     () => cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
@@ -103,13 +113,18 @@ export const useCheckout = () => {
   };
 
   const handlePay = () => {
+    if (!orderId) {
+      console.error("Order ID not generated yet");
+      return;
+    }
+
     if (paymentMethod === "card") {
-      // Przekieruj do strony płatności kartą
+      // Przekieruj do strony płatności kartą z orderId w state
       const paymentId = crypto.randomUUID();
-      navigate(`/payment/${paymentId}`);
+      navigate(`/payment/${paymentId}`, { state: { orderId } });
     } else {
-      // TODO: Implement cash on delivery logic
-      console.log("Processing cash on delivery...");
+      // Płatność przy odbiorze - przekieruj bezpośrednio do potwierdzenia
+      navigate(`/order-confirmation/${orderId}`);
     }
   };
 
@@ -149,6 +164,7 @@ export const useCheckout = () => {
     discountCode,
     shippingData,
     invoiceData,
+    orderId,
     subtotal,
     shipping,
     total,
