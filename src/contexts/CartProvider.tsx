@@ -154,6 +154,19 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     [refetchCart, removeProduct],
   );
 
+  const clearCart = useCallback(async () => {
+    setCartItems([]);
+    // TODO: Implement API call to clear cart when not using mock data
+    // if (!USE_MOCK_DATA) {
+    //   try {
+    //     await clearCartAPI();
+    //   } catch (err) {
+    //     console.error("Błąd czyszczenia koszyka:", err);
+    //     throw new Error("Nie udało się wyczyścić koszyka.");
+    //   }
+    // }
+  }, []);
+
   useEffect(() => {
     refetchCart();
   }, [refetchCart]);
@@ -166,6 +179,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     updateProductQuantity,
     overwriteProductQuantity,
     removeProduct,
+    clearCart,
   };
 
   return <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>;

@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import type { InvoiceFormValues } from "../components/forms/InvoiceForm.tsx";
 import type { ShippingFormValues } from "../components/forms/ShippingForm.tsx";
 import { useCartContext } from "../contexts/CartContext";
+import { useNavigate } from "react-router-dom";
 
 const SHIPPING_COST = 19.99;
 const FREE_SHIPPING_THRESHOLD = 500;
@@ -27,6 +28,7 @@ const initialInvoiceData: InvoiceFormValues = {
 
 export const useCheckout = () => {
   const { cartItems } = useCartContext();
+  const navigate = useNavigate();
 
   const [shippingModalOpen, setShippingModalOpen] = useState(false);
   const [invoiceModalOpen, setInvoiceModalOpen] = useState(false);
@@ -101,8 +103,14 @@ export const useCheckout = () => {
   };
 
   const handlePay = () => {
-    // TODO: Implement payment logic
-    console.log("Processing payment...");
+    if (paymentMethod === "card") {
+      // Przekieruj do strony płatności kartą
+      const paymentId = crypto.randomUUID();
+      navigate(`/payment/${paymentId}`);
+    } else {
+      // TODO: Implement cash on delivery logic
+      console.log("Processing cash on delivery...");
+    }
   };
 
   const getShippingDataForInvoice = ():
