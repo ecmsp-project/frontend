@@ -6,12 +6,12 @@ import { useCartContext } from "../contexts/CartContext";
 import { usePayment, type CardFormValues } from "../hooks/usePayment.ts";
 import PaymentSummary from "./payment/PaymentSummary.tsx";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
-import { Box, Typography, Container, Grid, Alert, Card } from "@mui/material";
+import { Box, Typography, Container, Grid, Alert, Card, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const PaymentPage: React.FC = () => {
   const navigate = useNavigate();
-  const { clearCart } = useCartContext();
+  const { cartItems, clearCart } = useCartContext();
   const {
     subtotal,
     shipping,
@@ -40,6 +40,21 @@ const PaymentPage: React.FC = () => {
       cardFormRef.current.submitForm();
     }
   };
+
+  if (cartItems.length === 0) {
+    return (
+      <MainLayout>
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+          <Typography variant="h5" color="text.secondary">
+            Twój koszyk jest pusty. Nie można przejść do płatności.
+          </Typography>
+          <Button variant="contained" sx={{ mt: 2 }} onClick={() => navigate("/cart")}>
+            Wróć do koszyka
+          </Button>
+        </Container>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
