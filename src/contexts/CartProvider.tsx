@@ -38,13 +38,22 @@ export default function CartProvider({ children }: { children: ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasBeenCleared, setHasBeenCleared] = useState(false);
 
   const refetchCart = useCallback(async () => {
+    // Nie refetchuj jeśli koszyk został ręcznie wyczyszczony
+    if (hasBeenCleared && USE_MOCK_DATA) {
+      return;
+    }
+
     setLoading(true);
     try {
       if (USE_MOCK_DATA) {
         await new Promise((resolve) => setTimeout(resolve, 300));
-        setCartItems([...productMocks]);
+        // Tylko ustaw produkty jeśli koszyk nie został wyczyszczony
+        if (!hasBeenCleared) {
+          setCartItems([...productMocks]);
+        }
         setError(null);
       } else {
         const fetchedCart = await fetchCartProducts();
@@ -72,7 +81,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [hasBeenCleared]);
 
   const removeProduct = useCallback(
     async (productId: number) => {
@@ -154,9 +163,24 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     [refetchCart, removeProduct],
   );
 
+  const clearCart = useCallback(async () => {
+    setCartItems([]);
+    setHasBeenCleared(true); // Oznacz jako wyczyszczony, żeby refetchCart nie przywracał produktów
+    // TODO: Implement API call to clear cart when not using mock data
+    // if (!USE_MOCK_DATA) {
+    //   try {
+    //     await clearCartAPI();
+    //   } catch (err) {
+    //     console.error("Błąd czyszczenia koszyka:", err);
+    //     throw new Error("Nie udało się wyczyścić koszyka.");
+    //   }
+    // }
+  }, []);
+
   useEffect(() => {
     refetchCart();
-  }, [refetchCart]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const contextValue = {
     cartItems,
@@ -166,6 +190,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     updateProductQuantity,
     overwriteProductQuantity,
     removeProduct,
+    clearCart,
   };
 
   return <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>;

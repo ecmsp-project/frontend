@@ -16,6 +16,7 @@ interface CartContextType {
   updateProductQuantity: (productId: number, quantity: number, delta: number) => Promise<void>;
   overwriteProductQuantity: (productId: number, newQuantity: number) => Promise<void>;
   removeProduct: (productId: number) => Promise<void>;
+  clearCart: () => Promise<void>;
 }
 
 export const CartContext = createContext<CartContextType | undefined>(undefined);

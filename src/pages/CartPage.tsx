@@ -248,7 +248,14 @@ const CartPage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  // Zabezpieczenie przed pustym koszykiem
+  const safeCartItems = Array.isArray(cartItems) ? cartItems : [];
+  const subtotal = safeCartItems.reduce((sum, item) => {
+    if (!item || typeof item.price !== "number" || typeof item.quantity !== "number") {
+      return sum;
+    }
+    return sum + item.price * item.quantity;
+  }, 0);
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
   const total = subtotal + shipping;
 
@@ -296,15 +303,16 @@ const CartPage: React.FC = () => {
                 Produkty w Koszyku
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {cartItems.length} {cartItems.length === 1 ? "produkt" : "produktów"}
+                {safeCartItems.length} {safeCartItems.length === 1 ? "produkt" : "produktów"}
               </Typography>
             </Box>
 
-            {cartItems.length > 0 ? (
+            {safeCartItems.length > 0 ? (
               <>
-                {cartItems.map((item) => (
-                  <CartProductCard key={item.id} item={item} />
-                ))}
+                {safeCartItems.map((item) => {
+                  if (!item || !item.id) return null;
+                  return <CartProductCard key={item.id} item={item} />;
+                })}
 
                 {FREE_SHIPPING_THRESHOLD - subtotal > 0 && (
                   <Paper
@@ -363,7 +371,7 @@ const CartPage: React.FC = () => {
                 sx={{
                   p: 6,
                   textAlign: "center",
-                  bgcolor: alpha("grey.500", 0.05),
+                  bgcolor: alpha(theme.palette.grey[500], 0.05),
                   borderRadius: 3,
                   border: "2px dashed",
                   borderColor: "divider",
@@ -452,7 +460,7 @@ const CartPage: React.FC = () => {
                 fullWidth
                 size="large"
                 onClick={handleCheckout}
-                disabled={cartItems.length === 0}
+                disabled={safeCartItems.length === 0}
                 sx={{
                   py: 1.5,
                   borderRadius: 2,
