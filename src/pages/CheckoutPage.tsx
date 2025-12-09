@@ -10,10 +10,11 @@ import PaymentMethodSection from "./checkout/PaymentMethodSection.tsx";
 import ShippingModal from "./checkout/ShippingModal.tsx";
 import ShippingSection from "./checkout/ShippingSection.tsx";
 import { Box, Typography, Container, Grid, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
+  const { orderId: urlOrderId } = useParams<{ orderId: string }>();
   const { cartItems } = useCartContext();
   const {
     shippingModalOpen,
@@ -43,7 +44,7 @@ const CheckoutPage: React.FC = () => {
     handleClearDiscountError,
     handlePay,
     getShippingDataForInvoice,
-  } = useCheckout();
+  } = useCheckout(urlOrderId || undefined);
 
   if (cartItems.length === 0) {
     return (

@@ -7,10 +7,11 @@ import { usePayment, type CardFormValues } from "../hooks/usePayment.ts";
 import PaymentSummary from "./payment/PaymentSummary.tsx";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import { Box, Typography, Container, Grid, Alert, Card, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const PaymentPage: React.FC = () => {
   const navigate = useNavigate();
+  const { orderId } = useParams<{ orderId: string }>();
   const { cartItems, clearCart } = useCartContext();
   const {
     subtotal,
@@ -30,8 +31,14 @@ const PaymentPage: React.FC = () => {
     if (success) {
       // Wyczyść koszyk po udanej płatności
       await clearCart();
-      // Przekieruj do strony głównej
-      navigate("/");
+      // Przekieruj do strony potwierdzenia zamówienia z tokenem zabezpieczającym
+      if (orderId) {
+        const confirmationToken = crypto.randomUUID();
+        navigate(`/order-confirmation/${orderId}/${confirmationToken}`);
+      } else {
+        // Fallback - jeśli nie ma orderId, przekieruj na stronę główną
+        navigate("/");
+      }
     }
   };
 
@@ -63,7 +70,7 @@ const PaymentPage: React.FC = () => {
           <Breadcrumbs
             items={[
               { label: "Koszyk", path: "/cart" },
-              { label: "Dostawa i Płatność", path: "/transaction/order" },
+              { label: "Dostawa i Płatność", path: orderId ? `/order/${orderId}` : "/order" },
               { label: "Płatność" },
             ]}
           />
