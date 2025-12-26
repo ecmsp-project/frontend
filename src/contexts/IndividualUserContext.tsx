@@ -1,14 +1,11 @@
 import { createContext, useContext } from "react";
 import type { Permission } from "../types/permissions.ts";
-import type { User } from "../types/users.ts";
 
 interface IndividualUserContextType {
-  currentUser: User | null;
   permissions: Permission[];
   loading: boolean;
   error: string | null;
   refreshCurrentUser: () => Promise<void>;
-  updateCurrentUser: (userData: Partial<User>) => void;
   hasPermission: (permission: Permission) => boolean;
   hasAnyPermission: (permissions: Permission[]) => boolean;
   logout: () => void;

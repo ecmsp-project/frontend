@@ -127,6 +127,8 @@ export const deleteUsersFromRole = async (roleName: string, userIds: string[]): 
     throw new Error("Authorization token not found. Please log in.");
   }
 
+  console.log("eee", jwtToken);
+
   try {
     const requestBody = { userIds: userIds };
     const response = await apiCall(`${API_BASE_URL}/api/roles/${roleName}/users`, {

@@ -10,6 +10,8 @@ export const login = async (login: string, password: string) => {
 
     const loginData = await response.json();
 
+    console.log(loginData);
+
     if (!response.ok) {
       throw new Error(loginData.message || "Login failed");
     }
