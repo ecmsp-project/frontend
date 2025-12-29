@@ -43,7 +43,7 @@ const CategoryDeleteDialog: React.FC<CategoryDeleteDialogProps> = ({
       console.error("Error deleting category:", err);
       setError(
         err?.message ||
-          "Wystąpił błąd podczas usuwania kategorii. Endpoint DELETE może nie być jeszcze zaimplementowany na backendzie.",
+          "An error occurred while deleting the category. The DELETE endpoint may not be implemented yet on the backend.",
       );
       setIsDeleting(false);
     }
@@ -62,44 +62,43 @@ const CategoryDeleteDialog: React.FC<CategoryDeleteDialogProps> = ({
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth container={container}>
       <DialogTitle sx={{ display: "flex", alignItems: "center", gap: 1 }}>
         <WarningIcon color="warning" />
-        Usuń kategorię
+        Delete Category
       </DialogTitle>
 
       <DialogContent>
         <Box sx={{ mb: 2 }}>
           <Typography variant="body1" gutterBottom>
-            Czy na pewno chcesz usunąć kategorię <strong>{category.name}</strong>?
+            Are you sure you want to delete the category <strong>{category.name}</strong>?
           </Typography>
         </Box>
 
         <Alert severity="info" sx={{ mb: 2 }}>
           <Typography variant="body2">
-            <strong>Informacja:</strong> Podkategorie tej kategorii zostaną przeniesione do
-            kategorii nadrzędnej (nie będą usunięte).
+            <strong>Information:</strong> Subcategories of this category will be moved to the parent category (they will not be deleted).
           </Typography>
         </Alert>
 
         {category.parentCategoryName && (
           <Box sx={{ mb: 2 }}>
             <Typography variant="body2" color="text.secondary">
-              Kategoria nadrzędna: <strong>{category.parentCategoryName}</strong>
+              Parent category: <strong>{category.parentCategoryName}</strong>
             </Typography>
           </Box>
         )}
 
         <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
           <Chip
-            label={`${category.subCategoryCount} podkategorii`}
+            label={`${category.subCategoryCount} subcategories`}
             color={category.subCategoryCount > 0 ? "warning" : "default"}
             size="small"
           />
           <Chip
-            label={`${category.productCount} produktów`}
+            label={`${category.productCount} products`}
             color={category.productCount > 0 ? "warning" : "default"}
             size="small"
           />
           <Chip
-            label={`${category.propertyCount} właściwości`}
+            label={`${category.propertyCount} properties`}
             color={category.propertyCount > 0 ? "warning" : "default"}
             size="small"
           />
@@ -108,14 +107,13 @@ const CategoryDeleteDialog: React.FC<CategoryDeleteDialogProps> = ({
         {category.subCategoryCount > 0 && (
           <Alert severity="warning" sx={{ mb: 2 }}>
             <Typography variant="body2">
-              Ta kategoria ma <strong>{category.subCategoryCount}</strong> podkategorii. Zostaną one
-              przeniesione do{" "}
+              This category has <strong>{category.subCategoryCount}</strong> subcategories. They will be moved to{" "}
               {category.parentCategoryName ? (
                 <>
-                  kategorii <strong>{category.parentCategoryName}</strong>
+                  category <strong>{category.parentCategoryName}</strong>
                 </>
               ) : (
-                "poziomu głównego"
+                "root level"
               )}
               .
             </Typography>
@@ -125,17 +123,14 @@ const CategoryDeleteDialog: React.FC<CategoryDeleteDialogProps> = ({
         {category.productCount > 0 && (
           <Alert severity="warning" sx={{ mb: 2 }}>
             <Typography variant="body2">
-              Ta kategoria zawiera <strong>{category.productCount}</strong> produktów. Upewnij się,
-              że usunięcie tej kategorii nie wpłynie negatywnie na te produkty.
+              This category contains <strong>{category.productCount}</strong> products. Make sure that deleting this category will not negatively affect these products.
             </Typography>
           </Alert>
         )}
 
         <Alert severity="warning">
           <Typography variant="body2">
-            <strong>Uwaga:</strong> Endpoint DELETE może nie być jeszcze w pełni zaimplementowany na
-            backendzie. Jeśli usunięcie się nie powiedzie, sprawdź implementację w
-            CategoryController.
+            <strong>Note:</strong> The DELETE endpoint may not be fully implemented yet on the backend. If deletion fails, check the implementation in CategoryController.
           </Typography>
         </Alert>
 
@@ -148,10 +143,10 @@ const CategoryDeleteDialog: React.FC<CategoryDeleteDialogProps> = ({
 
       <DialogActions>
         <Button onClick={handleClose} disabled={isDeleting}>
-          Anuluj
+          Cancel
         </Button>
         <Button onClick={handleConfirm} color="error" variant="contained" disabled={isDeleting}>
-          {isDeleting ? "Usuwanie..." : "Usuń"}
+          {isDeleting ? "Deleting..." : "Delete"}
         </Button>
       </DialogActions>
     </Dialog>

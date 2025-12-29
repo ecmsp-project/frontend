@@ -47,7 +47,7 @@ const ProductPage: React.FC = () => {
     getAvailableValues,
   } = useProductPage();
 
-  // Pobierz categoryId z URL params lub z localStorage (jeśli użytkownik przyszedł z kategorii)
+  // Get categoryId from URL params or from localStorage (if user came from category)
   const categoryIdFromUrl = searchParams.get("categoryId");
   const [productCategoryId, setProductCategoryId] = useState<string | null>(
     categoryIdFromUrl ||
@@ -98,7 +98,7 @@ const ProductPage: React.FC = () => {
             const imgB = variant.variantImages.find((i) => i.url === b);
             return (imgA?.position || 0) - (imgB?.position || 0);
           })
-      : ["https://via.placeholder.com/600x600?text=Brak+obrazu"];
+      : ["https://via.placeholder.com/600x600?text=No+Image"];
 
   const displayedParams = showMoreParams
     ? [...selectableProperties, ...requiredProperties, ...infoProperties]
@@ -114,7 +114,7 @@ const ProductPage: React.FC = () => {
         <Container maxWidth="lg" sx={{ py: 8, textAlign: "center" }}>
           <CircularProgress />
           <Typography variant="body1" sx={{ mt: 2 }}>
-            Ładowanie produktu...
+            Loading product...
           </Typography>
         </Container>
       </MainLayout>
@@ -275,7 +275,7 @@ const ProductPage: React.FC = () => {
             >
               <Paper elevation={4} sx={{ p: 3, borderRadius: 3, mb: 3 }}>
                 <Typography variant="h4" color="primary.main" fontWeight={700} sx={{ mb: 1 }}>
-                  {variant.price.toFixed(2)} zł
+                  {variant.price.toFixed(2)} PLN
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                   Stan magazynowy: {variant.stockQuantity}
@@ -356,7 +356,7 @@ const ProductPage: React.FC = () => {
                   DODAJ DO KOSZYKA
                 </Button>
                 <Button variant="contained" color="primary" fullWidth size="large">
-                  KUP I ZAPŁAĆ
+                  BUY AND PAY
                 </Button>
               </Paper>
             </Box>

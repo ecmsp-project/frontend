@@ -33,7 +33,7 @@ const PriceFilter: React.FC<PriceFilterProps> = ({
       }}
     >
       <Typography variant="subtitle2" sx={{ mb: 2 }}>
-        Zakres cen
+        Price Range
       </Typography>
       <Box sx={{ px: 1 }}>
         <Slider
@@ -43,7 +43,7 @@ const PriceFilter: React.FC<PriceFilterProps> = ({
           min={min}
           max={max}
           step={step}
-          valueLabelFormat={(value) => `${value} zł`}
+          valueLabelFormat={(value) => `${value} PLN`}
           sx={{
             color: "primary.main",
             "& .MuiSlider-thumb": {
@@ -66,10 +66,10 @@ const PriceFilter: React.FC<PriceFilterProps> = ({
           }}
         >
           <Typography variant="caption" color="text.secondary">
-            {priceRange[0]} zł
+            {priceRange[0]} PLN
           </Typography>
           <Typography variant="caption" color="text.secondary">
-            {priceRange[1]} zł
+            {priceRange[1]} PLN
           </Typography>
         </Box>
       </Box>

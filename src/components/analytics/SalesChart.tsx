@@ -88,10 +88,10 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
       >
         <ShoppingCartIcon sx={{ fontSize: 60, color: "text.secondary", mb: 2 }} />
         <Typography variant="h6" color="text.secondary">
-          Brak danych sprzedażowych
+          No sales data
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Nie znaleziono danych sprzedażowych dla wybranego produktu
+          No sales data found for the selected product
         </Typography>
       </Paper>
     );
@@ -210,9 +210,9 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
             <Typography key={index} variant="body2" sx={{ color: entry.color }}>
               {entry.name}:{" "}
               <strong>
-                {entry.name === "Przychód"
-                  ? `${Number(entry.value).toFixed(2)} zł`
-                  : `${entry.value} szt.`}
+                {entry.name === "Revenue"
+                  ? `${Number(entry.value).toFixed(2)} PLN`
+                  : `${entry.value} pcs.`}
               </strong>
             </Typography>
           ))}
@@ -238,14 +238,14 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
               <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                 <ShoppingCartIcon sx={{ mr: 1 }} />
                 <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                  Całkowita sprzedaż
+                  Total Sales
                 </Typography>
               </Box>
               <Typography variant="h3" sx={{ fontWeight: "bold" }}>
                 {totalQuantity}
               </Typography>
               <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                sztuk
+                units
               </Typography>
             </CardContent>
           </Card>
@@ -263,7 +263,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
               <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                 <AttachMoneyIcon sx={{ mr: 1 }} />
                 <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                  Całkowity przychód
+                  Total Revenue
                 </Typography>
               </Box>
               <Typography variant="h3" sx={{ fontWeight: "bold" }}>
@@ -288,7 +288,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
               <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                 <TrendingUpIcon sx={{ mr: 1 }} />
                 <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                  Średnia cena
+                  Average Price
                 </Typography>
               </Box>
               <Typography variant="h3" sx={{ fontWeight: "bold" }}>
@@ -335,7 +335,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
             onClick={toggleIntegrationMode}
             color={integrationMode ? "secondary" : "primary"}
           >
-            {integrationMode ? "Anuluj całkowanie" : "Całkowanie"}
+            {integrationMode ? "Cancel Integration" : "Integration"}
           </Button>
           {integrationMode && refAreaLeft && refAreaRight && (
             <Button
@@ -344,7 +344,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
               startIcon={<ClearIcon />}
               onClick={clearIntegration}
             >
-              Wyczyść zaznaczenie
+              Clear Selection
             </Button>
           )}
           <ToggleButtonGroup
@@ -353,8 +353,8 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
             onChange={(_e, newType) => newType && setChartType(newType)}
             size="small"
           >
-            <ToggleButton value="line">Linia</ToggleButton>
-            <ToggleButton value="area">Obszar</ToggleButton>
+            <ToggleButton value="line">Line</ToggleButton>
+            <ToggleButton value="area">Area</ToggleButton>
           </ToggleButtonGroup>
         </Stack>
       </Box>
@@ -362,7 +362,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
       {/* Integration Instructions */}
       {integrationMode && !integrationResult && (
         <Alert severity="info" sx={{ mb: 2 }}>
-          Kliknij i przeciągnij na wykresie, aby zaznaczyć okres do obliczenia całki
+          Click and drag on the chart to select a period for integration calculation
         </Alert>
       )}
 
@@ -380,7 +380,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
             }}
           >
             <Typography variant="h6" gutterBottom fontWeight="bold" sx={{ mb: 2 }}>
-              📊 Wyniki całkowania ({integrationResult.days} dni)
+              📊 Integration Results ({integrationResult.days} days)
             </Typography>
             <Stack
               direction={{ xs: "column", md: "row" }}
@@ -410,11 +410,11 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                   <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                     <ShoppingCartIcon sx={{ mr: 1, fontSize: 28 }} />
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                      Suma sprzedanych sztuk
+                      Total Units Sold
                     </Typography>
                   </Box>
                   <Typography variant="h4" fontWeight="bold">
-                    {integrationResult.quantity} szt.
+                    {integrationResult.quantity} pcs.
                   </Typography>
                 </CardContent>
               </Card>
@@ -436,11 +436,11 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                   <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                     <AttachMoneyIcon sx={{ mr: 1, fontSize: 28 }} />
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                      Suma przychodu
+                      Total Revenue
                     </Typography>
                   </Box>
                   <Typography variant="h4" fontWeight="bold">
-                    {integrationResult.revenue.toFixed(2)} zł
+                    {integrationResult.revenue.toFixed(2)} PLN
                   </Typography>
                 </CardContent>
               </Card>
@@ -462,11 +462,11 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                   <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                     <TrendingUpIcon sx={{ mr: 1, fontSize: 28 }} />
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                      Średnia dzienna (ilość)
+                      Daily Average (Quantity)
                     </Typography>
                   </Box>
                   <Typography variant="h4" fontWeight="bold">
-                    {(integrationResult.quantity / integrationResult.days).toFixed(1)} szt./dzień
+                    {(integrationResult.quantity / integrationResult.days).toFixed(1)} pcs./day
                   </Typography>
                 </CardContent>
               </Card>
@@ -488,11 +488,11 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
                   <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                     <AttachMoneyIcon sx={{ mr: 1, fontSize: 28 }} />
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                      Średnia dzienna (przychód)
+                      Daily Average (Revenue)
                     </Typography>
                   </Box>
                   <Typography variant="h4" fontWeight="bold">
-                    {(integrationResult.revenue / integrationResult.days).toFixed(2)} zł/dzień
+                    {(integrationResult.revenue / integrationResult.days).toFixed(2)} PLN/day
                   </Typography>
                 </CardContent>
               </Card>
@@ -504,7 +504,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
       {/* Charts */}
       <Paper sx={{ p: 2, mb: 3 }}>
         <Typography variant="subtitle1" gutterBottom>
-          Ilość sprzedanych sztuk w czasie
+          Quantity Sold Over Time
         </Typography>
         <ResponsiveContainer
           width="100%"
@@ -546,7 +546,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
               <Line
                 type="monotone"
                 dataKey="quantity"
-                name="Ilość"
+                name="Quantity"
                 stroke="#8884d8"
                 strokeWidth={3}
                 dot={{ fill: "#8884d8", r: 4 }}
@@ -587,7 +587,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
               <Area
                 type="monotone"
                 dataKey="quantity"
-                name="Ilość"
+                name="Quantity"
                 stroke="#8884d8"
                 strokeWidth={2}
                 fill="url(#colorQuantity)"
@@ -601,7 +601,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
 
       <Paper sx={{ p: 2 }}>
         <Typography variant="subtitle1" gutterBottom>
-          Przychód w czasie
+          Revenue Over Time
         </Typography>
         <ResponsiveContainer
           width="100%"
@@ -643,7 +643,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
               <Line
                 type="monotone"
                 dataKey="revenue"
-                name="Przychód"
+                name="Revenue"
                 stroke="#82ca9d"
                 strokeWidth={3}
                 dot={{ fill: "#82ca9d", r: 4 }}
@@ -684,7 +684,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
               <Area
                 type="monotone"
                 dataKey="revenue"
-                name="Przychód"
+                name="Revenue"
                 stroke="#82ca9d"
                 strokeWidth={2}
                 fill="url(#colorRevenue)"

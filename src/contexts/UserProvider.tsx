@@ -17,7 +17,7 @@ export default function UserProvider({ children }: { children: ReactNode }) {
       setError(null);
     } catch (err) {
       console.error("Error fetching users:", err);
-      setError("Nie udało się załadować listy użytkowników.");
+      setError("Failed to load user list.");
     } finally {
       setLoading(false);
     }
@@ -40,7 +40,7 @@ export default function UserProvider({ children }: { children: ReactNode }) {
       );
     } catch (err) {
       console.error(`Error adding role ${roleName} to user ${userId}:`, err);
-      throw new Error(`Nie udało się dodać roli ${roleName} użytkownikowi.`);
+      throw new Error(`Failed to add role ${roleName} to user.`);
     }
   }, []);
 
@@ -56,7 +56,7 @@ export default function UserProvider({ children }: { children: ReactNode }) {
       );
     } catch (err) {
       console.error(`Error removing role ${roleName} from user ${userId}:`, err);
-      throw new Error(`Nie udało się usunąć roli ${roleName} użytkownikowi.`);
+      throw new Error(`Failed to remove role ${roleName} from user.`);
     }
   }, []);
 
@@ -66,7 +66,7 @@ export default function UserProvider({ children }: { children: ReactNode }) {
       setUsers((prev) => prev.filter((u) => u.id !== userId));
     } catch (err) {
       console.error("Error deleting user:", err);
-      throw new Error("Nie udało się usunąć użytkownika.");
+      throw new Error("Failed to delete user.");
     }
   }, []);
 

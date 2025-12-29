@@ -36,7 +36,7 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
         <Box
           component="img"
           src={mainImage}
-          alt="Główny widok produktu"
+          alt="Main product view"
           sx={{
             maxWidth: "100%",
             maxHeight: 450,
@@ -86,7 +86,7 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
           <Box
             component="img"
             src={mainImage}
-            alt="Powiększony widok produktu"
+            alt="Enlarged product view"
             sx={{
               maxWidth: "100%",
               maxHeight: "80vh",

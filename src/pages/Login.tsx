@@ -83,7 +83,7 @@ const Login: React.FC = () => {
                 fontWeight={700}
                 color="primary.main"
               >
-                Zaloguj się
+                Sign In
               </Typography>
               <Typography variant="body1" color="text.secondary">
                 Welcome back to E-COMMERCE

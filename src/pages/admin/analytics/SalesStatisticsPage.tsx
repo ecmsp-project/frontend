@@ -243,7 +243,7 @@ const SalesStatisticsPage: React.FC = () => {
                       >
                         <InventoryIcon sx={{ fontSize: 60, color: "text.secondary", mb: 2 }} />
                         <Typography variant="h6" color="text.secondary">
-                          Brak danych magazynowych
+                          No stock data
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                           This product doesn't have any stock data yet

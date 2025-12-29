@@ -8,7 +8,7 @@ const CreateVariantPage: React.FC = () => {
 
   const handleFormSubmit = (values: VariantFormValues) => {
     console.log("Form submitted:", values);
-    alert("Formularz został wysłany pomyślnie!");
+    alert("Form submitted successfully!");
   };
 
   return (

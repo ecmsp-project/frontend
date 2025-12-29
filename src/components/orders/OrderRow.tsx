@@ -32,12 +32,12 @@ const OrderDetailsHeader: React.FC<OrderDetailsHeaderProps> = ({ order }) => {
   return (
     <Box sx={{ mb: 3 }}>
       <Typography variant="h6" gutterBottom fontWeight={700} sx={{ mb: 2 }}>
-        Szczegóły Zamówienia
+        Order Details
       </Typography>
       <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 3 }}>
         <Box sx={{ flex: 1 }}>
           <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 0.5 }}>
-            ID Klienta
+            Client ID
           </Typography>
           <Typography variant="body2" fontWeight={500}>
             {order.clientId}
@@ -45,7 +45,7 @@ const OrderDetailsHeader: React.FC<OrderDetailsHeaderProps> = ({ order }) => {
         </Box>
         <Box sx={{ flex: 1 }}>
           <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 0.5 }}>
-            Liczba produktów
+            Number of Products
           </Typography>
           <Typography variant="body2" fontWeight={500}>
             {order.items.length}
@@ -77,7 +77,7 @@ const OrderItemRow: React.FC<OrderItemRowProps> = ({ item, index }) => {
           primary={
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
               <Typography variant="body2" fontWeight={600}>
-                Produkt #{index + 1}
+                Product #{index + 1}
               </Typography>
               <Chip
                 label={`${item.quantity}x`}
@@ -86,7 +86,7 @@ const OrderItemRow: React.FC<OrderItemRowProps> = ({ item, index }) => {
               />
               {item.isReturnable && (
                 <Chip
-                  label="Zwrot możliwy"
+                  label="Returnable"
                   size="small"
                   color="success"
                   sx={{ height: 20, fontSize: "0.7rem" }}
@@ -97,10 +97,10 @@ const OrderItemRow: React.FC<OrderItemRowProps> = ({ item, index }) => {
           secondary={
             <Box sx={{ mt: 1 }}>
               <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
-                <strong>ID Produktu:</strong> {item.itemId}
+                <strong>Product ID:</strong> {item.itemId}
               </Typography>
               <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
-                <strong>ID Wariantu:</strong> {item.variantId}
+                <strong>Variant ID:</strong> {item.variantId}
               </Typography>
               {item.description && (
                 <Typography
@@ -108,7 +108,7 @@ const OrderItemRow: React.FC<OrderItemRowProps> = ({ item, index }) => {
                   color="text.secondary"
                   sx={{ display: "block", mt: 0.5 }}
                 >
-                  <strong>Opis:</strong> {item.description}
+                  <strong>Description:</strong> {item.description}
                 </Typography>
               )}
             </Box>
@@ -116,10 +116,10 @@ const OrderItemRow: React.FC<OrderItemRowProps> = ({ item, index }) => {
         />
         <Box sx={{ textAlign: "right", ml: 2 }}>
           <Typography variant="body2" fontWeight={600} color="primary">
-            {(item.price * item.quantity).toFixed(2)} zł
+            {(item.price * item.quantity).toFixed(2)} PLN
           </Typography>
           <Typography variant="caption" color="text.secondary">
-            {item.price.toFixed(2)} zł / szt.
+            {item.price.toFixed(2)} PLN / pcs.
           </Typography>
         </Box>
       </ListItem>
@@ -135,7 +135,7 @@ const OrderItemsList: React.FC<OrderItemsListProps> = ({ order }) => {
   return (
     <Box sx={{ mb: 3 }}>
       <Typography variant="subtitle1" fontWeight={600} gutterBottom sx={{ mb: 2 }}>
-        Produkty ({order.items.length})
+        Products ({order.items.length})
       </Typography>
       <List disablePadding>
         {order.items.map((item, index) => (
@@ -164,22 +164,22 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ order, totalPrice }) => {
     >
       <Box>
         <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 0.5 }}>
-          Łączna kwota
+          Total Amount
         </Typography>
         <Typography variant="h6" fontWeight={700} color="primary">
-          {totalPrice.toFixed(2)} zł
+          {totalPrice.toFixed(2)} PLN
         </Typography>
       </Box>
       <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
         <Button variant="outlined" size="medium">
-          Wygeneruj Fakturę
+          Generate Invoice
         </Button>
         <Button variant="outlined" size="medium" color="info">
-          Szczegóły Śledzenia
+          Tracking Details
         </Button>
         {getStatusColor(order.orderStatus) === "error" && (
           <Button variant="outlined" size="medium" color="warning">
-            Zarządzaj Zwrotem
+            Manage Return
           </Button>
         )}
       </Box>
@@ -233,7 +233,7 @@ export const OrderRow: React.FC<OrderRowProps> = ({ order, hideUserId }) => {
             sx={{ textTransform: "uppercase", fontWeight: 600 }}
           />
         </TableCell>
-        <TableCell align="right">{calculateTotalPrice(order.items).toFixed(2)} zł</TableCell>
+        <TableCell align="right">{calculateTotalPrice(order.items).toFixed(2)} PLN</TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>

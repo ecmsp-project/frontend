@@ -97,7 +97,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
       >
         <InventoryIcon sx={{ fontSize: 60, color: "text.secondary", mb: 2 }} />
         <Typography variant="h6" color="text.secondary">
-          Brak danych magazynowych
+          No stock data
         </Typography>
         <Typography variant="body2" color="text.secondary">
           Nie znaleziono danych o stanie magazynowym dla wybranego produktu
@@ -270,12 +270,12 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
           {daysToDepletion !== null && (
             <>
               {" "}
-              (za <strong>{daysToDepletion}</strong> {daysToDepletion === 1 ? "dzień" : "dni"})
+              (in <strong>{daysToDepletion}</strong> {daysToDepletion === 1 ? "day" : "days"})
             </>
           )}
           <br />
           <Typography variant="caption">
-            Predykcja oparta na aktualnym trendzie (R² = {rSquared.toFixed(3)})
+            Prediction based on current trend (R² = {rSquared.toFixed(3)})
           </Typography>
         </Alert>
       )}
@@ -294,14 +294,14 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
               <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                 <InventoryIcon sx={{ mr: 1 }} />
                 <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                  Aktualny stan
+                  Current Stock
                 </Typography>
               </Box>
               <Typography variant="h3" sx={{ fontWeight: "bold" }}>
                 {currentStock}
               </Typography>
               <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                sztuk w magazynie
+                units in stock
               </Typography>
             </CardContent>
           </Card>
@@ -322,14 +322,14 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
               <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                 <TrendingDownIcon sx={{ mr: 1 }} />
                 <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                  Średnia zmiana dzienna
+                  Average Daily Change
                 </Typography>
               </Box>
               <Typography variant="h3" sx={{ fontWeight: "bold" }}>
                 {averageDailyChange.toFixed(1)}
               </Typography>
               <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                szt./dzień
+                units/day
               </Typography>
             </CardContent>
           </Card>
@@ -347,14 +347,14 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
               <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                 <AssessmentIcon sx={{ mr: 1 }} />
                 <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                  Jakość predykcji (R²)
+                  Prediction Quality (R²)
                 </Typography>
               </Box>
               <Typography variant="h3" sx={{ fontWeight: "bold" }}>
                 {(rSquared * 100).toFixed(1)}%
               </Typography>
               <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                {rSquared > 0.9 ? "Bardzo dobra" : rSquared > 0.7 ? "Dobra" : "Umiarkowana"}
+                {rSquared > 0.9 ? "Very Good" : rSquared > 0.7 ? "Good" : "Moderate"}
               </Typography>
             </CardContent>
           </Card>
@@ -378,7 +378,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
                 <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                   <WarningIcon sx={{ mr: 1 }} />
                   <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                    Do wyczerpania
+                    Until Depletion
                   </Typography>
                 </Box>
                 <Typography variant="h3" sx={{ fontWeight: "bold" }}>
@@ -404,7 +404,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
           gap: 2,
         }}
       >
-        <Typography variant="h6">{stockData.productName} - Stan magazynowy</Typography>
+        <Typography variant="h6">{stockData.productName} - Stock Level</Typography>
         <Stack direction="row" spacing={2} alignItems="center">
           <Button
             variant={integrationMode ? "contained" : "outlined"}
@@ -413,7 +413,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
             onClick={toggleIntegrationMode}
             color={integrationMode ? "secondary" : "primary"}
           >
-            {integrationMode ? "Anuluj całkowanie" : "Całkowanie"}
+            {integrationMode ? "Cancel Integration" : "Integration"}
           </Button>
           {integrationMode && refAreaLeft && refAreaRight && (
             <Button
@@ -422,7 +422,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
               startIcon={<ClearIcon />}
               onClick={clearIntegration}
             >
-              Wyczyść zaznaczenie
+              Clear Selection
             </Button>
           )}
           <ToggleButtonGroup
@@ -431,8 +431,8 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
             onChange={(_e, newType) => newType && setChartType(newType)}
             size="small"
           >
-            <ToggleButton value="line">Linia</ToggleButton>
-            <ToggleButton value="area">Obszar</ToggleButton>
+            <ToggleButton value="line">Line</ToggleButton>
+            <ToggleButton value="area">Area</ToggleButton>
           </ToggleButtonGroup>
         </Stack>
       </Box>
@@ -440,7 +440,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
       {/* Integration Instructions */}
       {integrationMode && !integrationResult && (
         <Alert severity="info" sx={{ mb: 2 }}>
-          Kliknij i przeciągnij na wykresie, aby zaznaczyć okres do obliczenia statystyk
+          Click and drag on the chart to select a period for statistics calculation
         </Alert>
       )}
 
@@ -458,7 +458,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
             }}
           >
             <Typography variant="h6" gutterBottom fontWeight="bold" sx={{ mb: 2 }}>
-              📊 Statystyki dla zaznaczonego okresu ({integrationResult.days} dni)
+              📊 Statistics for Selected Period ({integrationResult.days} days)
             </Typography>
             <Stack
               direction={{ xs: "column", md: "row" }}
@@ -488,11 +488,11 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
                   <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                     <InventoryIcon sx={{ mr: 1, fontSize: 28 }} />
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                      Średni stan
+                      Average Stock
                     </Typography>
                   </Box>
                   <Typography variant="h4" fontWeight="bold">
-                    {integrationResult.averageStock.toFixed(1)} szt.
+                    {integrationResult.averageStock.toFixed(1)} units
                   </Typography>
                 </CardContent>
               </Card>

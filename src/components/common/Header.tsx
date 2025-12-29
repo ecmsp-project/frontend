@@ -548,7 +548,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
           },
         }}
       >
-        {/* Panel Użytkownika */}
+        {/* User Panel */}
         <Box sx={{ px: 1, py: 0.5 }}>
           <Typography
             variant="caption"

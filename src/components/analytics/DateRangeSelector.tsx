@@ -99,7 +99,7 @@ const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({ dateRange, onDate
           {/* Preset Buttons */}
           <Box>
             <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: "block" }}>
-              Szybki wybór:
+              Quick Selection:
             </Typography>
             <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
               <Chip

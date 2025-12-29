@@ -92,7 +92,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
         Cena
         {(priceRange[0] > 0 || priceRange[1] < 15_000) && (
           <Chip
-            label={`${priceRange[0]}-${priceRange[1]} zł`}
+            label={`${priceRange[0]}-${priceRange[1]} PLN`}
             size="small"
             onDelete={onPriceChipDelete}
             sx={{ ml: 1, height: 20 }}

@@ -165,14 +165,14 @@ const VariantSearchAutocomplete: React.FC<VariantSearchAutocompleteProps> = ({
             variant={filter === "all" ? "filled" : "outlined"}
           />
           <Chip
-            label="Ze sprzedażą"
+            label="With Sales"
             icon={<ShoppingCartIcon />}
             onClick={() => setFilter("sales")}
             color={filter === "sales" ? "primary" : "default"}
             variant={filter === "sales" ? "filled" : "outlined"}
           />
           <Chip
-            label="Z danymi magazynowymi"
+            label="With Stock Data"
             icon={<InventoryIcon />}
             onClick={() => setFilter("stock")}
             color={filter === "stock" ? "primary" : "default"}
@@ -189,10 +189,10 @@ const VariantSearchAutocomplete: React.FC<VariantSearchAutocompleteProps> = ({
         >
           <ToggleButton value="name">
             <SortIcon sx={{ mr: 0.5 }} fontSize="small" />
-            Nazwa
+            Name
           </ToggleButton>
-          <ToggleButton value="lastSale">Ostatnia sprzedaż</ToggleButton>
-          <ToggleButton value="stock">Stan</ToggleButton>
+          <ToggleButton value="lastSale">Last Sale</ToggleButton>
+          <ToggleButton value="stock">Stock</ToggleButton>
         </ToggleButtonGroup>
       </Stack>
 
@@ -205,13 +205,13 @@ const VariantSearchAutocomplete: React.FC<VariantSearchAutocompleteProps> = ({
         options={filteredVariants}
         getOptionLabel={(option) => option.productName}
         loading={loading}
-        loadingText="Ładowanie produktów..."
-        noOptionsText="Nie znaleziono produktów"
+        loadingText="Loading products..."
+        noOptionsText="No products found"
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Wyszukaj produkt / wariant"
-            placeholder="Zacznij pisać nazwę produktu..."
+            label="Search product / variant"
+            placeholder="Start typing product name..."
             slotProps={{
               input: {
                 ...params.InputProps,
@@ -246,11 +246,11 @@ const VariantSearchAutocomplete: React.FC<VariantSearchAutocompleteProps> = ({
                 <Typography variant="body1">{option.productName}</Typography>
                 <Box sx={{ display: "flex", gap: 0.5, mt: 0.5 }}>
                   {option.hasSalesData && (
-                    <Chip label="Sprzedaż" size="small" color="success" variant="outlined" />
+                    <Chip label="Sales" size="small" color="success" variant="outlined" />
                   )}
                   {option.hasStockData && (
                     <Chip
-                      label={`Magazyn: ${option.currentStock || 0}`}
+                      label={`Stock: ${option.currentStock || 0}`}
                       size="small"
                       color="info"
                       variant="outlined"
@@ -297,7 +297,7 @@ const VariantSearchAutocomplete: React.FC<VariantSearchAutocompleteProps> = ({
             sx={{ display: "flex", alignItems: "center", mb: 1 }}
           >
             <HistoryIcon sx={{ fontSize: 16, mr: 0.5 }} />
-            Ostatnio przeglądane
+            Recently Viewed
           </Typography>
           <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
             {recentVariants.map((recent) => (
