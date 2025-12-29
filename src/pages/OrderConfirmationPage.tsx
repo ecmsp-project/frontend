@@ -12,16 +12,16 @@ const OrderConfirmationPage: React.FC = () => {
   const navigate = useNavigate();
   const theme = useTheme();
 
-  // Pobierz orderId z URL params
+  // Get orderId from URL params
   const finalOrderId = orderId || "N/A";
 
-  // Sprawdź czy token jest obecny (zabezpieczenie przed podrobieniem)
+  // Check if token is present (protection against forgery)
   if (!token) {
     return (
       <MainLayout>
         <Container maxWidth="md" sx={{ py: 6 }}>
           <Typography variant="h5" color="error">
-            Nieprawidłowy link potwierdzenia zamówienia.
+            Invalid order confirmation link.
           </Typography>
           <Button variant="contained" sx={{ mt: 2 }} onClick={() => navigate("/")}>
             Strona główna
@@ -35,7 +35,7 @@ const OrderConfirmationPage: React.FC = () => {
     <MainLayout>
       <Container maxWidth="md" sx={{ py: 6 }}>
         <Box sx={{ mb: 4 }}>
-          <Breadcrumbs items={[{ label: "Potwierdzenie zamówienia" }]} />
+          <Breadcrumbs items={[{ label: "Order Confirmation" }]} />
         </Box>
 
         <Card
@@ -76,11 +76,11 @@ const OrderConfirmationPage: React.FC = () => {
           </Box>
 
           <Typography variant="h3" fontWeight={700} gutterBottom sx={{ mb: 2 }}>
-            Dziękujemy za zakupy!
+            Thank you for your purchase!
           </Typography>
 
           <Typography variant="h6" color="text.secondary" sx={{ mb: 4 }}>
-            Twoje zamówienie zostało pomyślnie złożone
+            Your order has been successfully placed
           </Typography>
 
           <Divider sx={{ my: 4 }} />
@@ -94,7 +94,7 @@ const OrderConfirmationPage: React.FC = () => {
             }}
           >
             <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-              Numer zamówienia
+              Order Number
             </Typography>
             <Typography
               variant="h5"
@@ -111,10 +111,10 @@ const OrderConfirmationPage: React.FC = () => {
 
           <Box sx={{ mb: 4 }}>
             <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-              Potwierdzenie zamówienia zostało wysłane na Twój adres e-mail.
+              Order confirmation has been sent to your email address.
             </Typography>
             <Typography variant="body1" color="text.secondary">
-              Możesz śledzić status swojego zamówienia w sekcji "Moje zamówienia".
+              You can track your order status in the "My Orders" section.
             </Typography>
           </Box>
 
@@ -141,7 +141,7 @@ const OrderConfirmationPage: React.FC = () => {
                 textTransform: "none",
               }}
             >
-              Moje zamówienia
+              My Orders
             </Button>
             <Button
               variant="contained"
@@ -160,7 +160,7 @@ const OrderConfirmationPage: React.FC = () => {
                 },
               }}
             >
-              Strona główna
+              Home
             </Button>
           </Box>
         </Card>

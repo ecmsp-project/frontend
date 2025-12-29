@@ -77,7 +77,7 @@ const RoleManagementPage: React.FC = () => {
   };
 
   const handleDeleteRole = async (roleName: string) => {
-    if (window.confirm(`Czy na pewno chcesz usunąć rolę ${roleName}?`)) {
+    if (window.confirm(`Are you sure you want to delete role ${roleName}?`)) {
       try {
         await deleteRole(roleName);
       } catch (e) {
@@ -91,13 +91,13 @@ const RoleManagementPage: React.FC = () => {
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Breadcrumbs
           items={[
-            { label: "Panel administracyjny", path: "/admin" },
-            { label: "Użytkownicy" },
-            { label: "Zarządzanie rolami" },
+            { label: "Admin Panel", path: "/admin" },
+            { label: "Users" },
+            { label: "Role Management" },
           ]}
         />
         <Typography variant="h4" gutterBottom>
-          Zarządzanie Rolami i Uprawnieniami
+          Role and Permission Management
         </Typography>
 
         {!canManageRoles && (
@@ -110,14 +110,13 @@ const RoleManagementPage: React.FC = () => {
             }}
           >
             <Typography variant="body2" color="text.secondary">
-              Masz uprawnienia tylko do przeglądania. Aby zarządzać rolami, wymagane jest
-              uprawnienie MANAGE_ROLES.
+              You only have view permissions. To manage roles, MANAGE_ROLES permission is required.
             </Typography>
           </Box>
         )}
 
         <Box mb={2} display="flex" justifyContent="flex-end">
-          <Tooltip title={!canManageRoles ? "Brak uprawnień do dodawania ról" : "Dodaj nową rolę"}>
+          <Tooltip title={!canManageRoles ? "No permission to add roles" : "Add new role"}>
             <span>
               <Button
                 variant="contained"
@@ -127,7 +126,7 @@ const RoleManagementPage: React.FC = () => {
                 disabled={!canManageRoles}
                 sx={{ opacity: !canManageRoles ? 0.5 : 1 }}
               >
-                Dodaj nową rolę
+                Add New Role
               </Button>
             </span>
           </Tooltip>
@@ -150,9 +149,9 @@ const RoleManagementPage: React.FC = () => {
               }}
             >
               <TableRow>
-                <TableCell sx={{ color: "white", fontWeight: 600 }}>Nazwa Roli</TableCell>
-                <TableCell sx={{ color: "white", fontWeight: 600 }}>Liczba Uprawnień</TableCell>
-                <TableCell sx={{ color: "white", fontWeight: 600 }}>Akcje</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: 600 }}>Role Name</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: 600 }}>Number of Permissions</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: 600 }}>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -180,8 +179,8 @@ const RoleManagementPage: React.FC = () => {
                     <Tooltip
                       title={
                         !canManageRoles
-                          ? "Brak uprawnień do edycji uprawnień"
-                          : "Edytuj uprawnienia"
+                          ? "No permission to edit permissions"
+                          : "Edit permissions"
                       }
                     >
                       <span>
@@ -196,7 +195,7 @@ const RoleManagementPage: React.FC = () => {
                       </span>
                     </Tooltip>
                     <Tooltip
-                      title={!canManageRoles ? "Brak uprawnień do usuwania ról" : "Usuń rolę"}
+                      title={!canManageRoles ? "No permission to delete roles" : "Delete role"}
                     >
                       <span>
                         <IconButton
@@ -230,15 +229,15 @@ const RoleManagementPage: React.FC = () => {
       )}
 
       <Dialog open={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}>
-        <DialogTitle>Dodaj nową rolę</DialogTitle>
+        <DialogTitle>Add New Role</DialogTitle>
         <DialogContent>
           <DialogContentText sx={{ mb: 2 }}>
-            Wprowadź unikalną nazwę dla nowej roli.
+            Enter a unique name for the new role.
           </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
-            label="Nazwa Roli"
+            label="Role Name"
             type="text"
             fullWidth
             variant="outlined"
@@ -248,7 +247,7 @@ const RoleManagementPage: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setIsAddModalOpen(false)} disabled={loadingSave}>
-            Anuluj
+            Cancel
           </Button>
           <Button
             onClick={handleAddRole}
@@ -256,7 +255,7 @@ const RoleManagementPage: React.FC = () => {
             variant="contained"
             disabled={loadingSave || !newRoleName.trim()}
           >
-            {loadingSave ? <CircularProgress size={24} /> : "Dodaj"}
+            {loadingSave ? <CircularProgress size={24} /> : "Add"}
           </Button>
         </DialogActions>
       </Dialog>

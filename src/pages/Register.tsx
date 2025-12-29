@@ -19,7 +19,7 @@ const Register: React.FC = () => {
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Rejestracja standardowa...");
+    console.log("Standard registration...");
   };
 
   return (
@@ -27,10 +27,10 @@ const Register: React.FC = () => {
       <Container maxWidth="sm" sx={{ py: 6 }}>
         <Card sx={{ p: 4, textAlign: "center", boxShadow: 3 }}>
           <Typography variant="h4" component="h1" gutterBottom fontWeight={500}>
-            Stwórz konto
+            Create Account
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Miło nam Cię poznać!
+            Nice to meet you!
           </Typography>
 
           <Button
@@ -39,14 +39,14 @@ const Register: React.FC = () => {
             size="large"
             sx={{ mb: 2, borderColor: "#ccc", color: "text.primary" }}
             startIcon={<GoogleIcon />}
-            onClick={() => console.log("Rejestracja Google...")}
+            onClick={() => console.log("Google registration...")}
           >
-            Zarejestruj przez Google
+            Sign up with Google
           </Button>
 
           <Divider sx={{ my: 3 }}>
             <Typography variant="body2" color="text.secondary">
-              lub
+              or
             </Typography>
           </Divider>
 
@@ -57,7 +57,7 @@ const Register: React.FC = () => {
                   required
                   fullWidth
                   id="firstName"
-                  label="Imię"
+                  label="First Name"
                   name="firstName"
                   autoFocus
                   variant="outlined"
@@ -69,7 +69,7 @@ const Register: React.FC = () => {
                   required
                   fullWidth
                   id="lastName"
-                  label="Nazwisko"
+                  label="Last Name"
                   name="lastName"
                   variant="outlined"
                   size="small"
@@ -80,7 +80,7 @@ const Register: React.FC = () => {
                   required
                   fullWidth
                   id="email"
-                  label="Adres Email"
+                  label="Email Address"
                   name="email"
                   autoComplete="email"
                   variant="outlined"
@@ -92,7 +92,7 @@ const Register: React.FC = () => {
                   required
                   fullWidth
                   name="password"
-                  label="Hasło"
+                  label="Password"
                   type="password"
                   id="password"
                   variant="outlined"
@@ -102,7 +102,7 @@ const Register: React.FC = () => {
             </Grid>
 
             <Button type="submit" fullWidth variant="contained" size="large" sx={{ mt: 3, mb: 2 }}>
-              Zarejestruj się
+              Sign Up
             </Button>
           </Box>
 
@@ -112,7 +112,7 @@ const Register: React.FC = () => {
             onClick={() => navigate("/login")}
             sx={{ cursor: "pointer", mt: 1 }}
           >
-            Masz już konto? Zaloguj się!
+            Already have an account? Sign in!
           </MuiLink>
         </Card>
       </Container>

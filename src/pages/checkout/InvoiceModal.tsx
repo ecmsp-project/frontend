@@ -63,7 +63,7 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({
     >
       <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <Typography variant="h6" fontWeight={600}>
-          Dane do faktury
+          Invoice Information
         </Typography>
         <IconButton onClick={handleClose} size="small">
           <CloseIcon />
@@ -80,14 +80,14 @@ const InvoiceModal: React.FC<InvoiceModalProps> = ({
         />
       </DialogContent>
       <DialogActions sx={{ p: 2 }}>
-        <Button onClick={handleClose}>Anuluj</Button>
+        <Button onClick={handleClose}>Cancel</Button>
         <Button
           variant="contained"
           onClick={() => {
             invoiceFormRef.current?.submitForm();
           }}
         >
-          Zatwierdź
+          Confirm
         </Button>
       </DialogActions>
     </Dialog>

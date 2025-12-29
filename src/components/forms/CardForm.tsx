@@ -199,11 +199,11 @@ const CardForm = forwardRef<CardFormRef, CardFormProps>(
                   <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end", mt: 3 }}>
                     {onCancel && (
                       <Button onClick={onCancel} variant="outlined" disabled={isProcessing}>
-                        Anuluj
+                        Cancel
                       </Button>
                     )}
                     <Button type="submit" variant="contained" disabled={isProcessing}>
-                      {isProcessing ? "Przetwarzanie..." : "Zatwierdź płatność"}
+                      {isProcessing ? "Processing..." : "Confirm Payment"}
                     </Button>
                   </Box>
                 </Grid>

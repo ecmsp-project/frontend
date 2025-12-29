@@ -85,7 +85,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
       >
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <Typography variant="h6" fontWeight={700}>
-            RAZEM:
+            TOTAL:
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
             {isDiscountApplied && totalBeforeDiscount ? (

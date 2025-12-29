@@ -13,7 +13,7 @@ const USE_MOCK_DATA = true;
 const productMocks: CartItem[] = [
   {
     id: 1,
-    name: "Słuchawki Bezprzewodowe PRO",
+    name: "Wireless Headphones PRO",
     price: 599.99,
     quantity: 2,
     image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
@@ -27,7 +27,7 @@ const productMocks: CartItem[] = [
   },
   {
     id: 3,
-    name: "T-Shirt Bawełniany (M)",
+    name: "Cotton T-Shirt (M)",
     price: 79.5,
     quantity: 3,
     image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop",
@@ -41,7 +41,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
   const [hasBeenCleared, setHasBeenCleared] = useState(false);
 
   const refetchCart = useCallback(async () => {
-    // Nie refetchuj jeśli koszyk został ręcznie wyczyszczony
+    // Don't refetch if cart was manually cleared
     if (hasBeenCleared && USE_MOCK_DATA) {
       return;
     }
@@ -50,7 +50,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     try {
       if (USE_MOCK_DATA) {
         await new Promise((resolve) => setTimeout(resolve, 300));
-        // Tylko ustaw produkty jeśli koszyk nie został wyczyszczony
+        // Only set products if cart hasn't been cleared
         if (!hasBeenCleared) {
           setCartItems([...productMocks]);
         }
@@ -94,9 +94,9 @@ export default function CartProvider({ children }: { children: ReactNode }) {
       try {
         await deleteCartProduct(productId);
       } catch (err) {
-        console.error("Błąd usuwania produktu:", err);
+        console.error("Error removing product:", err);
         await refetchCart();
-        throw new Error("Nie udało się usunąć produktu z koszyka.");
+        throw new Error("Failed to remove product from cart.");
       }
     },
     [refetchCart],
@@ -127,9 +127,9 @@ export default function CartProvider({ children }: { children: ReactNode }) {
           await subtractCartProduct(productId, 1);
         }
       } catch (err) {
-        console.error("Błąd aktualizacji ilości:", err);
+        console.error("Error updating quantity:", err);
         await refetchCart();
-        throw new Error("Nie udało się zaktualizować ilości w koszyku.");
+        throw new Error("Failed to update quantity in cart.");
       }
     },
     [refetchCart, removeProduct],
@@ -155,9 +155,9 @@ export default function CartProvider({ children }: { children: ReactNode }) {
       try {
         await overwriteCartProduct(productId, newQuantity);
       } catch (err) {
-        console.error("Błąd aktualizacji ilości:", err);
+        console.error("Error updating quantity:", err);
         await refetchCart();
-        throw new Error("Nie udało się zaktualizować ilości w koszyku.");
+        throw new Error("Failed to update quantity in cart.");
       }
     },
     [refetchCart, removeProduct],
@@ -165,14 +165,14 @@ export default function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = useCallback(async () => {
     setCartItems([]);
-    setHasBeenCleared(true); // Oznacz jako wyczyszczony, żeby refetchCart nie przywracał produktów
+    setHasBeenCleared(true); // Mark as cleared so refetchCart doesn't restore products
     // TODO: Implement API call to clear cart when not using mock data
     // if (!USE_MOCK_DATA) {
     //   try {
     //     await clearCartAPI();
     //   } catch (err) {
-    //     console.error("Błąd czyszczenia koszyka:", err);
-    //     throw new Error("Nie udało się wyczyścić koszyka.");
+    //     console.error("Error clearing cart:", err);
+    //     throw new Error("Failed to clear cart.");
     //   }
     // }
   }, []);

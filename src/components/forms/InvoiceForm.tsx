@@ -238,7 +238,7 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
                   </Grid>
                   <Grid size={{ xs: 12 }}>
                     <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                      Kraj *
+                      Country *
                     </Typography>
                     <FormControl fullWidth error={touched.country && Boolean(errors.country)}>
                       <Field
@@ -321,7 +321,7 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
                   </Grid>
                   <Grid size={{ xs: 12 }}>
                     <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                      Miejscowość *
+                      City *
                     </Typography>
                     <Field
                       as={TextField}
@@ -372,7 +372,7 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
                           }}
                         />
                       }
-                      label="Takie same dane jak do przesyłki"
+                      label="Same data as shipping"
                     />
                   </Box>
                 )}
@@ -409,7 +409,7 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
                     </Grid>
                     <Grid size={{ xs: 12 }}>
                       <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                        Kraj *
+                        Country *
                       </Typography>
                       <FormControl fullWidth error={touched.country && Boolean(errors.country)}>
                         <Field
@@ -492,7 +492,7 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
                     </Grid>
                     <Grid size={{ xs: 12 }}>
                       <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                        Miejscowość *
+                        City *
                       </Typography>
                       <Field
                         as={TextField}
@@ -516,7 +516,7 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
                     }}
                   >
                     <Typography variant="body2" color="text.secondary">
-                      Zostaną użyte takie same dane jak to wysyłki
+                      The same data as shipping will be used
                     </Typography>
                   </Box>
                 )}

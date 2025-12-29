@@ -189,7 +189,7 @@ const ProductPage: React.FC = () => {
             {displayedParams.length > 0 && (
               <Paper elevation={1} sx={{ p: 4, mb: 4 }}>
                 <Typography variant="h5" gutterBottom fontWeight={600}>
-                  Parametry
+                  Parameters
                 </Typography>
                 <List dense sx={{ maxWidth: 600 }}>
                   {displayedParams.map((prop) => {
@@ -199,9 +199,9 @@ const ProductPage: React.FC = () => {
                       if (prop.valueDecimal !== null && prop.valueDecimal !== undefined)
                         return String(prop.valueDecimal);
                       if (prop.valueBoolean !== null && prop.valueBoolean !== undefined)
-                        return prop.valueBoolean ? "Tak" : "Nie";
+                        return prop.valueBoolean ? "Yes" : "No";
                       if (prop.valueDate)
-                        return new Date(prop.valueDate).toLocaleDateString("pl-PL");
+                        return new Date(prop.valueDate).toLocaleDateString("en-US");
                       return "-";
                     };
 
@@ -244,7 +244,7 @@ const ProductPage: React.FC = () => {
                       },
                     }}
                   >
-                    {showMoreParams ? "Pokaż mniej" : "WSZYSTKIE PARAMETRY"}
+                    {showMoreParams ? "Show Less" : "ALL PARAMETERS"}
                   </Button>
                 )}
               </Paper>

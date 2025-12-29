@@ -30,7 +30,7 @@ const CategoryManagementPage: React.FC = () => {
       setCategories(response.categories);
     } catch (err) {
       console.error("Error fetching categories:", err);
-      setError("Nie udało się pobrać kategorii. Sprawdź czy backend działa.");
+      setError("Failed to fetch categories. Please check if the backend is running.");
     } finally {
       setLoading(false);
     }
