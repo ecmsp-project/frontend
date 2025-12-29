@@ -128,10 +128,10 @@ const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
               {item.name}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-              {item.price.toFixed(2)} PLN / szt.
+              {item.price.toFixed(2)} PLN / pcs.
             </Typography>
             <Chip
-              label={`${item.quantity} szt.`}
+              label={`${item.quantity} pcs.`}
               size="small"
               sx={{
                 bgcolor: alpha("#1976d2", 0.1),
@@ -248,7 +248,7 @@ const CartPage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  // Zabezpieczenie przed pustym koszykiem
+  // Protection against empty cart
   const safeCartItems = Array.isArray(cartItems) ? cartItems : [];
   const subtotal = safeCartItems.reduce((sum, item) => {
     if (!item || typeof item.price !== "number" || typeof item.quantity !== "number") {
@@ -270,7 +270,7 @@ const CartPage: React.FC = () => {
       <MainLayout>
         <Container maxWidth="lg" sx={{ py: 4, textAlign: "center" }}>
           <CircularProgress />
-          <Typography sx={{ mt: 2 }}>Ładowanie koszyka...</Typography>
+          <Typography sx={{ mt: 2 }}>Loading cart...</Typography>
         </Container>
       </MainLayout>
     );
@@ -290,9 +290,9 @@ const CartPage: React.FC = () => {
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Box sx={{ mb: 4 }}>
-          <Breadcrumbs items={[{ label: "Twój Koszyk" }]} />
+          <Breadcrumbs items={[{ label: "Your Cart" }]} />
           <Typography variant="h4" gutterBottom>
-            Twój Koszyk
+            Your Cart
           </Typography>
         </Box>
 
@@ -300,10 +300,10 @@ const CartPage: React.FC = () => {
           <Grid size={{ xs: 12, md: 8 }}>
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" sx={{ mb: 1 }}>
-                Produkty w Koszyku
+                Products in Cart
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {safeCartItems.length} {safeCartItems.length === 1 ? "produkt" : "produktów"}
+                {safeCartItems.length} {safeCartItems.length === 1 ? "product" : "products"}
               </Typography>
             </Box>
 
@@ -332,12 +332,12 @@ const CartPage: React.FC = () => {
                     <LocalShippingIcon color="primary" sx={{ fontSize: 40 }} />
                     <Box sx={{ flex: 1 }}>
                       <Typography variant="h6" fontWeight={600} color="primary.main" gutterBottom>
-                        Darmowa wysyłka w zasięgu!
+                        Free shipping within reach!
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        Dodaj jeszcze produkty za{" "}
-                        <strong>{(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)} PLN</strong> i
-                        otrzymaj darmową wysyłkę!
+                        Add products worth{" "}
+                        <strong>{(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)} PLN</strong> more
+                        and get free shipping!
                       </Typography>
                     </Box>
                   </Paper>
@@ -360,7 +360,7 @@ const CartPage: React.FC = () => {
                   >
                     <LocalShippingIcon color="success" />
                     <Typography variant="body2" color="success.main" fontWeight={600}>
-                      Gratulacje! Masz darmową wysyłkę!
+                      Congratulations! You have free shipping!
                     </Typography>
                   </Paper>
                 )}
@@ -379,10 +379,10 @@ const CartPage: React.FC = () => {
               >
                 <ShoppingCartIcon sx={{ fontSize: 80, color: "text.secondary", mb: 2 }} />
                 <Typography variant="h5" color="text.secondary" gutterBottom>
-                  Twój koszyk jest pusty
+                  Your cart is empty
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Dodaj produkty do koszyka, aby kontynuować zakupy
+                  Add products to your cart to continue shopping
                 </Typography>
               </Paper>
             )}
@@ -402,13 +402,13 @@ const CartPage: React.FC = () => {
               }}
             >
               <Typography variant="h5" gutterBottom fontWeight={700} sx={{ mb: 2 }}>
-                Podsumowanie
+                Summary
               </Typography>
               <Divider sx={{ mb: 3 }} />
 
               <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
                 <Typography variant="body1" color="text.secondary">
-                  Wartość produktów:
+                  Product value:
                 </Typography>
                 <Typography variant="body1" fontWeight={600}>
                   {subtotal.toFixed(2)} PLN
@@ -417,7 +417,7 @@ const CartPage: React.FC = () => {
 
               <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
                 <Typography variant="body1" color="text.secondary">
-                  Koszt wysyłki:
+                  Shipping cost:
                 </Typography>
                 <Typography
                   variant="body1"
@@ -474,7 +474,7 @@ const CartPage: React.FC = () => {
                   transition: "box-shadow 0.2s ease",
                 }}
               >
-                Przejdź do Kasy
+                Proceed to Checkout
               </Button>
             </Card>
           </Grid>

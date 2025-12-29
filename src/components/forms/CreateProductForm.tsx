@@ -17,21 +17,21 @@ const initialProductValues: ProductFormValues = {
 
 const productValidationSchema = Yup.object({
   name: Yup.string()
-    .min(3, "Nazwa musi mieć co najmniej 3 znaki")
-    .max(255, "Nazwa jest za długa")
-    .required("Nazwa produktu jest wymagana"),
+    .min(3, "Name must be at least 3 characters")
+    .max(255, "Name is too long")
+    .required("Product name is required"),
 
-  categoryId: Yup.string().required("ID kategorii jest wymagane"),
+  categoryId: Yup.string().required("Category ID is required"),
 
   approximatePrice: Yup.number()
-    .typeError("Szacowana cena musi być liczbą")
-    .positive("Szacowana cena musi być dodatnia")
-    .required("Szacowana cena jest wymagana"),
+    .typeError("Estimated price must be a number")
+    .positive("Estimated price must be positive")
+    .required("Estimated price is required"),
 
   deliveryPrice: Yup.number()
-    .typeError("Cena dostawy musi być liczbą")
-    .min(0, "Cena dostawy nie może być ujemna")
-    .required("Cena dostawy jest wymagana"),
+    .typeError("Delivery price must be a number")
+    .min(0, "Delivery price cannot be negative")
+    .required("Delivery price is required"),
 
   description: Yup.string().optional(),
 });
@@ -53,13 +53,13 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({ onSubmit }) => {
             <Grid container spacing={3}>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Nazwa Produktu*
+                  Product Name*
                 </Typography>
                 <Field
                   as={TextField}
                   fullWidth
                   name="name"
-                  placeholder="Wprowadź nazwę produktu"
+                  placeholder="Enter product name"
                   error={touched.name && Boolean(errors.name)}
                   helperText={touched.name && errors.name}
                   sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
@@ -73,7 +73,7 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({ onSubmit }) => {
                   as={TextField}
                   fullWidth
                   name="categoryId"
-                  placeholder="Wprowadź ID kategorii"
+                  placeholder="Enter category ID"
                   error={touched.categoryId && Boolean(errors.categoryId)}
                   helperText={touched.categoryId && errors.categoryId}
                   sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
@@ -81,7 +81,7 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({ onSubmit }) => {
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Szacowana Cena (PLN)*
+                  Estimated Price (PLN)*
                 </Typography>
                 <Field
                   as={TextField}
@@ -96,7 +96,7 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({ onSubmit }) => {
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Cena Dostawy (PLN)*
+                  Delivery Price (PLN)*
                 </Typography>
                 <Field
                   as={TextField}
@@ -111,7 +111,7 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({ onSubmit }) => {
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Opis
+                  Description
                 </Typography>
                 <Field
                   as={TextField}
@@ -119,7 +119,7 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({ onSubmit }) => {
                   name="description"
                   multiline
                   rows={4}
-                  placeholder="Szczegółowy opis produktu"
+                  placeholder="Detailed product description"
                 />
               </Grid>
               <Grid size={{ xs: 12 }}>
@@ -139,14 +139,14 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({ onSubmit }) => {
                   color="text.secondary"
                   sx={{ mt: 0.5 }}
                 >
-                  Wprowadź dodatkowe atrybuty produktu jako poprawny obiekt JSON.
+                  Enter additional product attributes as a valid JSON object.
                 </Typography>
               </Grid>
 
               <Grid size={{ xs: 12 }}>
                 <Box sx={{ mt: 1, display: "flex", justifyContent: "flex-end" }}>
                   <Button type="submit" variant="contained" color="primary">
-                    {"Utwórz i dodaj warianty"}
+                    {"Create and Add Variants"}
                   </Button>
                 </Box>
               </Grid>

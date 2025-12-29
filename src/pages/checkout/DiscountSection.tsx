@@ -34,20 +34,20 @@ const DiscountSection: React.FC<DiscountSectionProps> = ({
       <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 3 }}>
         <DiscountIcon color="primary" />
         <Typography variant="h5" fontWeight={600}>
-          Zniżki
+          Discounts
         </Typography>
       </Box>
       <Divider sx={{ mb: 3 }} />
 
       <Box sx={{ mb: 2 }}>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-          Kod rabatowy
+          Discount code
         </Typography>
         <Box sx={{ display: "flex", gap: 1 }}>
           <TextField
             fullWidth
             size="small"
-            placeholder="Wprowadź kod rabatowy"
+            placeholder="Enter discount code"
             value={discountCode}
             onChange={(e) => handleCodeChange(e.target.value)}
             disabled={isDiscountApplied}
@@ -59,7 +59,7 @@ const DiscountSection: React.FC<DiscountSectionProps> = ({
             disabled={!discountCode || isDiscountApplied}
             onClick={onApplyDiscount}
           >
-            {isDiscountApplied ? "Zastosowano" : "Zastosuj"}
+            {isDiscountApplied ? "Applied" : "Apply"}
           </Button>
         </Box>
         {isDiscountApplied && (
@@ -78,7 +78,7 @@ const DiscountSection: React.FC<DiscountSectionProps> = ({
           >
             <CheckCircleIcon color="success" fontSize="small" />
             <Typography variant="body2" color="success.main" fontWeight={600}>
-              Zastosowano rabat 20%!
+              Applied 20% discount!
             </Typography>
           </Box>
         )}

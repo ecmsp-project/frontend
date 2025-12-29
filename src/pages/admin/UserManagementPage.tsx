@@ -156,7 +156,7 @@ const UserManagementPage: React.FC = () => {
           <TextField
             fullWidth
             variant="outlined"
-            placeholder="Wyszukaj użytkownika po loginie..."
+            placeholder="Search user by login..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             InputProps={{

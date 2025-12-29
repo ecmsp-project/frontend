@@ -132,7 +132,7 @@ const CategoryManagementPage: React.FC = () => {
       console.error("Error deleting category:", err);
       // Note: Backend endpoint may not be implemented yet
       alert(
-        "Błąd: Endpoint usuwania kategorii może nie być jeszcze zaimplementowany na backendzie.",
+        "Error: Category deletion endpoint may not be implemented yet on the backend.",
       );
       throw err;
     }

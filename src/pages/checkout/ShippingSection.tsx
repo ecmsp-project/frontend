@@ -38,7 +38,7 @@ const ShippingSection: React.FC<ShippingSectionProps> = ({
       <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 3 }}>
         <LocalShippingIcon color="primary" />
         <Typography variant="h5" fontWeight={600}>
-          Odbiorca przesyłki
+          Recipient
         </Typography>
       </Box>
       <Divider sx={{ mb: 3 }} />
@@ -72,12 +72,12 @@ const ShippingSection: React.FC<ShippingSectionProps> = ({
             {shippingData.phone}
           </Typography>
           <Button variant="outlined" size="small" sx={{ mt: 2 }} onClick={onEditShipping}>
-            Edytuj dane
+            Edit Data
           </Button>
         </Box>
       ) : (
         <Button variant="contained" fullWidth onClick={onEditShipping} sx={{ py: 1.5 }}>
-          Wprowadź dane odbiorcy
+          Enter Recipient Data
         </Button>
       )}
 
@@ -86,7 +86,7 @@ const ShippingSection: React.FC<ShippingSectionProps> = ({
           control={
             <Checkbox checked={wantsInvoice} onChange={(e) => onInvoiceChange(e.target.checked)} />
           }
-          label="Chcesz otrzymać fakturę?"
+          label="Do you want to receive an invoice?"
         />
         {wantsInvoice && (invoiceData.companyName || invoiceData.firstName) && (
           <Box
@@ -100,7 +100,7 @@ const ShippingSection: React.FC<ShippingSectionProps> = ({
             }}
           >
             <Typography variant="body2" fontWeight={600} color="success.main" gutterBottom>
-              Dane do faktury wprowadzone
+              Invoice data entered
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {invoiceData.type === "company"
@@ -108,7 +108,7 @@ const ShippingSection: React.FC<ShippingSectionProps> = ({
                 : `${invoiceData.firstName} ${invoiceData.lastName}`}
             </Typography>
             <Button variant="text" size="small" sx={{ mt: 1 }} onClick={onEditInvoice}>
-              Edytuj
+              Edit
             </Button>
           </Box>
         )}

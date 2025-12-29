@@ -24,7 +24,7 @@ const UserDashboardPage: React.FC = () => {
   } else if (!currentUser) {
     content = (
       <Alert severity="warning" sx={{ my: 3 }}>
-        Nie jesteś zalogowany. Proszę się zalogować.
+        You are not logged in. Please log in.
       </Alert>
     );
   } else {
@@ -32,10 +32,10 @@ const UserDashboardPage: React.FC = () => {
       <>
         <Box sx={{ mb: 4 }}>
           <Typography variant="h4" gutterBottom fontWeight={700}>
-            Moje konto
+            My Account
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            Witaj ponownie! Oto Twoje informacje
+            Welcome back! Here is your information
           </Typography>
         </Box>
 
@@ -58,7 +58,7 @@ const UserDashboardPage: React.FC = () => {
               }}
             >
               <Typography variant="h6" gutterBottom fontWeight={600} color="primary.main">
-                Informacje o koncie
+                Account Information
               </Typography>
               <Box sx={{ mt: 3 }}>
                 <Box
@@ -89,7 +89,7 @@ const UserDashboardPage: React.FC = () => {
                   }}
                 >
                   <Typography variant="body2" color="text.secondary" sx={{ minWidth: 120 }}>
-                    ID użytkownika:
+                    User ID:
                   </Typography>
                   <Typography variant="body1" fontWeight={600}>
                     {currentUser.id}
@@ -110,7 +110,7 @@ const UserDashboardPage: React.FC = () => {
                   <Typography variant="body1" fontWeight={600}>
                     {currentUser.roles.length > 0
                       ? currentUser.roles.map((role) => role.name).join(", ")
-                      : "Brak przypisanych ról"}
+                      : "No assigned roles"}
                   </Typography>
                 </Box>
               </Box>
@@ -134,13 +134,13 @@ const UserDashboardPage: React.FC = () => {
               }}
             >
               <Typography variant="h6" gutterBottom fontWeight={600} color="primary.main">
-                Uprawnienia
+                Permissions
               </Typography>
               <Box sx={{ mt: 3 }}>
                 <Typography variant="body2" color="text.secondary">
                   {currentUser.roles.flatMap((role) => role.permissions).length > 0
                     ? currentUser.roles.flatMap((role) => role.permissions).join(", ")
-                    : "Brak specjalnych uprawnień"}
+                    : "No special permissions"}
                 </Typography>
               </Box>
             </Paper>
@@ -153,9 +153,9 @@ const UserDashboardPage: React.FC = () => {
   return (
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Breadcrumbs items={[{ label: "Panel użytkownika" }, { label: "Moje konto" }]} />
+        <Breadcrumbs items={[{ label: "User Panel" }, { label: "My Account" }]} />
         <Typography variant="h4" gutterBottom>
-          Moje konto
+          My Account
         </Typography>
         {content}
       </Container>

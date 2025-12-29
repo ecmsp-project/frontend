@@ -77,8 +77,8 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(Boolean(localStorage.getItem("token")));
   const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(null);
   const [expandedSections, setExpandedSections] = useState<{ [key: string]: boolean }>({
-    Użytkownicy: false,
-    Sklep: false,
+    Users: false,
+    Shop: false,
     Analytics: false,
   });
 
@@ -93,11 +93,11 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
           const CACHE_KEY_CATEGORIES = "homepage_categories";
           const CACHE_DURATION = 5 * 60 * 1000;
 
-          // Sprawdź cache
+          // Check cache
           const cachedHome = sessionStorage.getItem(CACHE_KEY_HOME);
           const cachedCategories = sessionStorage.getItem(CACHE_KEY_CATEGORIES);
 
-          // Prefetch tylko jeśli nie ma cache lub cache jest stary
+          // Prefetch only if there's no cache or cache is old
           if (!cachedHome || Date.now() - JSON.parse(cachedHome).timestamp > CACHE_DURATION) {
             fetchHomeSettings().then((data) => {
               sessionStorage.setItem(
@@ -119,11 +119,11 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
             });
           }
         } catch {
-          // Ignoruj błędy prefetchingu
+          // Ignore prefetch errors
         }
       };
 
-      // Prefetch po krótkim opóźnieniu, aby nie blokować głównego renderowania
+      // Prefetch after a short delay to avoid blocking main rendering
       const timeoutId = setTimeout(prefetchHomeData, 1000);
       return () => clearTimeout(timeoutId);
     }
@@ -238,64 +238,64 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
 
   const adminMenuItems: AdminMenuItem[] = [
     {
-      text: "Pulpit",
+      text: "Dashboard",
       icon: <DashboardIcon fontSize="small" />,
       path: "/admin",
     },
     {
-      text: "Zarządzanie Użytkownikami",
+      text: "User Management",
       icon: <PeopleIcon fontSize="small" />,
       path: "/admin/users",
       requiredPermissions: [PERMISSIONS.READ_USERS, PERMISSIONS.MANAGE_USERS],
-      parent: "Użytkownicy",
+      parent: "Users",
     },
     {
-      text: "Zarządzanie Rolami",
+      text: "Role Management",
       icon: <AdminPanelSettingsIcon fontSize="small" />,
       path: "/admin/roles",
       requiredPermissions: [PERMISSIONS.MANAGE_ROLES],
-      parent: "Użytkownicy",
+      parent: "Users",
     },
     {
-      text: "UI Strony",
+      text: "Page UI",
       icon: <WebIcon fontSize="small" />,
       path: "/admin/cms",
-      parent: "Sklep",
+      parent: "Shop",
     },
     {
-      text: "Kategorie",
+      text: "Categories",
       icon: <CategoryIcon fontSize="small" />,
       path: "/admin/categories",
-      parent: "Sklep",
+      parent: "Shop",
     },
     {
-      text: "Zamówienia",
+      text: "Orders",
       icon: <ShoppingBagIcon fontSize="small" />,
       path: "/admin/orders",
       requiredPermissions: [PERMISSIONS.READ_ORDERS, PERMISSIONS.WRITE_ORDERS],
-      parent: "Sklep",
+      parent: "Shop",
     },
     {
-      text: "Dodaj Produkt",
+      text: "Add Product",
       icon: <AddCircleOutlineIcon fontSize="small" />,
       path: "/admin/products/add",
       requiredPermissions: [PERMISSIONS.WRITE_PRODUCTS],
-      parent: "Sklep",
+      parent: "Shop",
     },
     {
-      text: "Statystyki Sprzedaży",
+      text: "Sales Statistics",
       icon: <BarChartIcon fontSize="small" />,
       path: "/admin/analytics/sales",
       parent: "Analytics",
     },
     {
-      text: "Raporty",
+      text: "Reports",
       icon: <AssessmentIcon fontSize="small" />,
       path: "/admin/analytics/reports",
       parent: "Analytics",
     },
     {
-      text: "Analiza Produktów",
+      text: "Product Analysis",
       icon: <InventoryIcon fontSize="small" />,
       path: "/admin/analytics/products",
       parent: "Analytics",
@@ -308,8 +308,8 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
   });
 
   const groupedAdminMenu = {
-    Użytkownicy: visibleAdminMenuItems.filter((item) => item.parent === "Użytkownicy"),
-    Sklep: visibleAdminMenuItems.filter((item) => item.parent === "Sklep"),
+    Users: visibleAdminMenuItems.filter((item) => item.parent === "Users"),
+    Shop: visibleAdminMenuItems.filter((item) => item.parent === "Shop"),
     Analytics: visibleAdminMenuItems.filter((item) => item.parent === "Analytics"),
   };
 
@@ -342,7 +342,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
               },
             }}
           >
-            Strona główna
+            Home
           </Button>
 
           {!minimalist && (
@@ -364,7 +364,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                   },
                 }}
               >
-                Kategorie
+                Categories
               </Button>
               <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center", px: 2 }}>
                 <Box
@@ -408,7 +408,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                   </IconButton>
 
                   <InputBase
-                    placeholder="Szukaj produktów..."
+                    placeholder="Search products..."
                     inputProps={{ "aria-label": "search" }}
                     sx={{
                       color: "inherit",
@@ -436,7 +436,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                   <>
                     <IconButton
                       size="large"
-                      aria-label="koszyk"
+                      aria-label="cart"
                       color="inherit"
                       onClick={() => navigate("/cart")}
                       sx={{
@@ -462,7 +462,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                     </IconButton>
                     <IconButton
                       size="large"
-                      aria-label="panel użytkownika"
+                      aria-label="user panel"
                       color="inherit"
                       onClick={handleUserMenuOpen}
                       sx={{
@@ -493,7 +493,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                         },
                       }}
                     >
-                      Zaloguj się
+                      Log In
                     </Button>
                     <Button
                       variant="outlined"
@@ -513,7 +513,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                         },
                       }}
                     >
-                      Zarejestruj się
+                      Sign Up
                     </Button>
                   </>
                 )}
@@ -523,7 +523,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
         </Toolbar>
       </AppBar>
 
-      {/* Menu użytkownika */}
+      {/* User menu */}
       <Menu
         anchorEl={userMenuAnchor}
         open={Boolean(userMenuAnchor)}
@@ -562,7 +562,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
               letterSpacing: 0.5,
             }}
           >
-            Panel Użytkownika
+            User Panel
           </Typography>
         </Box>
         <MenuItem
@@ -577,7 +577,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
           <ListItemIcon>
             <AccountCircle fontSize="small" sx={{ color: "primary.main" }} />
           </ListItemIcon>
-          <ListItemText primary="Moje konto" primaryTypographyProps={{ fontWeight: 500 }} />
+          <ListItemText primary="My Account" primaryTypographyProps={{ fontWeight: 500 }} />
         </MenuItem>
         <MenuItem
           onClick={() => handleMenuItemClick("/user/orders")}
@@ -591,7 +591,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
           <ListItemIcon>
             <ShoppingBagIcon fontSize="small" sx={{ color: "primary.main" }} />
           </ListItemIcon>
-          <ListItemText primary="Moje zamówienia" primaryTypographyProps={{ fontWeight: 500 }} />
+          <ListItemText primary="My Orders" primaryTypographyProps={{ fontWeight: 500 }} />
         </MenuItem>
         <MenuItem
           onClick={() => handleMenuItemClick("/user/settings")}
@@ -605,7 +605,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
           <ListItemIcon>
             <SettingsIcon fontSize="small" sx={{ color: "primary.main" }} />
           </ListItemIcon>
-          <ListItemText primary="Ustawienia" primaryTypographyProps={{ fontWeight: 500 }} />
+          <ListItemText primary="Settings" primaryTypographyProps={{ fontWeight: 500 }} />
         </MenuItem>
 
         {hasAdminAccess && (
@@ -624,7 +624,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                   letterSpacing: 0.5,
                 }}
               >
-                Panel Pracownika
+                Employee Panel
               </Typography>
             </Box>
             <MenuItem
@@ -639,13 +639,13 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
               <ListItemIcon>
                 <DashboardIcon fontSize="small" sx={{ color: "primary.main" }} />
               </ListItemIcon>
-              <ListItemText primary="Pulpit" primaryTypographyProps={{ fontWeight: 500 }} />
+              <ListItemText primary="Dashboard" primaryTypographyProps={{ fontWeight: 500 }} />
             </MenuItem>
 
-            {groupedAdminMenu.Użytkownicy.length > 0 && (
+            {groupedAdminMenu.Users.length > 0 && (
               <>
                 <MenuItem
-                  onClick={() => handleSectionToggle("Użytkownicy")}
+                  onClick={() => handleSectionToggle("Users")}
                   sx={{
                     transition: "all 0.2s ease-in-out",
                     "&:hover": {
@@ -657,17 +657,17 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                     <AdminPanelSettingsIcon fontSize="small" sx={{ color: "primary.main" }} />
                   </ListItemIcon>
                   <ListItemText
-                    primary="Użytkownicy"
+                    primary="Users"
                     primaryTypographyProps={{ fontWeight: 500 }}
                   />
-                  {expandedSections.Użytkownicy ? (
+                  {expandedSections.Users ? (
                     <ExpandLess fontSize="small" />
                   ) : (
                     <ExpandMore fontSize="small" />
                   )}
                 </MenuItem>
-                <Collapse in={expandedSections.Użytkownicy} timeout="auto" unmountOnExit>
-                  {groupedAdminMenu.Użytkownicy.map((item) => (
+                <Collapse in={expandedSections.Users} timeout="auto" unmountOnExit>
+                  {groupedAdminMenu.Users.map((item) => (
                     <MenuItem
                       key={item.path}
                       onClick={() => handleMenuItemClick(item.path)}
@@ -690,10 +690,10 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
               </>
             )}
 
-            {groupedAdminMenu.Sklep.length > 0 && (
+            {groupedAdminMenu.Shop.length > 0 && (
               <>
                 <MenuItem
-                  onClick={() => handleSectionToggle("Sklep")}
+                  onClick={() => handleSectionToggle("Shop")}
                   sx={{
                     transition: "all 0.2s ease-in-out",
                     "&:hover": {
@@ -704,15 +704,15 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                   <ListItemIcon>
                     <StoreIcon fontSize="small" sx={{ color: "primary.main" }} />
                   </ListItemIcon>
-                  <ListItemText primary="Sklep" primaryTypographyProps={{ fontWeight: 500 }} />
-                  {expandedSections.Sklep ? (
+                  <ListItemText primary="Shop" primaryTypographyProps={{ fontWeight: 500 }} />
+                  {expandedSections.Shop ? (
                     <ExpandLess fontSize="small" />
                   ) : (
                     <ExpandMore fontSize="small" />
                   )}
                 </MenuItem>
-                <Collapse in={expandedSections.Sklep} timeout="auto" unmountOnExit>
-                  {groupedAdminMenu.Sklep.map((item) => (
+                <Collapse in={expandedSections.Shop} timeout="auto" unmountOnExit>
+                  {groupedAdminMenu.Shop.map((item) => (
                     <MenuItem
                       key={item.path}
                       onClick={() => handleMenuItemClick(item.path)}
@@ -795,7 +795,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
           <ListItemIcon>
             <LogoutIcon fontSize="small" sx={{ color: "error.main" }} />
           </ListItemIcon>
-          <ListItemText primary="Wyloguj się" primaryTypographyProps={{ fontWeight: 500 }} />
+          <ListItemText primary="Log Out" primaryTypographyProps={{ fontWeight: 500 }} />
         </MenuItem>
       </Menu>
 
@@ -816,7 +816,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
       >
         <Box sx={{ px: 4, py: 2 }}>
           <Typography variant="h5" fontWeight={700} sx={{ mb: 4, color: "text.primary" }}>
-            Kategorie Produktów
+            Product Categories
           </Typography>
           <Grid container spacing={0}>
             {categoryColumns.map((column, columnIndex) => (

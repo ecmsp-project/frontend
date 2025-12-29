@@ -39,13 +39,13 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
       }}
     >
       <Typography variant="h5" gutterBottom fontWeight={700} sx={{ mb: 2 }}>
-        Podsumowanie
+        Summary
       </Typography>
       <Divider sx={{ mb: 3 }} />
 
       <Box sx={{ mb: 2 }}>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-          Wartość produktów:
+          Product value:
         </Typography>
         <Typography variant="h6" fontWeight={600}>
           {subtotal.toFixed(2)} PLN
@@ -54,7 +54,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
 
       <Box sx={{ mb: 3 }}>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-          Koszt wysyłki:
+          Shipping cost:
         </Typography>
         <Typography
           variant="h6"
@@ -107,7 +107,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
                 </Typography>
                 {discountAmount > 0 && (
                   <Typography variant="caption" color="success.main" sx={{ mt: 0.5 }}>
-                    Oszczędzasz: {discountAmount.toFixed(2)} PLN
+                    You save: {discountAmount.toFixed(2)} PLN
                   </Typography>
                 )}
               </>
@@ -140,7 +140,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
           transition: "box-shadow 0.2s ease",
         }}
       >
-        Zapłać
+        Pay
       </Button>
     </Card>
   );
