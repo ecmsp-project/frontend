@@ -11,13 +11,13 @@ import { Container, Typography, Grid, Box, Link, Alert, Snackbar } from "@mui/ma
 
 // Mock initial data
 const defaultContactSettings = {
-  pageTitle: "Kontakt",
-  pageSubtitle: "Potrzebujesz pomocy? Zobacz najczęściej zadawane pytania",
-  sectionTitle: "Dane kontaktowe",
+  pageTitle: "Contact",
+  pageSubtitle: "Need help? See frequently asked questions",
+  sectionTitle: "Contact Information",
   phone: "22 299 00 89",
-  phoneHours: "Poniedziałek - Piątek 9:00 - 19:00",
-  email: "zamowienia@sklep.pl",
-  emailDescription: "Zamówienia",
+  phoneHours: "Monday - Friday 9:00 AM - 7:00 PM",
+  email: "orders@shop.pl",
+  emailDescription: "Orders",
 };
 
 const ContactPageEditor: React.FC = () => {
@@ -39,12 +39,12 @@ const ContactPageEditor: React.FC = () => {
               title: "Witaj w E-COMMERCE",
               subtitle: "Odkryj najlepsze produkty w najlepszych cenach",
               primaryButtonText: "Rozpocznij Zakupy",
-              secondaryButtonText: "Dowiedz Się Więcej",
+              secondaryButtonText: "Learn More",
             },
             features: [],
             categories: [],
             categoriesTitle: "Popularne Kategorie",
-            categoriesSubtitle: "Odkryj nasze najlepsze kategorie produktów",
+            categoriesSubtitle: "Discover our best product categories",
             footer: {
               shopName: "E-COMMERCE",
               shopDescription: "Opis sklepu",
@@ -68,12 +68,12 @@ const ContactPageEditor: React.FC = () => {
               title: "Witaj w E-COMMERCE",
               subtitle: "Odkryj najlepsze produkty w najlepszych cenach",
               primaryButtonText: "Rozpocznij Zakupy",
-              secondaryButtonText: "Dowiedz Się Więcej",
+              secondaryButtonText: "Learn More",
             },
             features: [],
             categories: [],
             categoriesTitle: "Popularne Kategorie",
-            categoriesSubtitle: "Odkryj nasze najlepsze kategorie produktów",
+            categoriesSubtitle: "Discover our best product categories",
             footer: {
               shopName: "E-COMMERCE",
               shopDescription: "Opis sklepu",
@@ -105,7 +105,7 @@ const ContactPageEditor: React.FC = () => {
 
   const handleFormSubmit = (values: ContactFormValues) => {
     console.log("Form submitted:", values);
-    alert("Formularz został wysłany pomyślnie!");
+    alert("Form submitted successfully!");
   };
 
   const handleSave = async () => {
@@ -123,10 +123,10 @@ const ContactPageEditor: React.FC = () => {
         emailDescription: settings.contactPage.emailDescription,
       };
 
-      // Zapisz używając nowego endpointu
+      // Save using the new endpoint
       await saveContactSettings(contactSettingsData);
 
-      // Wyczyść cache Contact, aby po powrocie na stronę Contact widoczne były zaktualizowane dane
+      // Clear Contact cache so updated data is visible when returning to Contact page
       sessionStorage.removeItem("contact_cache");
 
       setDirty(false);
@@ -200,7 +200,7 @@ const ContactPageEditor: React.FC = () => {
                   cursor: "pointer",
                 }}
               >
-                Zobacz najczęściej zadawane pytania
+                See frequently asked questions
               </Link>
             </Typography>
           </Box>
@@ -322,8 +322,7 @@ const ContactPageEditor: React.FC = () => {
           </Grid>
 
           <Alert severity="info" sx={{ mb: 3 }}>
-            Formularz kontaktowy nie jest edytowalny w trybie edycji. Możesz edytować tylko teksty
-            informacyjne i dane kontaktowe.
+            The contact form is not editable in edit mode. You can only edit informational texts and contact information.
           </Alert>
         </Container>
       </Box>
@@ -335,7 +334,7 @@ const ContactPageEditor: React.FC = () => {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert severity="success" onClose={() => setShowSuccess(false)}>
-          Zmiany zostały zapisane pomyślnie!
+          Changes have been saved successfully!
         </Alert>
       </Snackbar>
 
@@ -346,7 +345,7 @@ const ContactPageEditor: React.FC = () => {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert severity="error" onClose={() => setShowError(false)}>
-          Błąd podczas zapisywania zmian
+          Error saving changes
         </Alert>
       </Snackbar>
     </>

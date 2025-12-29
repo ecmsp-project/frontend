@@ -144,13 +144,13 @@ const CategoryManagementPage: React.FC = () => {
         <Box sx={{ mb: 3 }}>
           <Breadcrumbs
             items={[
-              { label: "Panel administracyjny", path: "/admin" },
-              { label: "Sklep" },
-              { label: "Zarządzanie Kategoriami" },
+              { label: "Admin Panel", path: "/admin" },
+              { label: "Shop" },
+              { label: "Category Management" },
             ]}
           />
           <Typography variant="h4" gutterBottom>
-            Zarządzanie Kategoriami
+            Category Management
           </Typography>
         </Box>
 

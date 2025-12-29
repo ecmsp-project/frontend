@@ -24,7 +24,7 @@ const OrderConfirmationPage: React.FC = () => {
             Invalid order confirmation link.
           </Typography>
           <Button variant="contained" sx={{ mt: 2 }} onClick={() => navigate("/")}>
-            Strona główna
+            Main page
           </Button>
         </Container>
       </MainLayout>

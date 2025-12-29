@@ -52,7 +52,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
           }}
         >
           <HomeIcon fontSize="small" />
-          Strona główna
+          Main page
         </Link>
 
         {/* Dynamic breadcrumb items */}

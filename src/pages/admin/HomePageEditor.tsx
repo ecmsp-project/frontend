@@ -292,7 +292,7 @@ const SortableCategoryItem: React.FC<SortableCategoryItemProps> = ({
           </Typography>
 
           <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-            <Tooltip title="Liczba produktów">
+            <Tooltip title="Number of products">
               <Box
                 sx={{
                   display: "flex",
@@ -308,7 +308,7 @@ const SortableCategoryItem: React.FC<SortableCategoryItemProps> = ({
                   {category.productCount}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  produktów
+                  products
                 </Typography>
               </Box>
             </Tooltip>
@@ -348,7 +348,7 @@ const defaultSettings = {
     title: "Witaj w E-COMMERCE",
     subtitle: "Odkryj najlepsze produkty w najlepszych cenach",
     primaryButtonText: "Rozpocznij Zakupy",
-    secondaryButtonText: "Dowiedz Się Więcej",
+    secondaryButtonText: "Learn More",
   },
   features: [
     {
@@ -361,13 +361,13 @@ const defaultSettings = {
       id: "f2",
       icon: "LocalShippingIcon",
       title: "Darmowa Dostawa",
-      description: "Przy zamówieniach powyżej 100 zł",
+      description: "For orders over 100 PLN",
     },
     {
       id: "f3",
       icon: "VerifiedUserIcon",
       title: "Bezpieczne Zakupy",
-      description: "Gwarancja zwrotu pieniędzy",
+      description: "Money-back guarantee",
     },
   ],
   categories: [
@@ -394,8 +394,8 @@ const defaultSettings = {
     },
     {
       id: 4,
-      name: "Dom i Ogród",
-      image: "https://via.placeholder.com/400x300/4caf50/ffffff?text=Dom+i+Ogród",
+      name: "Home & Garden",
+      image: "https://via.placeholder.com/400x300/4caf50/ffffff?text=Home+%26+Garden",
       icon: "HomeIcon",
       color: "#4caf50",
     },
@@ -408,18 +408,18 @@ const defaultSettings = {
     },
     {
       id: 6,
-      name: "Książki",
-      image: "https://via.placeholder.com/400x300/795548/ffffff?text=Książki",
+      name: "Books",
+      image: "https://via.placeholder.com/400x300/795548/ffffff?text=Books",
       icon: "MenuBookIcon",
       color: "#795548",
     },
   ],
   categoriesTitle: "Popularne Kategorie",
-  categoriesSubtitle: "Odkryj nasze najlepsze kategorie produktów",
+  categoriesSubtitle: "Discover our best product categories",
   footer: {
     shopName: "E-COMMERCE",
     shopDescription:
-      "Wszystko co potrzebujesz w jednym miejscu. Jakość, niskie ceny i szybka dostawa. Twoje zakupy, nasza pasja.",
+      "Everything you need in one place. Quality, low prices and fast delivery. Your shopping, our passion.",
     customerServiceHours: ["Pon-Pt: 8:00 - 20:00", "Sob: 9:00 - 17:00"],
     customerServicePhone: "+48 123 456 789",
     socialMedia: {
@@ -428,7 +428,7 @@ const defaultSettings = {
       instagram: "https://instagram.com",
       linkedin: "https://linkedin.com",
     },
-    copyrightText: "© 2025 E-COMMERCE. Wszelkie prawa zastrzeżone.",
+    copyrightText: "© 2025 E-COMMERCE. All rights reserved.",
   },
   headerShopName: "E-COMMERCE",
   contactPage: {
@@ -436,9 +436,9 @@ const defaultSettings = {
     pageSubtitle: "Potrzebujesz pomocy?",
     sectionTitle: "Dane kontaktowe",
     phone: "22 299 00 89",
-    phoneHours: "Poniedziałek - Piątek 9:00 - 19:00",
+    phoneHours: "Monday - Friday 9:00 AM - 7:00 PM",
     email: "zamowienia@sklep.pl",
-    emailDescription: "Zamówienia",
+    emailDescription: "Orders",
   },
 };
 
@@ -465,7 +465,7 @@ const HomePageEditor: React.FC = () => {
     }),
   );
 
-  // Inicjalizacja - pobierz dane z API lub użyj domyślnych
+  // Initialization - fetch data from API or use defaults
   useEffect(() => {
     const initializeData = async () => {
       if (!isInitialized && !settings) {
@@ -536,10 +536,10 @@ const HomePageEditor: React.FC = () => {
         selectedCategoryIds: selectedCategoryIds,
       };
 
-      // Zapisz używając nowego endpointu
+      // Save using the new endpoint
       await saveHomeSettings(homeSettings);
 
-      // Wyczyść cache, aby po powrocie na stronę główną widoczne były zaktualizowane dane
+      // Clear cache so updated data is visible when returning to home page
       sessionStorage.removeItem("homepage_cache");
       sessionStorage.removeItem("homepage_categories");
 
@@ -594,7 +594,7 @@ const HomePageEditor: React.FC = () => {
     return colors[index % colors.length];
   };
 
-  // Handler dla przeciągania features
+  // Handler for dragging features
   const handleFeaturesDragEnd = (event: DragEndEvent) => {
     if (!settings) return;
 
@@ -610,7 +610,7 @@ const HomePageEditor: React.FC = () => {
     }
   };
 
-  // Handler dla przeciągania kategorii
+  // Handler for dragging categories
   const handleCategoriesDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -779,7 +779,7 @@ const HomePageEditor: React.FC = () => {
           {/* Category Selection Section */}
           <Box sx={{ mb: 4 }}>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              Wybierz kategorie z systemu, które mają być wyświetlane na stronie głównej
+              Select categories from the system to be displayed on the home page
             </Typography>
 
             {isLoadingCategories ? (
@@ -793,7 +793,7 @@ const HomePageEditor: React.FC = () => {
               >
                 <CircularProgress size={40} sx={{ mb: 2 }} />
                 <Typography variant="body1" color="text.secondary">
-                  Ładowanie kategorii z API...
+                  Loading categories from API...
                 </Typography>
               </Card>
             ) : (
@@ -841,10 +841,10 @@ const HomePageEditor: React.FC = () => {
                           <Box sx={{ textAlign: "center", p: 3 }}>
                             <AddIcon sx={{ fontSize: 56, color: "success.main", mb: 2 }} />
                             <Typography variant="h6" color="success.main" fontWeight={600}>
-                              Dodaj Kategorię
+                              Add Category
                             </Typography>
                             <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                              {getAvailableCategoriesToAdd().length} dostępnych
+                              {getAvailableCategoriesToAdd().length} available
                             </Typography>
                           </Box>
                         </Card>
@@ -857,7 +857,7 @@ const HomePageEditor: React.FC = () => {
 
             {!isLoadingCategories && getAvailableCategoriesToAdd().length === 0 && (
               <Alert severity="info" sx={{ mt: 2 }}>
-                Wszystkie dostępne kategorie zostały już dodane.
+                All available categories have already been added.
               </Alert>
             )}
           </Box>
@@ -1037,7 +1037,7 @@ const HomePageEditor: React.FC = () => {
               {/* Customer Service */}
               <Grid size={{ xs: 12, md: 4 }}>
                 <Typography variant="h6" gutterBottom fontWeight={600} sx={{ mb: 2 }}>
-                  Obsługa klienta
+                  Customer Service
                 </Typography>
                 <Typography variant="body2" sx={{ mb: 1, opacity: 0.9 }}>
                   <EditableText
@@ -1115,7 +1115,7 @@ const HomePageEditor: React.FC = () => {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert severity="success" onClose={() => setShowSuccess(false)}>
-          Zmiany zostały zapisane pomyślnie!
+          Changes have been saved successfully!
         </Alert>
       </Snackbar>
 
@@ -1126,7 +1126,7 @@ const HomePageEditor: React.FC = () => {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert severity="error" onClose={() => setShowError(false)}>
-          Błąd podczas zapisywania zmian
+          Error saving changes
         </Alert>
       </Snackbar>
 
@@ -1147,7 +1147,7 @@ const HomePageEditor: React.FC = () => {
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <CategoryIcon color="primary" />
               <Typography variant="h6" fontWeight={600}>
-                Wybierz kategorię
+                Select category
               </Typography>
             </Box>
             <IconButton
@@ -1159,13 +1159,13 @@ const HomePageEditor: React.FC = () => {
             </IconButton>
           </Box>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            Kliknij kategorię aby dodać ją do strony głównej
+            Click a category to add it to the home page
           </Typography>
         </DialogTitle>
 
         <DialogContent sx={{ pt: 2 }}>
           {getAvailableCategoriesToAdd().length === 0 ? (
-            <Alert severity="info">Wszystkie kategorie zostały już dodane.</Alert>
+            <Alert severity="info">All categories have already been added.</Alert>
           ) : (
             <List sx={{ p: 0 }}>
               {getAvailableCategoriesToAdd().map((category, index) => (
@@ -1210,7 +1210,7 @@ const HomePageEditor: React.FC = () => {
                         <Box sx={{ display: "flex", gap: 1, mt: 0.5 }}>
                           <Typography variant="caption" color="text.secondary">
                             {category.productCount}{" "}
-                            {category.productCount === 1 ? "produkt" : "produktów"}
+                            {category.productCount === 1 ? "product" : "products"}
                           </Typography>
                           {category.subCategoryCount > 0 && (
                             <>

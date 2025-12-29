@@ -51,7 +51,7 @@ export const PermissionModal: React.FC<PermissionModalProps> = ({
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>
-        {readOnly ? "Podgląd uprawnień dla roli" : "Zarządzanie uprawnieniami dla roli"}:{" "}
+        {readOnly ? "View permissions for role" : "Manage permissions for role"}:{" "}
         {role.name}
       </DialogTitle>
       <DialogContent dividers>
@@ -79,11 +79,11 @@ export const PermissionModal: React.FC<PermissionModalProps> = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={loadingSave}>
-          {readOnly ? "Zamknij" : "Anuluj"}
+          {readOnly ? "Close" : "Cancel"}
         </Button>
         {!readOnly && (
           <Button onClick={handleSave} color="primary" variant="contained" disabled={loadingSave}>
-            {loadingSave ? <CircularProgress size={24} /> : "Zapisz uprawnienia"}
+            {loadingSave ? <CircularProgress size={24} /> : "Save Permissions"}
           </Button>
         )}
       </DialogActions>
