@@ -64,12 +64,12 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
   return (
     <>
       <Typography variant="subtitle1" sx={{ mb: 1 }}>
-        Kategoria
+        Category
       </Typography>
       <TextField
         size="small"
         fullWidth
-        placeholder="Szukaj kategorii..."
+        placeholder="Search categories..."
         value={categorySearchTerm}
         onChange={(e) => setCategorySearchTerm(e.target.value)}
         sx={{ mb: 2 }}
@@ -154,7 +154,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
                       }}
                       secondary={
                         mainCategory.productCount > 0
-                          ? `${mainCategory.productCount} produktów`
+                          ? `${mainCategory.productCount} products`
                           : undefined
                       }
                     />
@@ -186,7 +186,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
                               }}
                               secondary={
                                 subCategory.productCount > 0
-                                  ? `${subCategory.productCount} produktów`
+                                  ? `${subCategory.productCount} products`
                                   : undefined
                               }
                             />
@@ -201,7 +201,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
           })
         ) : (
           <Typography variant="body2" color="text.secondary" sx={{ pl: 2, py: 2 }}>
-            {categorySearchTerm ? "Nie znaleziono kategorii" : "Brak kategorii"}
+            {categorySearchTerm ? "No categories found" : "No categories available"}
           </Typography>
         )}
       </Box>

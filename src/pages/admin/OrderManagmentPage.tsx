@@ -63,11 +63,11 @@ const OrderManagementPage: React.FC = () => {
           <TableHead sx={{ bgcolor: "grey.100" }}>
             <TableRow>
               <TableCell />
-              <TableCell>ID Zamówienia</TableCell>
-              <TableCell>ID Klienta</TableCell>
-              <TableCell align="right">Data</TableCell>
+              <TableCell>Order ID</TableCell>
+              <TableCell>Client ID</TableCell>
+              <TableCell align="right">Date</TableCell>
               <TableCell align="center">Status</TableCell>
-              <TableCell align="right">Łączna kwota</TableCell>
+              <TableCell align="right">Total Amount</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -85,12 +85,12 @@ const OrderManagementPage: React.FC = () => {
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Breadcrumbs
           items={[
-            { label: "Panel administracyjny", path: "/admin" },
-            { label: "Zarządzanie Zamówieniami" },
+            { label: "Admin Panel", path: "/admin" },
+            { label: "Order Management" },
           ]}
         />
         <Typography variant="h4" gutterBottom>
-          Zarządzanie Zamówieniami
+          Order Management
         </Typography>
         {content}
       </Container>

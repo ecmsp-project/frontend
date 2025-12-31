@@ -36,7 +36,7 @@ const UserOrdersManagementPage: React.FC = () => {
         setError(null);
       } catch (err) {
         console.error(err);
-        setError("Nie udało się pobrać zamówień");
+        setError("Failed to fetch orders");
       } finally {
         setLoading(false);
       }
@@ -63,10 +63,10 @@ const UserOrdersManagementPage: React.FC = () => {
     content = (
       <Box sx={{ textAlign: "center", py: 5 }}>
         <Typography variant="h6" color="text.secondary">
-          Brak złożonych zamówień.
+          No orders placed.
         </Typography>
         <Button variant="contained" sx={{ mt: 2 }} onClick={() => navigate("/")}>
-          Rozpocznij zakupy
+          Start Shopping
         </Button>
       </Box>
     );
@@ -77,10 +77,10 @@ const UserOrdersManagementPage: React.FC = () => {
           <TableHead sx={{ bgcolor: "grey.100" }}>
             <TableRow>
               <TableCell />
-              <TableCell>ID Zamówienia</TableCell>
-              <TableCell align="right">Data</TableCell>
+              <TableCell>Order ID</TableCell>
+              <TableCell align="right">Date</TableCell>
               <TableCell align="right">Status</TableCell>
-              <TableCell align="right">Łączna kwota</TableCell>
+              <TableCell align="right">Total Amount</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -96,9 +96,9 @@ const UserOrdersManagementPage: React.FC = () => {
   return (
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Breadcrumbs items={[{ label: "Panel użytkownika" }, { label: "Moje zamówienia" }]} />
+        <Breadcrumbs items={[{ label: "User Panel" }, { label: "My Orders" }]} />
         <Typography variant="h4" gutterBottom>
-          Moje zamówienia
+          My Orders
         </Typography>
         {content}
       </Container>

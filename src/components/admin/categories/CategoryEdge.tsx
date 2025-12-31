@@ -78,7 +78,7 @@ const CategoryEdge: React.FC<EdgeProps> = ({
               color="primary"
               onClick={handleClick}
               onMouseDown={(e) => e.stopPropagation()}
-              title="Dodaj kategorię między węzłami"
+              title="Add category between nodes"
               sx={{
                 bgcolor: "background.paper",
                 boxShadow: 3,

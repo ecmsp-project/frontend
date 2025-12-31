@@ -5,32 +5,32 @@ import MainLayout from "../components/layout/MainLayout";
 import type { FaqPageContent } from "../types/cms";
 import { Box, Container, Link, Typography, CircularProgress } from "@mui/material";
 
-// Domyślne dane FAQ (fallback)
+// Default FAQ data (fallback)
 const defaultFaqData = [
   {
     id: "faq1",
-    question: "Jak mogę złożyć zamówienie?",
+    question: "How can I place an order?",
     answer:
-      "Złożenie zamówienia jest bardzo proste! Wybierz interesujące Cię produkty, dodaj je do koszyka, przejdź do kasy i wypełnij formularz z danymi dostawy. Następnie wybierz metodę płatności i potwierdź zamówienie. Otrzymasz e-mail z potwierdzeniem zamówienia.",
+      "Placing an order is very simple! Select the products you're interested in, add them to your cart, proceed to checkout and fill out the delivery information form. Then choose your payment method and confirm the order. You will receive an email confirmation of your order.",
     expanded: true,
   },
   {
     id: "faq2",
-    question: "Jakie metody płatności akceptujecie?",
+    question: "What payment methods do you accept?",
     answer:
-      "Akceptujemy płatności kartą płatniczą (Visa, Mastercard), przelewem bankowym, płatności online (BLIK, Przelewy24), a także płatność przy odbiorze (za pobraniem). Wszystkie płatności są bezpieczne i szyfrowane.",
+      "We accept credit card payments (Visa, Mastercard), bank transfers, online payments (BLIK, Przelewy24), as well as cash on delivery. All payments are secure and encrypted.",
   },
   {
     id: "faq3",
-    question: "Ile kosztuje dostawa?",
+    question: "How much does shipping cost?",
     answer:
-      "Dostawa jest darmowa przy zamówieniach powyżej 200 zł. Dla zamówień poniżej tej kwoty koszt dostawy wynosi 15 zł. Oferujemy również dostawę kurierem ekspresową za 25 zł oraz odbiór osobisty w naszym sklepie stacjonarnym za darmo.",
+      "Shipping is free for orders over 200 PLN. For orders below this amount, shipping costs 15 PLN. We also offer express courier delivery for 25 PLN and free in-store pickup at our physical store.",
   },
   {
     id: "faq4",
-    question: "Jak mogę skontaktować się z obsługą klienta?",
+    question: "How can I contact customer service?",
     answer:
-      "Możesz skontaktować się z nami przez e-mail (sklep@naszasklep.pl), telefon (123-456-789) lub czat na stronie. Nasza obsługa klienta jest dostępna od poniedziałku do piątku w godzinach 9:00-17:00. Odpowiadamy na wiadomości w ciągu 24 godzin.",
+      "You can contact us by email (shop@ourshop.pl), phone (123-456-789) or chat on the website. Our customer service is available Monday through Friday from 9:00 AM to 5:00 PM. We respond to messages within 24 hours.",
   },
 ];
 
@@ -51,7 +51,7 @@ const Faq: React.FC = () => {
       try {
         setIsLoading(true);
 
-        // Sprawdź cache
+        // Check cache
         const cachedFaq = sessionStorage.getItem(CACHE_KEY_FAQ);
         let faqData: FaqPageContent | null = null;
 
@@ -62,7 +62,7 @@ const Faq: React.FC = () => {
           }
         }
 
-        // Jeśli nie ma cache lub cache jest stary, załaduj z API
+        // If there's no cache or cache is old, load from API
         if (!faqData) {
           faqData = await fetchFaqSettings();
           sessionStorage.setItem(
@@ -74,7 +74,7 @@ const Faq: React.FC = () => {
         setFaqContent(faqData);
       } catch (error) {
         console.error("Failed to load FAQ content from CMS:", error);
-        // Fallback do domyślnych wartości
+        // Fallback to default values
       } finally {
         setIsLoading(false);
       }
@@ -122,7 +122,7 @@ const Faq: React.FC = () => {
               lineHeight: 1.2,
             }}
           >
-            {faqContent?.pageTitle || "Najczęściej zadawane pytania"}
+            {faqContent?.pageTitle || "Frequently Asked Questions"}
           </Typography>
 
           <Typography
@@ -135,7 +135,7 @@ const Faq: React.FC = () => {
               lineHeight: 1.6,
             }}
           >
-            {faqContent?.pageSubtitle || "Nie mozesz znalezc odpowiedzi na swoje pytanie?"}{" "}
+            {faqContent?.pageSubtitle || "Can't find the answer to your question?"}{" "}
             <Link
               href="/contact"
               sx={{
@@ -144,7 +144,7 @@ const Faq: React.FC = () => {
                 cursor: "pointer",
               }}
             >
-              Skontaktuj się z nami!
+              Contact us!
             </Link>
           </Typography>
         </Box>

@@ -38,7 +38,7 @@ const ShippingModal: React.FC<ShippingModalProps> = ({ open, shippingData, onClo
     >
       <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <Typography variant="h6" fontWeight={600}>
-          Dane odbiorcy przesyłki
+          Recipient Information
         </Typography>
         <IconButton onClick={onClose} size="small">
           <CloseIcon />
@@ -46,7 +46,7 @@ const ShippingModal: React.FC<ShippingModalProps> = ({ open, shippingData, onClo
       </DialogTitle>
       <DialogContent dividers>
         <ShippingForm
-          key={JSON.stringify(shippingData)} // Wymuś remontowanie gdy dane się zmieniają
+          key={JSON.stringify(shippingData)} // Force remounting when data changes
           ref={shippingFormRef}
           initialValues={shippingData}
           onSubmit={onSubmit}
@@ -55,14 +55,14 @@ const ShippingModal: React.FC<ShippingModalProps> = ({ open, shippingData, onClo
         />
       </DialogContent>
       <DialogActions sx={{ p: 2 }}>
-        <Button onClick={onClose}>Anuluj</Button>
+        <Button onClick={onClose}>Cancel</Button>
         <Button
           variant="contained"
           onClick={() => {
             shippingFormRef.current?.submitForm();
           }}
         >
-          Zatwierdź
+          Confirm
         </Button>
       </DialogActions>
     </Dialog>

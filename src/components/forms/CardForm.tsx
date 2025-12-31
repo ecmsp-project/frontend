@@ -18,17 +18,17 @@ interface CardFormProps {
 
 const cardValidationSchema = Yup.object({
   cardNumber: Yup.string()
-    .required("Numer karty jest wymagany")
-    .matches(/^\d{4}\s?\d{4}\s?\d{4}\s?\d{4}$/, "Numer karty musi mieć 16 cyfr"),
+    .required("Card number is required")
+    .matches(/^\d{4}\s?\d{4}\s?\d{4}\s?\d{4}$/, "Card number must have 16 digits"),
   cardholderName: Yup.string()
-    .required("Imię i nazwisko jest wymagane")
-    .min(3, "Imię i nazwisko musi mieć co najmniej 3 znaki"),
+    .required("Cardholder name is required")
+    .min(3, "Cardholder name must be at least 3 characters"),
   expiryDate: Yup.string()
-    .required("Data ważności jest wymagana")
-    .matches(/^(0[1-9]|1[0-2])\/\d{2}$/, "Format: MM/RR"),
+    .required("Expiry date is required")
+    .matches(/^(0[1-9]|1[0-2])\/\d{2}$/, "Format: MM/YY"),
   cvv: Yup.string()
-    .required("CVV jest wymagany")
-    .matches(/^\d{3,4}$/, "CVV musi mieć 3 lub 4 cyfry"),
+    .required("CVV is required")
+    .matches(/^\d{3,4}$/, "CVV must have 3 or 4 digits"),
 });
 
 const initialValues: CardFormValues = {
@@ -38,7 +38,7 @@ const initialValues: CardFormValues = {
   cvv: "",
 };
 
-// Komponent pomocniczy do śledzenia walidacji
+// Helper component for tracking validation
 const ValidationTracker: React.FC<{ onValidationChange?: (isValid: boolean) => void }> = ({
   onValidationChange,
 }) => {
@@ -125,7 +125,7 @@ const CardForm = forwardRef<CardFormRef, CardFormProps>(
               <Grid container spacing={2}>
                 <Grid size={{ xs: 12 }}>
                   <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                    Numer karty *
+                    Card Number *
                   </Typography>
                   <Field
                     as={TextField}
@@ -143,7 +143,7 @@ const CardForm = forwardRef<CardFormRef, CardFormProps>(
 
                 <Grid size={{ xs: 12 }}>
                   <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                    Imię i nazwisko na karcie *
+                    Cardholder Name *
                   </Typography>
                   <Field
                     as={TextField}
@@ -158,7 +158,7 @@ const CardForm = forwardRef<CardFormRef, CardFormProps>(
 
                 <Grid size={{ xs: 12, sm: 6 }}>
                   <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                    Data ważności *
+                    Expiry Date *
                   </Typography>
                   <Field
                     as={TextField}
@@ -199,11 +199,11 @@ const CardForm = forwardRef<CardFormRef, CardFormProps>(
                   <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end", mt: 3 }}>
                     {onCancel && (
                       <Button onClick={onCancel} variant="outlined" disabled={isProcessing}>
-                        Anuluj
+                        Cancel
                       </Button>
                     )}
                     <Button type="submit" variant="contained" disabled={isProcessing}>
-                      {isProcessing ? "Przetwarzanie..." : "Zatwierdź płatność"}
+                      {isProcessing ? "Processing..." : "Confirm Payment"}
                     </Button>
                   </Box>
                 </Grid>

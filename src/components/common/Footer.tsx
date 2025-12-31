@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
         setFooterData(data);
       } catch (error) {
         console.error("Failed to load footer data:", error);
-        // Użyj domyślnych wartości jeśli błąd
+        // Use default values if error
       }
     };
 
@@ -59,7 +59,7 @@ const Footer: React.FC = () => {
             </Typography>
             <Typography variant="body2" sx={{ mb: 2, opacity: 0.9, lineHeight: 1.7 }}>
               {footerData?.footer?.shopDescription ||
-                "Wszystko co potrzebujesz w jednym miejscu. Jakość, niskie ceny i szybka dostawa. Twoje zakupy, nasza pasja."}
+                "Everything you need in one place. Quality, low prices and fast delivery. Your shopping, our passion."}
             </Typography>
             <Box sx={{ display: "flex", gap: 1, mt: 3 }}>
               {footerData?.footer?.socialMedia?.facebook && (
@@ -152,7 +152,7 @@ const Footer: React.FC = () => {
           {/* Shop Links */}
           <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <Typography variant="h6" gutterBottom fontWeight={600} sx={{ mb: 2 }}>
-              Sklep
+              Shop
             </Typography>
             <Link
               component="button"
@@ -172,7 +172,7 @@ const Footer: React.FC = () => {
                 },
               }}
             >
-              Strona główna
+              Home
             </Link>
             <Link
               component="button"
@@ -192,7 +192,7 @@ const Footer: React.FC = () => {
                 },
               }}
             >
-              Kategorie
+              Categories
             </Link>
             <Link
               component="button"
@@ -212,14 +212,14 @@ const Footer: React.FC = () => {
                 },
               }}
             >
-              Koszyk
+              Cart
             </Link>
           </Grid>
 
           {/* Account Links */}
           <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <Typography variant="h6" gutterBottom fontWeight={600} sx={{ mb: 2 }}>
-              Konto
+              Account
             </Typography>
             <Link
               component="button"
@@ -239,7 +239,7 @@ const Footer: React.FC = () => {
                 },
               }}
             >
-              Moje konto
+              My Account
             </Link>
             <Link
               component="button"
@@ -259,7 +259,7 @@ const Footer: React.FC = () => {
                 },
               }}
             >
-              Moje zamówienia
+              My Orders
             </Link>
             <Link
               component="button"
@@ -279,7 +279,7 @@ const Footer: React.FC = () => {
                 },
               }}
             >
-              Zaloguj się
+              Log In
             </Link>
             <Link
               component="button"
@@ -299,14 +299,14 @@ const Footer: React.FC = () => {
                 },
               }}
             >
-              Zarejestruj się
+              Sign Up
             </Link>
           </Grid>
 
           {/* Info Links */}
           <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <Typography variant="h6" gutterBottom fontWeight={600} sx={{ mb: 2 }}>
-              Informacje
+              Information
             </Typography>
             <Link
               component="button"
@@ -326,7 +326,7 @@ const Footer: React.FC = () => {
                 },
               }}
             >
-              Kontakt
+              Contact
             </Link>
             <Link
               component="button"
@@ -366,7 +366,7 @@ const Footer: React.FC = () => {
                 },
               }}
             >
-              Polityka prywatności
+              Privacy Policy
             </Link>
             <Link
               component="button"
@@ -386,14 +386,14 @@ const Footer: React.FC = () => {
                 },
               }}
             >
-              Regulamin
+              Terms
             </Link>
           </Grid>
 
           {/* Customer Service */}
           <Grid size={{ xs: 12, sm: 6, md: 2 }}>
             <Typography variant="h6" gutterBottom fontWeight={600} sx={{ mb: 2 }}>
-              Obsługa klienta
+              Customer Service
             </Typography>
             {footerData?.footer?.customerServiceHours?.map((hours, index) => (
               <Typography key={index} variant="body2" sx={{ mb: 1, opacity: 0.9 }}>
@@ -420,7 +420,7 @@ const Footer: React.FC = () => {
         <Box sx={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 2 }}>
           <Typography variant="body2" sx={{ opacity: 0.9 }}>
             {footerData?.footer?.copyrightText ||
-              `© ${new Date().getFullYear()} E-COMMERCE. Wszelkie prawa zastrzeżone.`}
+              `© ${new Date().getFullYear()} E-COMMERCE. All rights reserved.`}
           </Typography>
           <Box sx={{ display: "flex", gap: 2 }}>
             <Link
@@ -438,7 +438,7 @@ const Footer: React.FC = () => {
                 },
               }}
             >
-              Prywatność
+              Privacy
             </Link>
             <Link
               component="button"
@@ -455,7 +455,7 @@ const Footer: React.FC = () => {
                 },
               }}
             >
-              Warunki
+              Terms
             </Link>
           </Box>
         </Box>

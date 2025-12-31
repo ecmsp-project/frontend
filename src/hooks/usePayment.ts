@@ -36,12 +36,12 @@ export const usePayment = () => {
   const total = useMemo(() => subtotal + shipping, [subtotal, shipping]);
 
   const validateCard = (values: CardFormValues): boolean => {
-    // Normalizuj dane do porównania
+    // Normalize data for comparison
     const normalizedCardNumber = values.cardNumber.replace(/\s/g, "");
     const normalizedExpiry = values.expiryDate.replace(/\//g, "");
     const normalizedName = values.cardholderName.toUpperCase().trim();
 
-    // Sprawdź czy karta pasuje do mockowanej
+    // Check if card matches the mocked one
     if (
       normalizedCardNumber === VALID_CARD.cardNumber &&
       normalizedExpiry === VALID_CARD.expiryDate.replace(/\//g, "") &&
@@ -59,21 +59,21 @@ export const usePayment = () => {
     setPaymentError(null);
 
     try {
-      // Symulacja opóźnienia
+      // Simulate delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       if (!validateCard(values)) {
-        setPaymentError("Nieprawidłowe dane karty. Sprawdź wprowadzone informacje.");
+        setPaymentError("Invalid card data. Please check the entered information.");
         setIsProcessing(false);
         return false;
       }
 
-      // Płatność przeszła pomyślnie
+      // Payment succeeded
       setIsProcessing(false);
       return true;
     } catch (err) {
       console.error("Error processing payment:", err);
-      setPaymentError("Wystąpił błąd podczas przetwarzania płatności.");
+      setPaymentError("An error occurred while processing the payment.");
       setIsProcessing(false);
       return false;
     }

@@ -30,7 +30,7 @@ const CategoryManagementPage: React.FC = () => {
       setCategories(response.categories);
     } catch (err) {
       console.error("Error fetching categories:", err);
-      setError("Nie udało się pobrać kategorii. Sprawdź czy backend działa.");
+      setError("Failed to fetch categories. Please check if the backend is running.");
     } finally {
       setLoading(false);
     }
@@ -132,7 +132,7 @@ const CategoryManagementPage: React.FC = () => {
       console.error("Error deleting category:", err);
       // Note: Backend endpoint may not be implemented yet
       alert(
-        "Błąd: Endpoint usuwania kategorii może nie być jeszcze zaimplementowany na backendzie.",
+        "Error: Category deletion endpoint may not be implemented yet on the backend.",
       );
       throw err;
     }
@@ -144,13 +144,13 @@ const CategoryManagementPage: React.FC = () => {
         <Box sx={{ mb: 3 }}>
           <Breadcrumbs
             items={[
-              { label: "Panel administracyjny", path: "/admin" },
-              { label: "Sklep" },
-              { label: "Zarządzanie Kategoriami" },
+              { label: "Admin Panel", path: "/admin" },
+              { label: "Shop" },
+              { label: "Category Management" },
             ]}
           />
           <Typography variant="h4" gutterBottom>
-            Zarządzanie Kategoriami
+            Category Management
           </Typography>
         </Box>
 

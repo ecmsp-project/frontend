@@ -14,14 +14,14 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 
 const validationSchema = Yup.object({
-  name: Yup.string().min(2, "Imię musi mieć co najmniej 2 znaki").required("Imię jest wymagane"),
-  email: Yup.string().email("Nieprawidłowy format email").required("Email jest wymagany"),
+  name: Yup.string().min(2, "Name must be at least 2 characters").required("Name is required"),
+  email: Yup.string().email("Invalid email format").required("Email is required"),
   subject: Yup.string()
-    .oneOf(["general", "support", "sales", "complaint", "other"], "Wybierz temat")
-    .required("Temat jest wymagany"),
+    .oneOf(["general", "support", "sales", "complaint", "other"], "Select a topic")
+    .required("Topic is required"),
   message: Yup.string()
-    .min(10, "Wiadomość musi mieć co najmniej 10 znaków")
-    .required("Wiadomość jest wymagana"),
+    .min(10, "Message must be at least 10 characters")
+    .required("Message is required"),
 });
 
 export interface ContactFormValues {
@@ -71,7 +71,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, isSubmitting = fals
           mb: 3,
         }}
       >
-        Napisz do nas
+        Contact Us
       </Typography>
 
       <Formik
@@ -91,13 +91,13 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, isSubmitting = fals
                     fontWeight: 500,
                   }}
                 >
-                  Imię*
+                  Name*
                 </Typography>
                 <Field
                   as={TextField}
                   fullWidth
                   name="name"
-                  placeholder="Podaj imię"
+                  placeholder="Enter your name"
                   error={touched.name && Boolean(errors.name)}
                   helperText={touched.name && errors.name}
                   sx={{
@@ -124,7 +124,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, isSubmitting = fals
                   as={TextField}
                   fullWidth
                   name="email"
-                  placeholder="Podaj adres mailowy"
+                  placeholder="Enter your email address"
                   type="email"
                   error={touched.email && Boolean(errors.email)}
                   helperText={touched.email && errors.email}
@@ -146,7 +146,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, isSubmitting = fals
                     fontWeight: 500,
                   }}
                 >
-                  Temat*
+                  Topic*
                 </Typography>
                 <FormControl fullWidth error={touched.subject && Boolean(errors.subject)}>
                   <Field
@@ -159,13 +159,13 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, isSubmitting = fals
                     }}
                   >
                     <MenuItem value="" disabled>
-                      Wybierz temat
+                      Select a topic
                     </MenuItem>
-                    <MenuItem value="general">Ogólne zapytanie</MenuItem>
-                    <MenuItem value="support">Wsparcie techniczne</MenuItem>
-                    <MenuItem value="sales">Sprzedaż</MenuItem>
-                    <MenuItem value="complaint">Reklamacja</MenuItem>
-                    <MenuItem value="other">Inne</MenuItem>
+                    <MenuItem value="general">General inquiry</MenuItem>
+                    <MenuItem value="support">Technical support</MenuItem>
+                    <MenuItem value="sales">Sales</MenuItem>
+                    <MenuItem value="complaint">Complaint</MenuItem>
+                    <MenuItem value="other">Other</MenuItem>
                   </Field>
                   {touched.subject && errors.subject && (
                     <Typography variant="caption" color="error" sx={{ mt: 0.5, display: "block" }}>
@@ -184,12 +184,12 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, isSubmitting = fals
                     fontWeight: 500,
                   }}
                 >
-                  Treść*
+                  Message*
                 </Typography>
                 <Field
                   as={TextareaAutosize}
                   name="message"
-                  placeholder="Wpisz treść wiadomości"
+                  placeholder="Enter your message"
                   minRows={4}
                   maxRows={8}
                   style={{
@@ -232,7 +232,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSubmit, isSubmitting = fals
                     },
                   }}
                 >
-                  {formikSubmitting || isSubmitting ? "wysyłanie..." : "wyślij"}
+                  {formikSubmitting || isSubmitting ? "Sending..." : "Send"}
                 </Button>
               </Grid>
             </Grid>

@@ -41,18 +41,18 @@ const iconMap: { [key: string]: React.ComponentType } = {
 const features = [
   {
     icon: TrendingUpIcon,
-    title: "Najlepsze Ceny",
-    description: "Konkurencyjne ceny na rynku",
+    title: "Best Prices",
+    description: "Competitive market prices",
   },
   {
     icon: LocalShippingIcon,
-    title: "Darmowa Dostawa",
-    description: "Przy zamówieniach powyżej 100 zł",
+    title: "Free Shipping",
+    description: "For orders over 100 PLN",
   },
   {
     icon: VerifiedUserIcon,
-    title: "Bezpieczne Zakupy",
-    description: "Gwarancja zwrotu pieniędzy",
+    title: "Secure Shopping",
+    description: "Money-back guarantee",
   },
 ];
 
@@ -227,7 +227,7 @@ const HomePage: React.FC = () => {
               textShadow: "0 2px 10px rgba(0,0,0,0.2)",
             }}
           >
-            {homeContent?.hero.title || "Witaj w E-COMMERCE"}
+            {homeContent?.hero.title || "Welcome to E-COMMERCE"}
           </Typography>
           <Typography
             variant="h5"
@@ -238,7 +238,7 @@ const HomePage: React.FC = () => {
               opacity: 0.95,
             }}
           >
-            {homeContent?.hero.subtitle || "Odkryj najlepsze produkty w najlepszych cenach"}
+            {homeContent?.hero.subtitle || "Discover the best products at the best prices"}
           </Typography>
           <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
             <Button
@@ -258,7 +258,7 @@ const HomePage: React.FC = () => {
                 transition: "all 0.3s",
               }}
             >
-              {homeContent?.hero.primaryButtonText || "Rozpocznij Zakupy"}
+              {homeContent?.hero.primaryButtonText || "Start Shopping"}
             </Button>
             <Button
               variant="outlined"
@@ -277,7 +277,7 @@ const HomePage: React.FC = () => {
                 transition: "all 0.3s",
               }}
             >
-              {homeContent?.hero.secondaryButtonText || "Dowiedz Się Więcej"}
+              {homeContent?.hero.secondaryButtonText || "Learn More"}
             </Button>
           </Box>
         </Container>
@@ -344,10 +344,10 @@ const HomePage: React.FC = () => {
 
         <Box sx={{ mb: 4 }}>
           <Typography variant="h4" component="h2" gutterBottom fontWeight={700} sx={{ mb: 1 }}>
-            {homeContent?.categoriesTitle || "Popularne Kategorie"}
+            {homeContent?.categoriesTitle || "Popular Categories"}
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-            {homeContent?.categoriesSubtitle || "Odkryj nasze najlepsze kategorie produktów"}
+            {homeContent?.categoriesSubtitle || "Discover our best product categories"}
           </Typography>
         </Box>
 
@@ -428,7 +428,7 @@ const HomePage: React.FC = () => {
                     </Typography>
                     {(category as CategoryFromAPI).productCount !== undefined && (
                       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                        {(category as CategoryFromAPI).productCount} produktów
+                        {(category as CategoryFromAPI).productCount} products
                       </Typography>
                     )}
                     <Button
@@ -455,11 +455,11 @@ const HomePage: React.FC = () => {
                         },
                       }}
                     >
-                      Przeglądaj
+                      Browse
                     </Button>
                   </Box>
                   <Chip
-                    label="Popularne"
+                    label="Popular"
                     size="small"
                     sx={{
                       position: "absolute",

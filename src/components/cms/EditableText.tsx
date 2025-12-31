@@ -103,11 +103,11 @@ const EditableText: React.FC<EditableTextProps> = ({
 
           <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
             <FormControl size="small" sx={{ minWidth: 120 }}>
-              <InputLabel>Rozmiar</InputLabel>
+              <InputLabel>Size</InputLabel>
               <Select
                 value={fontSize}
                 onChange={(e) => setFontSize(e.target.value)}
-                label="Rozmiar"
+                label="Size"
               >
                 <MenuItem value="12">12px</MenuItem>
                 <MenuItem value="14">14px</MenuItem>
@@ -137,10 +137,10 @@ const EditableText: React.FC<EditableTextProps> = ({
               startIcon={<CloseIcon />}
               size="small"
             >
-              Anuluj
+              Cancel
             </Button>
             <Button variant="contained" onClick={handleSave} startIcon={<CheckIcon />} size="small">
-              Zapisz
+              Save
             </Button>
           </Box>
         </Box>

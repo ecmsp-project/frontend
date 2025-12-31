@@ -8,13 +8,13 @@ const RaportsStatisticPage: React.FC = () => {
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Breadcrumbs
           items={[
-            { label: "Panel administracyjny" },
+            { label: "Admin Panel" },
             { label: "Analytics" },
-            { label: "Raporty Statystyki" },
+            { label: "Statistics Reports" },
           ]}
         />
         <Typography variant="h4" gutterBottom>
-          Raporty Statystyki
+          Statistics Reports
         </Typography>
         Not implemented yet
       </Container>

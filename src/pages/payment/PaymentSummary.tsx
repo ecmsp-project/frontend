@@ -35,13 +35,13 @@ const PaymentSummary: React.FC<PaymentSummaryProps> = ({
       }}
     >
       <Typography variant="h5" gutterBottom fontWeight={700} sx={{ mb: 2 }}>
-        Podsumowanie płatności
+        Payment Summary
       </Typography>
       <Divider sx={{ mb: 3 }} />
 
       <Box sx={{ mb: 2 }}>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-          Wartość produktów:
+          Product Value:
         </Typography>
         <Typography variant="h6" fontWeight={600}>
           {subtotal.toFixed(2)} PLN
@@ -50,7 +50,7 @@ const PaymentSummary: React.FC<PaymentSummaryProps> = ({
 
       <Box sx={{ mb: 3 }}>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-          Koszt wysyłki:
+          Shipping Cost:
         </Typography>
         <Typography
           variant="h6"
@@ -81,7 +81,7 @@ const PaymentSummary: React.FC<PaymentSummaryProps> = ({
         }}
       >
         <Typography variant="h6" fontWeight={700}>
-          RAZEM:
+          TOTAL:
         </Typography>
         <Typography variant="h5" color="primary.main" fontWeight={700}>
           {total.toFixed(2)} PLN
@@ -108,7 +108,7 @@ const PaymentSummary: React.FC<PaymentSummaryProps> = ({
           transition: "box-shadow 0.2s ease",
         }}
       >
-        {isProcessing ? "Przetwarzanie..." : "Zatwierdź płatność"}
+        {isProcessing ? "Processing..." : "Confirm Payment"}
       </Button>
     </Card>
   );

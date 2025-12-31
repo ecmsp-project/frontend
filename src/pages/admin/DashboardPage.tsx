@@ -8,29 +8,29 @@ const DashboardPage: React.FC = () => {
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Breadcrumbs
-          items={[{ label: "Panel administracyjny" }, { label: "Pulpit Administratora" }]}
+          items={[{ label: "Admin Panel" }, { label: "Admin Dashboard" }]}
         />
         <Typography variant="h4" gutterBottom>
-          Pulpit Administratora
+          Admin Dashboard
         </Typography>
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, md: 5 }}>
             <Paper elevation={3} sx={{ p: 3 }}>
-              <Typography variant="h6">Nowe Zamówienia</Typography>
+              <Typography variant="h6">New Orders</Typography>
               <Typography variant="h3" color="primary">
                 42
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                w ciągu ostatnich 24h
+                in the last 24h
               </Typography>
             </Paper>
           </Grid>
           <Grid size={{ xs: 12, md: 5 }}>
             <Paper elevation={3} sx={{ p: 3 }}>
-              <Typography variant="h6">Zarejestrowani Użytkownicy</Typography>
+              <Typography variant="h6">Registered Users</Typography>
               <Typography variant="h3">5</Typography>
               <Typography variant="body2" color="text.secondary">
-                Administratorzy: 1, Menedżerowie: 1
+                Administrators: 1, Managers: 1
               </Typography>
             </Paper>
           </Grid>

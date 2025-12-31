@@ -8,14 +8,14 @@ const CreateVariantPage: React.FC = () => {
 
   const handleFormSubmit = (values: VariantFormValues) => {
     console.log("Form submitted:", values);
-    alert("Formularz został wysłany pomyślnie!");
+    alert("Form submitted successfully!");
   };
 
   return (
     <MainLayout>
       <Container maxWidth="md" sx={{ py: 6 }}>
         <Typography variant="h4" component="h1" gutterBottom fontWeight={700} sx={{ mb: 4 }}>
-          Dodaj Wariant dla Produktu ID: {productId}
+          Add Variant for Product ID: {productId}
         </Typography>
         <Paper elevation={3}>
           <CreateVariantForm onSubmit={handleFormSubmit} />

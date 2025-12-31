@@ -42,17 +42,17 @@ export type OrderStatus =
   | "ORDER_STATUS_UNSPECIFIED";
 
 const STATUS_LABELS: Record<OrderStatus, string> = {
-  ORDER_STATUS_PAID: "Opłacone",
-  ORDER_STATUS_DELIVERED: "Dostarczone",
-  ORDER_STATUS_PENDING: "Oczekujące",
-  ORDER_STATUS_PROCESSING: "W trakcie realizacji",
-  ORDER_STATUS_SHIPPED: "Wysłane",
-  ORDER_STATUS_RETURN_REQUESTED: "Zwrot zgłoszony",
-  ORDER_STATUS_RETURN_PROCESSING: "Zwrot w trakcie",
-  ORDER_STATUS_FAILED: "Nieudane",
-  ORDER_STATUS_CANCELLED: "Anulowane",
-  ORDER_STATUS_RETURNED: "Zwrócone",
-  ORDER_STATUS_UNSPECIFIED: "Nieokreślone",
+  ORDER_STATUS_PAID: "Paid",
+  ORDER_STATUS_DELIVERED: "Delivered",
+  ORDER_STATUS_PENDING: "Pending",
+  ORDER_STATUS_PROCESSING: "Processing",
+  ORDER_STATUS_SHIPPED: "Shipped",
+  ORDER_STATUS_RETURN_REQUESTED: "Return Requested",
+  ORDER_STATUS_RETURN_PROCESSING: "Return Processing",
+  ORDER_STATUS_FAILED: "Failed",
+  ORDER_STATUS_CANCELLED: "Cancelled",
+  ORDER_STATUS_RETURNED: "Returned",
+  ORDER_STATUS_UNSPECIFIED: "Unspecified",
 };
 
 export type StatusColor = "default" | "primary" | "secondary" | "error" | "success" | "warning";

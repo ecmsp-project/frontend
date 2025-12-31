@@ -54,7 +54,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
               whiteSpace: "nowrap",
             }}
           >
-            Stan magazynowy: {product.variantDetail.stockQuantity}
+            Stock level: {product.variantDetail.stockQuantity}
           </Typography>
         </Box>
       </Box>
@@ -76,7 +76,7 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
           size="small"
           onClick={() => onAddToCart?.(product)}
         >
-          Do Koszyka
+          Add to Cart
         </Button>
       </Box>
     </Paper>

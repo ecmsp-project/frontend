@@ -383,10 +383,10 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
           }}
         >
           <Typography variant="h6" color="text.secondary">
-            Brak kategorii
+            No categories
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Kliknij przycisk "Dodaj główną" w prawym górnym rogu aby dodać pierwszą kategorię
+            Click the "Add Root" button in the top right corner to add the first category
           </Typography>
         </Box>
       ) : (
@@ -420,10 +420,10 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
               }}
             >
               <Typography variant="caption" display="block">
-                Liczba kategorii: {categories.length}
+                Number of categories: {categories.length}
               </Typography>
               <Typography variant="caption" display="block" color="text.secondary">
-                Kliknij na krawędź aby dodać kategorię między węzłami
+                Click on an edge to add a category between nodes
               </Typography>
             </Box>
           </Panel>
@@ -441,9 +441,9 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
                     bgcolor: "success.dark",
                   },
                 }}
-                title="Dodaj kategorię główną"
+                title="Add root category"
               >
-                Dodaj główną
+                Add Root
               </Button>
               <Button
                 variant="outlined"
@@ -454,9 +454,9 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
                   boxShadow: 1,
                   bgcolor: "background.paper",
                 }}
-                title="Odśwież kategorie"
+                title="Refresh categories"
               >
-                Odśwież
+                Refresh
               </Button>
               <Button
                 variant="contained"
@@ -470,7 +470,7 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
                     bgcolor: "primary.dark",
                   },
                 }}
-                title="Automatycznie rozłóż elementy aby się nie nakładały"
+                title="Automatically arrange elements so they don't overlap"
               >
                 Auto Layout
               </Button>
@@ -484,7 +484,7 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
                     color: "white",
                   },
                 }}
-                title={isFullscreen ? "Wyjdź z pełnego ekranu" : "Pełny ekran"}
+                title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
               >
                 {isFullscreen ? <FullscreenExit /> : <Fullscreen />}
               </IconButton>
@@ -518,9 +518,9 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
                 bgcolor: "success.dark",
               },
             }}
-            title="Dodaj kategorię główną"
+            title="Add root category"
           >
-            Dodaj główną
+            Add Root
           </Button>
           <Button
             variant="outlined"
@@ -531,9 +531,9 @@ const CategoryTreeInner: React.FC<CategoryTreeProps> = ({
               boxShadow: 1,
               bgcolor: "background.paper",
             }}
-            title="Odśwież kategorie"
+            title="Refresh categories"
           >
-            Odśwież
+            Refresh
           </Button>
         </Box>
       )}

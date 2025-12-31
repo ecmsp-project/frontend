@@ -24,7 +24,7 @@ const Contact: React.FC = () => {
       try {
         setIsLoading(true);
 
-        // Sprawdź cache
+        // Check cache
         const cachedContact = sessionStorage.getItem(CACHE_KEY_CONTACT);
         let contactData: ContactPageContent | null = null;
 
@@ -35,7 +35,7 @@ const Contact: React.FC = () => {
           }
         }
 
-        // Jeśli nie ma cache lub cache jest stary, załaduj z API
+        // If there's no cache or cache is old, load from API
         if (!contactData) {
           contactData = await fetchContactSettings();
           sessionStorage.setItem(
@@ -50,7 +50,7 @@ const Contact: React.FC = () => {
         setContactContent(contactData);
       } catch (error) {
         console.error("Failed to load contact content from CMS:", error);
-        // Fallback do domyślnych wartości
+        // Fallback to default values
       } finally {
         setIsLoading(false);
       }
@@ -61,7 +61,7 @@ const Contact: React.FC = () => {
 
   const handleFormSubmit = (values: ContactFormValues) => {
     console.log("Form submitted:", values);
-    alert("Formularz został wysłany pomyślnie!");
+    alert("Form submitted successfully!");
   };
 
   if (isLoading) {
@@ -95,7 +95,7 @@ const Contact: React.FC = () => {
               lineHeight: 1.2,
             }}
           >
-            {contactContent?.pageTitle || "Kontakt"}
+            {contactContent?.pageTitle || "Contact"}
           </Typography>
 
           <Typography
@@ -108,7 +108,7 @@ const Contact: React.FC = () => {
               lineHeight: 1.6,
             }}
           >
-            {contactContent?.pageSubtitle || "Potrzebujesz pomocy?"}{" "}
+            {contactContent?.pageSubtitle || "Need help?"}{" "}
             <Link
               href="/faq"
               sx={{
@@ -117,7 +117,7 @@ const Contact: React.FC = () => {
                 cursor: "pointer",
               }}
             >
-              Zobacz najczęściej zadawane pytania
+              See frequently asked questions
             </Link>
           </Typography>
         </Box>
@@ -140,7 +140,7 @@ const Contact: React.FC = () => {
                     color: "text.primary",
                   }}
                 >
-                  {contactContent?.sectionTitle || "Dane kontaktowe"}
+                  {contactContent?.sectionTitle || "Contact Information"}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <PhoneIcon sx={{ fontSize: "1.5rem", color: "primary.main" }} />
@@ -155,7 +155,7 @@ const Contact: React.FC = () => {
                       {contactContent?.phone || "22 299 00 89"}
                     </Typography>
                     <Typography sx={{ fontSize: "0.875rem", color: "text.secondary" }}>
-                      {contactContent?.phoneHours || "Poniedziałek - Piątek 9:00 - 19:00"}
+                      {contactContent?.phoneHours || "Monday - Friday 9:00 AM - 7:00 PM"}
                     </Typography>
                   </Box>
                 </Box>
@@ -170,10 +170,10 @@ const Contact: React.FC = () => {
                         fontWeight: 500,
                       }}
                     >
-                      {contactContent?.email || "zamowienia@sklep.pl"}
+                      {contactContent?.email || "orders@shop.pl"}
                     </Typography>
                     <Typography sx={{ fontSize: "0.875rem", color: "text.secondary" }}>
-                      {contactContent?.emailDescription || "Zamówienia"}
+                      {contactContent?.emailDescription || "Orders"}
                     </Typography>
                   </Box>
                 </Box>

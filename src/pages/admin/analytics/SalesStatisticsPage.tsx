@@ -63,7 +63,7 @@ const SalesStatisticsPage: React.FC = () => {
       setSalesData(data);
     } catch (err) {
       console.error("Error loading sales data:", err);
-      setError("Nie udało się załadować danych sprzedażowych. Sprawdź połączenie z serwerem.");
+      setError("Failed to load sales data. Please check the server connection.");
     } finally {
       setSalesLoading(false);
     }
@@ -82,7 +82,7 @@ const SalesStatisticsPage: React.FC = () => {
       setStockData(data);
     } catch (err) {
       console.error("Error loading stock data:", err);
-      setError("Nie udało się załadować danych magazynowych. Sprawdź połączenie z serwerem.");
+      setError("Failed to load stock data. Please check the server connection.");
     } finally {
       setStockLoading(false);
     }
@@ -112,9 +112,9 @@ const SalesStatisticsPage: React.FC = () => {
         {/* Breadcrumbs */}
         <Breadcrumbs
           items={[
-            { label: "Panel administracyjny", path: "/admin" },
+            { label: "Admin Panel", path: "/admin" },
             { label: "Analytics", path: "/admin/analytics" },
-            { label: "Statystyki" },
+            { label: "Statistics" },
           ]}
         />
 
@@ -125,10 +125,10 @@ const SalesStatisticsPage: React.FC = () => {
             gutterBottom
             sx={{ display: "flex", alignItems: "center", gap: 1 }}
           >
-            Statystyki produktów
+            Product Statistics
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Wyszukaj produkt, aby wyświetlić szczegółowe statystyki sprzedaży i stanów magazynowych
+            Search for a product to display detailed sales and stock statistics
           </Typography>
         </Box>
 
@@ -183,14 +183,14 @@ const SalesStatisticsPage: React.FC = () => {
                   variant="fullWidth"
                 >
                   <Tab
-                    label="Sprzedaż"
+                    label="Sales"
                     value="sales"
                     icon={<ShoppingCartIcon />}
                     iconPosition="start"
                     disabled={!selectedVariant.hasSalesData}
                   />
                   <Tab
-                    label="Stan magazynowy"
+                    label="Stock level"
                     value="stock"
                     icon={<InventoryIcon />}
                     iconPosition="start"
@@ -217,10 +217,10 @@ const SalesStatisticsPage: React.FC = () => {
                       >
                         <ShoppingCartIcon sx={{ fontSize: 60, color: "text.secondary", mb: 2 }} />
                         <Typography variant="h6" color="text.secondary">
-                          Brak danych sprzedażowych
+                          No sales data
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          Ten produkt nie ma jeszcze żadnych danych sprzedażowych
+                          This product doesn't have any sales data yet
                         </Typography>
                       </Paper>
                     )}
@@ -243,10 +243,10 @@ const SalesStatisticsPage: React.FC = () => {
                       >
                         <InventoryIcon sx={{ fontSize: 60, color: "text.secondary", mb: 2 }} />
                         <Typography variant="h6" color="text.secondary">
-                          Brak danych magazynowych
+                          No stock data
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          Ten produkt nie ma jeszcze żadnych danych magazynowych
+                          This product doesn't have any stock data yet
                         </Typography>
                       </Paper>
                     )}
@@ -290,14 +290,13 @@ const SalesStatisticsPage: React.FC = () => {
                 </Box>
               </Box>
               <Typography variant="h5" gutterBottom color="text.secondary">
-                Zacznij od wyszukania produktu
+                Start by searching for a product
               </Typography>
               <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-                Użyj wyszukiwarki powyżej, aby znaleźć produkt i wyświetlić jego statystyki
+                Use the search above to find a product and display its statistics
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Możesz filtrować produkty, sortować wyniki i korzystać z historii ostatnio
-                przeglądanych
+                You can filter products, sort results and use recently viewed history
               </Typography>
             </Paper>
           </Fade>

@@ -19,16 +19,16 @@ export interface ShippingFormValues {
 }
 
 const shippingValidationSchema = Yup.object({
-  firstName: Yup.string().required("Imię jest wymagane"),
-  lastName: Yup.string().required("Nazwisko jest wymagane"),
+  firstName: Yup.string().required("First name is required"),
+  lastName: Yup.string().required("Last name is required"),
   company: Yup.string(),
-  phone: Yup.string().required("Telefon jest wymagany").min(6, "Numer jest za krótki"),
-  country: Yup.string().required("Kraj jest wymagany"),
-  street: Yup.string().required("Ulica jest wymagana"),
+  phone: Yup.string().required("Phone is required").min(6, "Number is too short"),
+  country: Yup.string().required("Country is required"),
+  street: Yup.string().required("Street is required"),
   buildingNumber: Yup.string(),
   apartmentNumber: Yup.string(),
-  postalCode: Yup.string().required("Kod pocztowy jest wymagany"),
-  city: Yup.string().required("Miejscowość jest wymagana"),
+  postalCode: Yup.string().required("Postal code is required"),
+  city: Yup.string().required("City is required"),
 });
 
 const countryOptions = countryList().getData();
@@ -69,7 +69,7 @@ const ShippingForm = forwardRef<ShippingFormRef, ShippingFormProps>(
     },
     ref,
   ) => {
-    // Użyj useMemo, żeby formInitialValues reagowało na zmiany customInitialValues
+    // Use useMemo so formInitialValues reacts to customInitialValues changes
     const formInitialValues = useMemo(
       () => ({ ...initialValues, ...customInitialValues }),
       [customInitialValues],
@@ -99,13 +99,13 @@ const ShippingForm = forwardRef<ShippingFormRef, ShippingFormProps>(
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Imię *
+                  First Name *
                 </Typography>
                 <Field
                   as={TextField}
                   fullWidth
                   name="firstName"
-                  placeholder="Wprowadź imię"
+                  placeholder="Enter first name"
                   error={touched.firstName && Boolean(errors.firstName)}
                   helperText={touched.firstName && errors.firstName}
                   sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
@@ -113,13 +113,13 @@ const ShippingForm = forwardRef<ShippingFormRef, ShippingFormProps>(
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Nazwisko *
+                  Last Name *
                 </Typography>
                 <Field
                   as={TextField}
                   fullWidth
                   name="lastName"
-                  placeholder="Wprowadź nazwisko"
+                  placeholder="Enter last name"
                   error={touched.lastName && Boolean(errors.lastName)}
                   helperText={touched.lastName && errors.lastName}
                   sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
@@ -127,19 +127,19 @@ const ShippingForm = forwardRef<ShippingFormRef, ShippingFormProps>(
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Firma (opcjonalnie)
+                  Company (optional)
                 </Typography>
                 <Field
                   as={TextField}
                   fullWidth
                   name="company"
-                  placeholder="Wprowadź nazwę firmy"
+                  placeholder="Enter company name"
                   sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
                 />
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Telefon komórkowy *
+                  Mobile Phone *
                 </Typography>
                 <Field name="phone">
                   {({ field, form, meta }: any) => (
@@ -162,7 +162,7 @@ const ShippingForm = forwardRef<ShippingFormRef, ShippingFormProps>(
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Kraj *
+                  Country *
                 </Typography>
                 <FormControl fullWidth error={touched.country && Boolean(errors.country)}>
                   <Field
@@ -189,13 +189,13 @@ const ShippingForm = forwardRef<ShippingFormRef, ShippingFormProps>(
               </Grid>
               <Grid size={{ xs: 12, sm: 8 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Ulica *
+                  Street *
                 </Typography>
                 <Field
                   as={TextField}
                   fullWidth
                   name="street"
-                  placeholder="Wprowadź ulicę"
+                  placeholder="Enter street"
                   error={touched.street && Boolean(errors.street)}
                   helperText={touched.street && errors.street}
                   sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
@@ -203,13 +203,13 @@ const ShippingForm = forwardRef<ShippingFormRef, ShippingFormProps>(
               </Grid>
               <Grid size={{ xs: 12, sm: 4 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Nr budynku
+                  Building Number
                 </Typography>
                 <Field
                   as={TextField}
                   fullWidth
                   name="buildingNumber"
-                  placeholder="Nr budynku"
+                  placeholder="Building number"
                   error={touched.buildingNumber && Boolean(errors.buildingNumber)}
                   helperText={touched.buildingNumber && errors.buildingNumber}
                   sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
@@ -217,25 +217,25 @@ const ShippingForm = forwardRef<ShippingFormRef, ShippingFormProps>(
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Nr mieszkania
+                  Apartment Number
                 </Typography>
                 <Field
                   as={TextField}
                   fullWidth
                   name="apartmentNumber"
-                  placeholder="Nr mieszkania"
+                  placeholder="Apartment number"
                   sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
                 />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Kod pocztowy *
+                  Postal Code *
                 </Typography>
                 <Field
                   as={TextField}
                   fullWidth
                   name="postalCode"
-                  placeholder="Kod pocztowy"
+                  placeholder="Postal code"
                   error={touched.postalCode && Boolean(errors.postalCode)}
                   helperText={touched.postalCode && errors.postalCode}
                   sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
@@ -243,13 +243,13 @@ const ShippingForm = forwardRef<ShippingFormRef, ShippingFormProps>(
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Miejscowość *
+                  City *
                 </Typography>
                 <Field
                   as={TextField}
                   fullWidth
                   name="city"
-                  placeholder="Wprowadź miejscowość"
+                  placeholder="Enter city"
                   error={touched.city && Boolean(errors.city)}
                   helperText={touched.city && errors.city}
                   sx={{ "& .MuiOutlinedInput-root": { borderRadius: "0.25rem" } }}
@@ -260,11 +260,11 @@ const ShippingForm = forwardRef<ShippingFormRef, ShippingFormProps>(
                   <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end", mt: 2 }}>
                     {onCancel && (
                       <Button onClick={onCancel} variant="outlined">
-                        Anuluj
+                        Cancel
                       </Button>
                     )}
                     <Button type="submit" variant="contained">
-                      Zatwierdź
+                      Confirm
                     </Button>
                   </Box>
                 </Grid>

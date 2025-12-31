@@ -52,15 +52,15 @@ const SearchPage: React.FC = () => {
     <MainLayout>
       <Container maxWidth="lg">
         <Box sx={{ px: 4, pt: 4 }}>
-          {categoryId && <Breadcrumbs items={[{ label: categoryName || "Kategoria" }]} />}
+          {categoryId && <Breadcrumbs items={[{ label: categoryName || "Category" }]} />}
           {searchTerm && (
             <Typography variant="h4" component="h1" gutterBottom sx={{ mt: categoryId ? 2 : 0 }}>
-              Wyniki wyszukiwania dla "{searchTerm}"
+              Search results for "{searchTerm}"
             </Typography>
           )}
           {categoryId && !searchTerm && (
             <Typography variant="h4" component="h1" gutterBottom sx={{ mt: 2 }}>
-              Produkty z kategorii {categoryName}
+              Products from category {categoryName}
             </Typography>
           )}
 
@@ -77,7 +77,7 @@ const SearchPage: React.FC = () => {
             />
 
             <Typography variant="body2" color="text.secondary">
-              Liczba produktów: {sortedProducts.length}
+              Number of products: {sortedProducts.length}
             </Typography>
           </Box>
         </Box>
@@ -137,7 +137,7 @@ const SearchPage: React.FC = () => {
                   ))
                 ) : (
                   <Typography variant="body1" color="text.secondary" sx={{ mt: 4 }}>
-                    Brak produktów do wyświetlenia
+                    No products to display
                   </Typography>
                 )}
               </Box>

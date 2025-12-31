@@ -60,10 +60,10 @@ const UserOrdersPage: React.FC = () => {
     content = (
       <Box sx={{ textAlign: "center", py: 5 }}>
         <Typography variant="h6" color="text.secondary">
-          Brak złożonych zamówień.
+          No orders placed.
         </Typography>
         <Button variant="contained" sx={{ mt: 2 }}>
-          Rozpocznij zakupy
+          Start Shopping
         </Button>
       </Box>
     );
@@ -74,10 +74,10 @@ const UserOrdersPage: React.FC = () => {
           <TableHead sx={{ bgcolor: "grey.100" }}>
             <TableRow>
               <TableCell />
-              <TableCell>ID Zamówienia</TableCell>
+              <TableCell>Order ID</TableCell>
               <TableCell align="right">Data</TableCell>
               <TableCell align="right">Status</TableCell>
-              <TableCell align="right">Łączna kwota</TableCell>
+              <TableCell align="right">Total Amount</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -94,7 +94,7 @@ const UserOrdersPage: React.FC = () => {
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 6 }}>
         <Typography variant="h4" component="h1" gutterBottom fontWeight={700} sx={{ mb: 4 }}>
-          Moje Zamówienia
+          My Orders
         </Typography>
         {content}
       </Container>

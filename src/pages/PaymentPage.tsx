@@ -29,14 +29,14 @@ const PaymentPage: React.FC = () => {
     clearPaymentError();
     const success = await handlePayment(values);
     if (success) {
-      // Wyczyść koszyk po udanej płatności
+      // Clear cart after successful payment
       await clearCart();
-      // Przekieruj do strony potwierdzenia zamówienia z tokenem zabezpieczającym
+      // Redirect to order confirmation page with security token
       if (orderId) {
         const confirmationToken = crypto.randomUUID();
         navigate(`/order-confirmation/${orderId}/${confirmationToken}`);
       } else {
-        // Fallback - jeśli nie ma orderId, przekieruj na stronę główną
+        // Fallback - if there's no orderId, redirect to home page
         navigate("/");
       }
     }
@@ -53,10 +53,10 @@ const PaymentPage: React.FC = () => {
       <MainLayout>
         <Container maxWidth="lg" sx={{ py: 4 }}>
           <Typography variant="h5" color="text.secondary">
-            Twój koszyk jest pusty. Nie można przejść do płatności.
+            Your cart is empty. Cannot proceed to payment.
           </Typography>
           <Button variant="contained" sx={{ mt: 2 }} onClick={() => navigate("/cart")}>
-            Wróć do koszyka
+            Back to Cart
           </Button>
         </Container>
       </MainLayout>
@@ -69,13 +69,13 @@ const PaymentPage: React.FC = () => {
         <Box sx={{ mb: 4 }}>
           <Breadcrumbs
             items={[
-              { label: "Koszyk", path: "/cart" },
-              { label: "Dostawa i Płatność", path: orderId ? `/order/${orderId}` : "/order" },
-              { label: "Płatność" },
+              { label: "Cart", path: "/cart" },
+              { label: "Shipping and Payment", path: orderId ? `/order/${orderId}` : "/order" },
+              { label: "Payment" },
             ]}
           />
           <Typography variant="h4" gutterBottom sx={{ mt: 2 }}>
-            Płatność kartą
+            Card Payment
           </Typography>
         </Box>
 
@@ -91,7 +91,7 @@ const PaymentPage: React.FC = () => {
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 3 }}>
                 <CreditCardIcon color="primary" />
                 <Typography variant="h6" fontWeight={600}>
-                  Dane karty płatniczej
+                  Payment Card Information
                 </Typography>
               </Box>
 

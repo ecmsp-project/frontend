@@ -20,7 +20,7 @@ const SortFilter: React.FC<SortFilterProps> = ({ sortBy, onSortChange, anchorEl,
           onClose();
         }}
       >
-        Cena: od najniższej
+        Price: Lowest First
       </MenuItem>
       <MenuItem
         selected={sortBy === "price-desc"}
@@ -29,7 +29,7 @@ const SortFilter: React.FC<SortFilterProps> = ({ sortBy, onSortChange, anchorEl,
           onClose();
         }}
       >
-        Cena: od najwyższej
+        Price: Highest First
       </MenuItem>
     </Menu>
   );

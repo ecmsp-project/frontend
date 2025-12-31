@@ -78,7 +78,7 @@ export const useProductPage = () => {
     } catch (err) {
       console.error("Error loading variant details:", err);
       if (!silent) {
-        setError("Nie udało się załadować szczegółów produktu");
+        setError("Failed to load product details");
       }
     } finally {
       if (!silent) {
@@ -125,7 +125,7 @@ export const useProductPage = () => {
         await loadVariantProperties(id);
       } catch (err) {
         console.error("Error loading all variant details:", err);
-        setError("Nie udało się załadować produktu");
+        setError("Failed to load product");
       } finally {
         setLoading(false);
       }

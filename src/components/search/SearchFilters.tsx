@@ -47,7 +47,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
           },
         }}
       >
-        Sortuj
+        Sort
       </Button>
 
       <Button
@@ -64,7 +64,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
           },
         }}
       >
-        Kategoria
+        Category
         {categoryId && (
           <Chip
             label={categories.find((c) => c.id === categoryId)?.name}
@@ -89,10 +89,10 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({
           },
         }}
       >
-        Cena
+        Price
         {(priceRange[0] > 0 || priceRange[1] < 15_000) && (
           <Chip
-            label={`${priceRange[0]}-${priceRange[1]} zł`}
+            label={`${priceRange[0]}-${priceRange[1]} PLN`}
             size="small"
             onDelete={onPriceChipDelete}
             sx={{ ml: 1, height: 20 }}

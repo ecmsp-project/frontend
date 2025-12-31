@@ -51,10 +51,10 @@ const CheckoutPage: React.FC = () => {
       <MainLayout>
         <Container maxWidth="lg" sx={{ py: 4 }}>
           <Typography variant="h5" color="text.secondary">
-            Twój koszyk jest pusty. Nie można przejść do kasy.
+            Your cart is empty. Cannot proceed to checkout.
           </Typography>
           <Button variant="contained" sx={{ mt: 2 }} onClick={() => navigate("/cart")}>
-            Wróć do koszyka
+            Back to Cart
           </Button>
         </Container>
       </MainLayout>
@@ -66,10 +66,10 @@ const CheckoutPage: React.FC = () => {
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Box sx={{ mb: 4 }}>
           <Breadcrumbs
-            items={[{ label: "Koszyk", path: "/cart" }, { label: "Dostawa i Płatność" }]}
+            items={[{ label: "Cart", path: "/cart" }, { label: "Shipping and Payment" }]}
           />
           <Typography variant="h4" gutterBottom sx={{ mt: 2 }}>
-            Dostawa i Płatność
+            Shipping and Payment
           </Typography>
         </Box>
 

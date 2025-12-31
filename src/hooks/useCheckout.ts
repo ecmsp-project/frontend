@@ -37,7 +37,7 @@ interface CheckoutStorageData {
   isDiscountApplied: boolean;
 }
 
-// Funkcja pomocnicza do ładowania danych z sessionStorage
+// Helper function to load data from sessionStorage
 const loadCheckoutDataFromStorage = (
   orderId: string | null,
 ): Partial<CheckoutStorageData> | null => {
@@ -60,7 +60,7 @@ export const useCheckout = (initialOrderId?: string) => {
   const { cartItems } = useCartContext();
   const navigate = useNavigate();
 
-  // Załaduj dane z sessionStorage synchronicznie przy inicjalizacji
+  // Load data from sessionStorage synchronously on initialization
   const savedData = loadCheckoutDataFromStorage(initialOrderId || null);
 
   const [shippingModalOpen, setShippingModalOpen] = useState(false);
@@ -81,18 +81,18 @@ export const useCheckout = (initialOrderId?: string) => {
   );
   const [orderId, setOrderId] = useState<string | null>(initialOrderId || null);
 
-  // Użyj orderId z URL jeśli został przekazany i załaduj dane z storage
+  // Use orderId from URL if provided and load data from storage
   useEffect(() => {
     if (initialOrderId) {
-      // Ustaw orderId jeśli jeszcze nie jest ustawione
+      // Set orderId if not already set
       if (!orderId) {
         setOrderId(initialOrderId);
       }
 
-      // Załaduj dane z storage gdy initialOrderId się zmienia (np. gdy wracamy z PaymentPage)
+      // Load data from storage when initialOrderId changes (e.g., when returning from PaymentPage)
       const newSavedData = loadCheckoutDataFromStorage(initialOrderId);
       if (newSavedData) {
-        // Aktualizuj tylko jeśli dane są różne od obecnych (uniknij niepotrzebnych aktualizacji)
+        // Update only if data is different from current (avoid unnecessary updates)
         if (
           newSavedData.shippingData &&
           JSON.stringify(newSavedData.shippingData) !== JSON.stringify(shippingData)
@@ -124,18 +124,18 @@ export const useCheckout = (initialOrderId?: string) => {
     }
   }, [initialOrderId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Zapisz dane do sessionStorage gdy się zmieniają (ale nie przy pierwszym renderze jeśli dane są już w storage)
+  // Save data to sessionStorage when it changes (but not on first render if data is already in storage)
   useEffect(() => {
     if (orderId) {
-      // Sprawdź czy to pierwszy render z danymi z storage
+      // Check if this is the first render with data from storage
       const storageKey = getStorageKey(orderId);
       const existingData = sessionStorage.getItem(storageKey);
 
-      // Jeśli dane już istnieją i są takie same jak aktualne, nie zapisuj (uniknij niepotrzebnych zapisów)
+      // If data already exists and is the same as current, don't save (avoid unnecessary saves)
       if (existingData) {
         try {
           const parsed: CheckoutStorageData = JSON.parse(existingData);
-          // Porównaj tylko kluczowe pola, żeby uniknąć zapisu jeśli nic się nie zmieniło
+          // Compare only key fields to avoid saving if nothing changed
           if (
             JSON.stringify(parsed.shippingData) === JSON.stringify(shippingData) &&
             JSON.stringify(parsed.invoiceData) === JSON.stringify(invoiceData) &&
@@ -144,10 +144,10 @@ export const useCheckout = (initialOrderId?: string) => {
             parsed.discountCode === discountCode &&
             parsed.isDiscountApplied === isDiscountApplied
           ) {
-            return; // Nie zapisuj jeśli dane są identyczne
+            return; // Don't save if data is identical
           }
         } catch {
-          // Jeśli nie można sparsować, zapisz nowe dane
+          // If cannot parse, save new data
         }
       }
 
@@ -196,13 +196,13 @@ export const useCheckout = (initialOrderId?: string) => {
   const handleShippingSubmit = (values: ShippingFormValues) => {
     setShippingData(values);
     setShippingModalOpen(false);
-    // Dane zostaną automatycznie zapisane przez useEffect
+    // Data will be automatically saved by useEffect
   };
 
   const handleInvoiceSubmit = (values: InvoiceFormValues) => {
     setInvoiceData(values);
     setInvoiceModalOpen(false);
-    // Dane zostaną automatycznie zapisane przez useEffect
+    // Data will be automatically saved by useEffect
   };
 
   const handleInvoiceChange = (checked: boolean) => {
@@ -226,7 +226,7 @@ export const useCheckout = (initialOrderId?: string) => {
       setDiscountError(null);
     } else {
       setIsDiscountApplied(false);
-      setDiscountError("Nieprawidłowy kod rabatowy");
+      setDiscountError("Invalid discount code");
     }
   };
 
@@ -241,11 +241,11 @@ export const useCheckout = (initialOrderId?: string) => {
     }
 
     if (paymentMethod === "card") {
-      // Przekieruj do strony płatności kartą z orderId w URL
+      // Redirect to card payment page with orderId in URL
       const paymentId = crypto.randomUUID();
       navigate(`/payment/${paymentId}/${orderId}`);
     } else {
-      // Płatność przy odbiorze - przekieruj bezpośrednio do potwierdzenia z tokenem
+      // Cash on delivery - redirect directly to confirmation with token
       const confirmationToken = crypto.randomUUID();
       navigate(`/order-confirmation/${orderId}/${confirmationToken}`);
     }

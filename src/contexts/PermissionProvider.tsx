@@ -15,7 +15,7 @@ export function PermissionProvider({ children }: { children: ReactNode }) {
       setPermissionError(null);
     } catch (err) {
       console.error("Error fetching permissions:", err);
-      setPermissionError("Nie udało się załadować listy uprawnień.");
+      setPermissionError("Failed to load permissions list.");
     } finally {
       setLoadingPermissions(false);
     }

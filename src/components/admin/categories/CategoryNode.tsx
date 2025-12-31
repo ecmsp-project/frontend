@@ -87,11 +87,11 @@ const CategoryNode: React.FC<NodeProps> = ({ data }) => {
             size="small"
             color="primary"
             onClick={() => onAddLeaf(category.id)}
-            title="Dodaj podkategorię"
+            title="Add subcategory"
           >
             <AddIcon fontSize="small" />
           </IconButton>
-          <IconButton size="small" color="error" onClick={onDelete} title="Usuń kategorię">
+          <IconButton size="small" color="error" onClick={onDelete} title="Delete category">
             <DeleteIcon fontSize="small" />
           </IconButton>
         </Box>

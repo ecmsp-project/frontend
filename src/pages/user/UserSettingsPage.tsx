@@ -17,67 +17,67 @@ const UserSettingsPage: React.FC = () => {
   return (
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Breadcrumbs items={[{ label: "Panel użytkownika" }, { label: "Ustawienia" }]} />
+        <Breadcrumbs items={[{ label: "User Panel" }, { label: "Settings" }]} />
         <Typography variant="h4" gutterBottom>
-          Ustawienia
+          Settings
         </Typography>
 
         <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
           <Typography variant="h6" gutterBottom>
-            Zmiana hasła
+            Change Password
           </Typography>
           <Box component="form" sx={{ mt: 2 }}>
             <TextField
               fullWidth
-              label="Aktualne hasło"
+              label="Current Password"
               type="password"
               margin="normal"
               variant="outlined"
             />
             <TextField
               fullWidth
-              label="Nowe hasło"
+              label="New Password"
               type="password"
               margin="normal"
               variant="outlined"
             />
             <TextField
               fullWidth
-              label="Powtórz nowe hasło"
+              label="Repeat New Password"
               type="password"
               margin="normal"
               variant="outlined"
             />
             <Button variant="contained" color="primary" sx={{ mt: 2 }}>
-              Zmień hasło
+              Change Password
             </Button>
           </Box>
         </Paper>
 
         <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
           <Typography variant="h6" gutterBottom>
-            Powiadomienia
+            Notifications
           </Typography>
           <Box sx={{ mt: 2 }}>
             <FormControlLabel
               control={<Switch defaultChecked />}
-              label="Powiadomienia e-mail o zamówieniach"
+              label="Email notifications about orders"
             />
-            <FormControlLabel control={<Switch defaultChecked />} label="Newsletter z promocjami" />
-            <FormControlLabel control={<Switch />} label="Powiadomienia SMS" />
+            <FormControlLabel control={<Switch defaultChecked />} label="Newsletter with promotions" />
+            <FormControlLabel control={<Switch />} label="SMS Notifications" />
           </Box>
         </Paper>
 
         <Paper elevation={3} sx={{ p: 3 }}>
           <Typography variant="h6" gutterBottom color="error">
-            Strefa niebezpieczna
+            Danger Zone
           </Typography>
           <Divider sx={{ my: 2 }} />
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Usunięcie konta jest nieodwracalne. Wszystkie Twoje dane zostaną trwale usunięte.
+            Account deletion is irreversible. All your data will be permanently deleted.
           </Typography>
           <Button variant="outlined" color="error">
-            Usuń konto
+            Delete Account
           </Button>
         </Paper>
       </Container>

@@ -28,7 +28,7 @@ const Login: React.FC = () => {
     e.preventDefault();
 
     if (!email || !password) {
-      setError("Login i hasło są wymagane");
+      setError("Email and password are required");
       return;
     }
 
@@ -39,7 +39,7 @@ const Login: React.FC = () => {
       navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
-      setError("Logowanie nie powiodło się. Sprawdź login i hasło.");
+      setError("Login failed. Please check your email and password.");
     }
   };
 
@@ -83,10 +83,10 @@ const Login: React.FC = () => {
                 fontWeight={700}
                 color="primary.main"
               >
-                Zaloguj się
+                Sign In
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                Witaj ponownie w E-COMMERCE
+                Welcome back to E-COMMERCE
               </Typography>
             </Box>
 
@@ -110,14 +110,14 @@ const Login: React.FC = () => {
                 transition: "all 0.3s",
               }}
               startIcon={<GoogleIcon />}
-              onClick={() => console.log("Logowanie Google...")}
+              onClick={() => console.log("Google login...")}
             >
-              Zaloguj przez Google
+              Sign in with Google
             </Button>
 
             <Divider sx={{ my: 3 }}>
               <Typography variant="body2" color="text.secondary" sx={{ px: 2, fontWeight: 500 }}>
-                lub
+                or
               </Typography>
             </Divider>
 
@@ -142,7 +142,7 @@ const Login: React.FC = () => {
                 required
                 fullWidth
                 id="email"
-                label="Adres Email"
+                label="Email Address"
                 name="email"
                 autoComplete="email"
                 autoFocus
@@ -163,7 +163,7 @@ const Login: React.FC = () => {
                 required
                 fullWidth
                 name="password"
-                label="Hasło"
+                label="Password"
                 type="password"
                 id="password"
                 autoComplete="current-password"
@@ -193,7 +193,7 @@ const Login: React.FC = () => {
                   fontWeight: 500,
                 }}
               >
-                Zapomniałeś hasła?
+                Forgot password?
               </MuiLink>
 
               <Button
@@ -216,13 +216,13 @@ const Login: React.FC = () => {
                   transition: "all 0.3s",
                 }}
               >
-                Zaloguj się
+                Sign In
               </Button>
             </Box>
 
             <Box sx={{ textAlign: "center", mt: 3 }}>
               <Typography variant="body2" color="text.secondary" component="span">
-                Nie masz konta?{" "}
+                Don't have an account?{" "}
               </Typography>
               <MuiLink
                 component="button"
@@ -237,7 +237,7 @@ const Login: React.FC = () => {
                   },
                 }}
               >
-                Zarejestruj się!
+                Sign up!
               </MuiLink>
             </Box>
           </Card>

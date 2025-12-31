@@ -31,7 +31,7 @@ const PaymentMethodSection: React.FC<PaymentMethodSectionProps> = ({
       <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 3 }}>
         <PaymentIcon color="primary" />
         <Typography variant="h5" fontWeight={600}>
-          Metoda płatności
+          Payment Method
         </Typography>
       </Box>
       <Divider sx={{ mb: 3 }} />
@@ -65,7 +65,7 @@ const PaymentMethodSection: React.FC<PaymentMethodSectionProps> = ({
               >
                 <CreditCardIcon color={paymentMethod === "card" ? "primary" : "action"} />
                 <Typography fontWeight={paymentMethod === "card" ? 600 : 400}>
-                  Karta płatnicza
+                  Credit Card
                 </Typography>
               </Box>
             }
@@ -94,7 +94,7 @@ const PaymentMethodSection: React.FC<PaymentMethodSectionProps> = ({
               >
                 <LocalAtmIcon color={paymentMethod === "cod" ? "primary" : "action"} />
                 <Typography fontWeight={paymentMethod === "cod" ? 600 : 400}>
-                  Płatność przy odbiorze
+                  Cash on Delivery
                 </Typography>
               </Box>
             }

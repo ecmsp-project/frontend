@@ -78,7 +78,7 @@ const UserManagementPage: React.FC = () => {
     currentRoles: [],
   });
 
-  // Debounce search - wywołaj refetchUsers po 500ms od ostatniej zmiany
+  // Debounce search - call refetchUsers after 500ms from last change
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       refetchUsers(searchTerm || undefined);
@@ -88,7 +88,7 @@ const UserManagementPage: React.FC = () => {
   }, [searchTerm, refetchUsers]);
 
   const handleRemoveRole = async (userId: string, roleName: string) => {
-    if (!window.confirm(`Czy na pewno usunąć rolę ${roleName} użytkownikowi?`)) return;
+    if (!window.confirm(`Are you sure you want to remove role ${roleName} from the user?`)) return;
     try {
       await removeRoleFromUser(userId, roleName);
     } catch (err) {
@@ -114,7 +114,7 @@ const UserManagementPage: React.FC = () => {
   };
 
   const handleDeleteUser = async (userId: string) => {
-    if (!window.confirm("Czy na pewno chcesz usunąć tego użytkownika?")) return;
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
       await deleteUser(userId);
     } catch (err) {
@@ -127,13 +127,13 @@ const UserManagementPage: React.FC = () => {
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Breadcrumbs
           items={[
-            { label: "Panel administracyjny", path: "/admin" },
-            { label: "Użytkownicy" },
-            { label: "Zarządzanie użytkownikami" },
+            { label: "Admin Panel", path: "/admin" },
+            { label: "Users" },
+            { label: "User Management" },
           ]}
         />
         <Typography variant="h4" gutterBottom>
-          Zarządzanie Użytkownikami i Rolami
+          User and Role Management
         </Typography>
 
         {!canManageUsers && (
@@ -146,8 +146,7 @@ const UserManagementPage: React.FC = () => {
             }}
           >
             <Typography variant="body2" color="text.secondary">
-              Masz uprawnienia tylko do przeglądania. Aby zarządzać użytkownikami, wymagane jest
-              uprawnienie MANAGE_USERS.
+              You only have view permissions. To manage users, MANAGE_USERS permission is required.
             </Typography>
           </Box>
         )}
@@ -156,7 +155,7 @@ const UserManagementPage: React.FC = () => {
           <TextField
             fullWidth
             variant="outlined"
-            placeholder="Wyszukaj użytkownika po loginie..."
+            placeholder="Search user by login..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             InputProps={{
@@ -188,8 +187,8 @@ const UserManagementPage: React.FC = () => {
               <TableRow>
                 <TableCell sx={{ color: "white", fontWeight: 600 }}>ID</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: 600 }}>Login</TableCell>
-                <TableCell sx={{ color: "white", fontWeight: 600 }}>Rola</TableCell>
-                <TableCell sx={{ color: "white", fontWeight: 600 }}>Usuń Użytkownika</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: 600 }}>Role</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: 600 }}>Delete User</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -225,8 +224,8 @@ const UserManagementPage: React.FC = () => {
                         <Tooltip
                           title={
                             !canManageUsers
-                              ? "Brak uprawnień do zarządzania rolami użytkowników"
-                              : "Dodaj rolę"
+                              ? "No permission to manage user roles"
+                              : "Add role"
                           }
                         >
                           <span>
@@ -248,7 +247,7 @@ const UserManagementPage: React.FC = () => {
                     </TableCell>
                     <TableCell>
                       <Tooltip
-                        title={!canManageUsers ? "Brak uprawnień do usuwania użytkowników" : "Usuń"}
+                        title={!canManageUsers ? "No permission to delete users" : "Delete"}
                       >
                         <span>
                           <IconButton

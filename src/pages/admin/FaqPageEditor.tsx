@@ -20,33 +20,33 @@ import {
 } from "@mui/material";
 
 const defaultFaqSettings = {
-  pageTitle: "Najczęściej zadawane pytania",
-  pageSubtitle: "Nie mozesz znalezc odpowiedzi na swoje pytanie?",
+  pageTitle: "Frequently Asked Questions",
+  pageSubtitle: "Can't find the answer to your question?",
   faqItems: [
     {
       id: "faq1",
-      question: "Jak mogę złożyć zamówienie?",
+      question: "How can I place an order?",
       answer:
-        "Złożenie zamówienia jest bardzo proste! Wybierz interesujące Cię produkty, dodaj je do koszyka, przejdź do kasy i wypełnij formularz z danymi dostawy. Następnie wybierz metodę płatności i potwierdź zamówienie. Otrzymasz e-mail z potwierdzeniem zamówienia.",
+        "Placing an order is very simple! Select the products you're interested in, add them to your cart, proceed to checkout and fill out the delivery information form. Then choose your payment method and confirm the order. You will receive an email confirmation of your order.",
       expanded: true,
     },
     {
       id: "faq2",
-      question: "Jakie metody płatności akceptujecie?",
+      question: "What payment methods do you accept?",
       answer:
-        "Akceptujemy płatności kartą płatniczą (Visa, Mastercard), przelewem bankowym, płatności online (BLIK, Przelewy24), a także płatność przy odbiorze (za pobraniem). Wszystkie płatności są bezpieczne i szyfrowane.",
+        "We accept credit card payments (Visa, Mastercard), bank transfers, online payments (BLIK, Przelewy24), as well as cash on delivery. All payments are secure and encrypted.",
     },
     {
       id: "faq3",
-      question: "Ile kosztuje dostawa?",
+      question: "How much does shipping cost?",
       answer:
-        "Dostawa jest darmowa przy zamówieniach powyżej 200 zł. Dla zamówień poniżej tej kwoty koszt dostawy wynosi 15 zł. Oferujemy również dostawę kurierem ekspresową za 25 zł oraz odbiór osobisty w naszym sklepie stacjonarnym za darmo.",
+        "Shipping is free for orders over 200 PLN. For orders below this amount, shipping costs 15 PLN. We also offer express courier delivery for 25 PLN and free in-store pickup at our physical store.",
     },
     {
       id: "faq4",
-      question: "Jak mogę skontaktować się z obsługą klienta?",
+      question: "How can I contact customer service?",
       answer:
-        "Możesz skontaktować się z nami przez e-mail (sklep@naszasklep.pl), telefon (123-456-789) lub czat na stronie. Nasza obsługa klienta jest dostępna od poniedziałku do piątku w godzinach 9:00-17:00. Odpowiadamy na wiadomości w ciągu 24 godzin.",
+        "You can contact us by email (shop@ourshop.pl), phone (123-456-789) or chat on the website. Our customer service is available Monday through Friday from 9:00 AM to 5:00 PM. We respond to messages within 24 hours.",
     },
   ],
 };
@@ -58,7 +58,7 @@ const FaqPageEditor: React.FC = () => {
   const [showError, setShowError] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Inicjalizacja - pobierz dane z API
+  // Initialization - fetch data from API
   useEffect(() => {
     const initializeData = async () => {
       if (!isInitialized && !settings?.faqPage) {
@@ -67,18 +67,18 @@ const FaqPageEditor: React.FC = () => {
           setSettings({
             ...settings,
             hero: {
-              title: "Witaj w E-COMMERCE",
-              subtitle: "Odkryj najlepsze produkty w najlepszych cenach",
-              primaryButtonText: "Rozpocznij Zakupy",
-              secondaryButtonText: "Dowiedz Się Więcej",
+              title: "Welcome to E-COMMERCE",
+              subtitle: "Discover the best products at the best prices",
+              primaryButtonText: "Start Shopping",
+              secondaryButtonText: "Learn More",
             },
             features: [],
             categories: [],
-            categoriesTitle: "Popularne Kategorie",
-            categoriesSubtitle: "Odkryj nasze najlepsze kategorie produktów",
+            categoriesTitle: "Popular Categories",
+            categoriesSubtitle: "Discover our best product categories",
             footer: {
               shopName: "E-COMMERCE",
-              shopDescription: "Opis sklepu",
+              shopDescription: "Shop description",
               customerServiceHours: [],
               customerServicePhone: "",
               socialMedia: {
@@ -91,9 +91,9 @@ const FaqPageEditor: React.FC = () => {
             },
             headerShopName: "E-COMMERCE",
             contactPage: {
-              pageTitle: "Kontakt",
-              pageSubtitle: "Potrzebujesz pomocy?",
-              sectionTitle: "Dane kontaktowe",
+              pageTitle: "Contact",
+              pageSubtitle: "Need help?",
+              sectionTitle: "Contact Information",
               phone: "",
               phoneHours: "",
               email: "",
@@ -105,18 +105,18 @@ const FaqPageEditor: React.FC = () => {
           console.error("Failed to load FAQ data from CMS, using defaults:", error);
           setSettings({
             hero: {
-              title: "Witaj w E-COMMERCE",
-              subtitle: "Odkryj najlepsze produkty w najlepszych cenach",
-              primaryButtonText: "Rozpocznij Zakupy",
-              secondaryButtonText: "Dowiedz Się Więcej",
+              title: "Welcome to E-COMMERCE",
+              subtitle: "Discover the best products at the best prices",
+              primaryButtonText: "Start Shopping",
+              secondaryButtonText: "Learn More",
             },
             features: [],
             categories: [],
-            categoriesTitle: "Popularne Kategorie",
-            categoriesSubtitle: "Odkryj nasze najlepsze kategorie produktów",
+            categoriesTitle: "Popular Categories",
+            categoriesSubtitle: "Discover our best product categories",
             footer: {
               shopName: "E-COMMERCE",
-              shopDescription: "Opis sklepu",
+              shopDescription: "Shop description",
               customerServiceHours: [],
               customerServicePhone: "",
               socialMedia: {
@@ -129,9 +129,9 @@ const FaqPageEditor: React.FC = () => {
             },
             headerShopName: "E-COMMERCE",
             contactPage: {
-              pageTitle: "Kontakt",
-              pageSubtitle: "Potrzebujesz pomocy?",
-              sectionTitle: "Dane kontaktowe",
+              pageTitle: "Contact",
+              pageSubtitle: "Need help?",
+              sectionTitle: "Contact Information",
               phone: "",
               phoneHours: "",
               email: "",
@@ -163,10 +163,10 @@ const FaqPageEditor: React.FC = () => {
         faqItems: settings.faqPage.faqItems,
       };
 
-      // Zapisz używając nowego endpointu
+      // Save using the new endpoint
       await saveFaqSettings(faqSettings);
 
-      // Wyczyść cache FAQ, aby po powrocie na stronę FAQ widoczne były zaktualizowane dane
+      // Clear FAQ cache so updated data is visible when returning to FAQ page
       sessionStorage.removeItem("faq_cache");
 
       setDirty(false);
@@ -193,8 +193,8 @@ const FaqPageEditor: React.FC = () => {
     if (!settings?.faqPage) return;
     const newFaqItem: FaqItem = {
       id: `faq${Date.now()}`,
-      question: "Nowe pytanie",
-      answer: "Nowa odpowiedź",
+      question: "New question",
+      answer: "New answer",
     };
     setSettings({
       ...settings,
@@ -274,7 +274,7 @@ const FaqPageEditor: React.FC = () => {
                   cursor: "pointer",
                 }}
               >
-                Skontaktuj się z nami!
+                Contact us!
               </Link>
             </Typography>
           </Box>
@@ -335,7 +335,7 @@ const FaqPageEditor: React.FC = () => {
               </Box>
             ))}
 
-            {/* Przycisk dodawania nowego FAQ */}
+            {/* Button for adding new FAQ */}
             <Card
               elevation={0}
               sx={{
@@ -359,7 +359,7 @@ const FaqPageEditor: React.FC = () => {
               <Box>
                 <AddIcon sx={{ fontSize: 48, color: "success.main", mb: 1 }} />
                 <Typography variant="h6" color="success.main">
-                  Dodaj Pytanie
+                  Add Question
                 </Typography>
               </Box>
             </Card>
@@ -374,7 +374,7 @@ const FaqPageEditor: React.FC = () => {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert severity="success" onClose={() => setShowSuccess(false)}>
-          Zmiany zostały zapisane pomyślnie!
+          Changes have been saved successfully!
         </Alert>
       </Snackbar>
 
@@ -385,7 +385,7 @@ const FaqPageEditor: React.FC = () => {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
         <Alert severity="error" onClose={() => setShowError(false)}>
-          Błąd podczas zapisywania zmian
+          Error saving changes
         </Alert>
       </Snackbar>
     </>

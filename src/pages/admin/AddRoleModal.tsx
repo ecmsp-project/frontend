@@ -64,11 +64,11 @@ const AddRoleModal: React.FC<AddRoleModalProps> = ({
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
       <DialogTitle>
-        {readOnly ? "Podgląd ról użytkownika" : "Dodaj rolę dla użytkownika"}: **{userName}**
+        {readOnly ? "View user roles" : "Add role for user"}: **{userName}**
       </DialogTitle>
       <DialogContent dividers>
         {availableRoles.length === 0 ? (
-          <Alert severity="info">Wszystkie role zostały już przypisane temu użytkownikowi.</Alert>
+          <Alert severity="info">All roles have already been assigned to this user.</Alert>
         ) : (
           <>
             {saveError && (
@@ -78,7 +78,7 @@ const AddRoleModal: React.FC<AddRoleModalProps> = ({
             )}
             {readOnly && (
               <Alert severity="warning" sx={{ mb: 2 }}>
-                Brak uprawnień do dodawania ról użytkownikom.
+                No permission to add roles to users.
               </Alert>
             )}
             <Select
@@ -89,7 +89,7 @@ const AddRoleModal: React.FC<AddRoleModalProps> = ({
               disabled={isSaving || readOnly}
             >
               <MenuItem value="" disabled>
-                Wybierz nową rolę
+                Select a new role
               </MenuItem>
               {availableRoles.map((role) => (
                 <MenuItem key={role.name} value={role.name}>
@@ -102,7 +102,7 @@ const AddRoleModal: React.FC<AddRoleModalProps> = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={isSaving}>
-          {readOnly ? "Zamknij" : "Anuluj"}
+          {readOnly ? "Close" : "Cancel"}
         </Button>
         {!readOnly && (
           <Button
@@ -111,7 +111,7 @@ const AddRoleModal: React.FC<AddRoleModalProps> = ({
             variant="contained"
             disabled={isSaving || !selectedRoleName || availableRoles.length === 0}
           >
-            {isSaving ? <CircularProgress size={24} /> : "Dodaj Rolę"}
+            {isSaving ? <CircularProgress size={24} /> : "Add Role"}
           </Button>
         )}
       </DialogActions>

@@ -16,14 +16,14 @@ const initialVariantValues: VariantFormValues = {
 
 const variantValidationSchema = Yup.object({
   price: Yup.number()
-    .typeError("Cena musi być liczbą")
-    .positive("Cena musi być większa od zera")
-    .required("Cena jest wymagana"),
+    .typeError("Price must be a number")
+    .positive("Price must be greater than zero")
+    .required("Price is required"),
   stockQuantity: Yup.number()
-    .typeError("Ilość musi być liczbą")
-    .min(0, "Ilość nie może być ujemna")
-    .required("Ilość jest wymagana"),
-  imageUrl: Yup.string().url("Niepoprawny URL").required("Adres URL obrazu jest wymagany"),
+    .typeError("Quantity must be a number")
+    .min(0, "Quantity cannot be negative")
+    .required("Quantity is required"),
+  imageUrl: Yup.string().url("Invalid URL").required("Image URL is required"),
   description: Yup.string().optional(),
 });
 
@@ -44,7 +44,7 @@ const CreateVariantForm: React.FC<CreateVariantFormProps> = ({ onSubmit }) => {
             <Grid container spacing={3}>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Cena Wariantu (PLN)*
+                  Variant Price (PLN)*
                 </Typography>
                 <Field
                   as={TextField}
@@ -59,7 +59,7 @@ const CreateVariantForm: React.FC<CreateVariantFormProps> = ({ onSubmit }) => {
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Ilość w magazynie*
+                  Stock Quantity*
                 </Typography>
                 <Field
                   as={TextField}
@@ -74,20 +74,20 @@ const CreateVariantForm: React.FC<CreateVariantFormProps> = ({ onSubmit }) => {
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  URL Obrazu*
+                  Image URL*
                 </Typography>
                 <Field
                   as={TextField}
                   fullWidth
                   name="imageUrl"
-                  placeholder="https://example.com/obraz.jpg"
+                  placeholder="https://example.com/image.jpg"
                   error={touched.imageUrl && Boolean(errors.imageUrl)}
                   helperText={touched.imageUrl && errors.imageUrl}
                 />
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Opis Wariantu
+                  Variant Description
                 </Typography>
                 <Field
                   as={TextField}
@@ -95,12 +95,12 @@ const CreateVariantForm: React.FC<CreateVariantFormProps> = ({ onSubmit }) => {
                   name="description"
                   multiline
                   rows={3}
-                  placeholder="np. Kolor: Czerwony, Rozmiar: XL"
+                  placeholder="e.g. Color: Red, Size: XL"
                 />
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Dodatkowe Atrybuty (JSON)
+                  Additional Attributes (JSON)
                 </Typography>
                 <TextField
                   fullWidth
@@ -115,13 +115,13 @@ const CreateVariantForm: React.FC<CreateVariantFormProps> = ({ onSubmit }) => {
                   color="text.secondary"
                   sx={{ mt: 0.5 }}
                 >
-                  Wprowadź poprawny obiekt JSON z dodatkowymi atrybutami wariantu.
+                  Enter a valid JSON object with additional variant attributes.
                 </Typography>
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Box sx={{ mt: 1, display: "flex", justifyContent: "flex-end" }}>
                   <Button type="submit" variant="contained" color="primary">
-                    {"Utwórz wariant"}
+                    {"Create Variant"}
                   </Button>
                 </Box>
               </Grid>

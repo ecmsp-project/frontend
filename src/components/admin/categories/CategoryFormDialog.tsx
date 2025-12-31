@@ -35,8 +35,8 @@ interface CategoryFormDialogProps {
 
 const validationSchema = Yup.object({
   name: Yup.string()
-    .required("Nazwa kategorii jest wymagana")
-    .max(255, "Nazwa nie może być dłuższa niż 255 znaków")
+    .required("Category name is required")
+    .max(255, "Name cannot be longer than 255 characters")
     .trim(),
 });
 
@@ -86,12 +86,12 @@ const CategoryHierarchyVisualizer: React.FC<{
           <Chip
             label={
               role === "parent"
-                ? "Rodzic"
+                ? "Parent"
                 : role === "new"
-                  ? "Nowa kategoria"
+                  ? "New category"
                   : role === "child"
-                    ? "Dziecko"
-                    : "Kategoria główna"
+                    ? "Child"
+                    : "Root category"
             }
             size="small"
             sx={{
@@ -123,11 +123,11 @@ const CategoryHierarchyVisualizer: React.FC<{
     return (
       <Box sx={{ my: 3 }}>
         <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: "text.secondary" }}>
-          Struktura hierarchii:
+          Hierarchy structure:
         </Typography>
-        <CategoryBox name="[Nowa kategoria]" role="root" icon={<RootIcon />} />
+        <CategoryBox name="[New category]" role="root" icon={<RootIcon />} />
         <Alert severity="info" sx={{ mt: 2 }}>
-          Kategoria zostanie dodana jako kategoria główna (bez rodzica)
+          Category will be added as a root category (without parent)
         </Alert>
       </Box>
     );
@@ -137,13 +137,13 @@ const CategoryHierarchyVisualizer: React.FC<{
     return (
       <Box sx={{ my: 3 }}>
         <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: "text.secondary" }}>
-          Struktura hierarchii:
+          Hierarchy structure:
         </Typography>
         <CategoryBox name={parentCategoryName} role="parent" icon={<CategoryIcon />} />
         <Arrow />
-        <CategoryBox name="[Nowa kategoria]" role="new" icon={<AddIcon />} />
+        <CategoryBox name="[New category]" role="new" icon={<AddIcon />} />
         <Alert severity="success" sx={{ mt: 2 }}>
-          Nowa kategoria będzie podkategorią kategorii <strong>{parentCategoryName}</strong>
+          New category will be a subcategory of <strong>{parentCategoryName}</strong>
         </Alert>
       </Box>
     );
@@ -153,15 +153,15 @@ const CategoryHierarchyVisualizer: React.FC<{
     return (
       <Box sx={{ my: 3 }}>
         <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: "text.secondary" }}>
-          Struktura hierarchii:
+          Hierarchy structure:
         </Typography>
         <CategoryBox name={parentCategoryName} role="parent" icon={<CategoryIcon />} />
         <Arrow />
-        <CategoryBox name="[Nowa kategoria]" role="new" icon={<AddIcon />} />
+        <CategoryBox name="[New category]" role="new" icon={<AddIcon />} />
         <Arrow />
         <CategoryBox name={childCategoryName} role="child" icon={<CategoryIcon />} />
         <Alert severity="warning" sx={{ mt: 2 }}>
-          Nowa kategoria zostanie wstawiona między <strong>{parentCategoryName}</strong> a{" "}
+          New category will be inserted between <strong>{parentCategoryName}</strong> and{" "}
           <strong>{childCategoryName}</strong>
         </Alert>
       </Box>
@@ -185,13 +185,13 @@ const CategoryFormDialog: React.FC<CategoryFormDialogProps> = ({
   const getDialogTitle = () => {
     switch (mode) {
       case "LEAF":
-        return parentCategoryName ? "Dodaj podkategorię" : "Dodaj kategorię główną";
+        return parentCategoryName ? "Add subcategory" : "Add root category";
       case "SPLIT":
-        return "Dodaj kategorię między węzłami";
+        return "Add category between nodes";
       case "SPLIT_ALL":
-        return "Dodaj kategorię i przesuń wszystkie podkategorie";
+        return "Add category and move all subcategories";
       default:
-        return "Dodaj kategorię";
+        return "Add category";
     }
   };
 
@@ -202,7 +202,7 @@ const CategoryFormDialog: React.FC<CategoryFormDialogProps> = ({
       // onClose will be called by parent after successful submit
     } catch (err: any) {
       console.error("Error submitting category:", err);
-      setError(err?.message || "Wystąpił błąd podczas tworzenia kategorii");
+      setError(err?.message || "An error occurred while creating the category");
       setSubmitting(false);
     }
   };
@@ -258,13 +258,13 @@ const CategoryFormDialog: React.FC<CategoryFormDialogProps> = ({
                   variant="subtitle2"
                   sx={{ mb: 1.5, fontWeight: 600, color: "text.secondary" }}
                 >
-                  Wprowadź nazwę nowej kategorii:
+                  Enter the name of the new category:
                 </Typography>
                 <TextField
                   fullWidth
                   name="name"
-                  label="Nazwa kategorii"
-                  placeholder="np. Elektronika, Smartfony..."
+                  label="Category Name"
+                  placeholder="e.g. Electronics, Smartphones..."
                   value={values.name}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -295,7 +295,7 @@ const CategoryFormDialog: React.FC<CategoryFormDialogProps> = ({
 
             <DialogActions sx={{ px: 3, pb: 2.5 }}>
               <Button onClick={handleClose} disabled={isSubmitting} sx={{ px: 3 }}>
-                Anuluj
+                Cancel
               </Button>
               <Button
                 type="submit"
@@ -309,7 +309,7 @@ const CategoryFormDialog: React.FC<CategoryFormDialogProps> = ({
                   },
                 }}
               >
-                {isSubmitting ? "Tworzenie..." : "Dodaj kategorię"}
+                {isSubmitting ? "Creating..." : "Add Category"}
               </Button>
             </DialogActions>
           </Form>

@@ -26,16 +26,16 @@ const CMSPage: React.FC = () => {
         <Box sx={{ mb: 4 }}>
           <Breadcrumbs
             items={[
-              { label: "Panel administracyjny", path: "/admin" },
-              { label: "Sklep" },
-              { label: "Zarządzanie Treścią Strony" },
+              { label: "Admin Panel", path: "/admin" },
+              { label: "Shop" },
+              { label: "Page Content Management" },
             ]}
           />
           <Typography variant="h4" gutterBottom>
-            Zarządzanie Treścią Strony
+            Page Content Management
           </Typography>
           <Typography variant="body1" color="text.secondary">
-            Edytuj zawartość stron internetowych w prosty sposób
+            Edit website content in a simple way
           </Typography>
         </Box>
 
@@ -67,16 +67,15 @@ const CMSPage: React.FC = () => {
                   </Box>
                   <Box>
                     <Typography variant="h6" fontWeight={600}>
-                      Strona Główna
+                      Home Page
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Edytuj hero section, kafelki i kategorie
+                      Edit hero section, tiles and categories
                     </Typography>
                   </Box>
                 </Box>
                 <Typography variant="body2" sx={{ mb: 2 }}>
-                  Dostosuj wygląd strony głównej: teksty, obrazy, kafelki z funkcjami oraz
-                  wyświetlane kategorie produktów.
+                  Customize the home page appearance: texts, images, feature tiles and displayed product categories.
                 </Typography>
               </CardContent>
               <CardActions sx={{ p: 2, pt: 0 }}>
@@ -87,7 +86,7 @@ const CMSPage: React.FC = () => {
                   onClick={() => navigate("/admin/cms/home/edit")}
                   sx={{ textTransform: "none", py: 1 }}
                 >
-                  Edytuj Stronę Główną
+                  Edit Home Page
                 </Button>
               </CardActions>
             </Card>
@@ -120,16 +119,15 @@ const CMSPage: React.FC = () => {
                   </Box>
                   <Box>
                     <Typography variant="h6" fontWeight={600}>
-                      Strona Kontaktowa
+                      Contact Page
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Edytuj informacje kontaktowe
+                      Edit contact information
                     </Typography>
                   </Box>
                 </Box>
                 <Typography variant="body2" sx={{ mb: 2 }}>
-                  Zaktualizuj dane kontaktowe: adres, telefon, email oraz godziny otwarcia biura
-                  obsługi klienta.
+                  Update contact information: address, phone, email and customer service office hours.
                 </Typography>
               </CardContent>
               <CardActions sx={{ p: 2, pt: 0 }}>
@@ -140,7 +138,7 @@ const CMSPage: React.FC = () => {
                   onClick={() => navigate("/admin/cms/contact/edit")}
                   sx={{ textTransform: "none", py: 1 }}
                 >
-                  Edytuj Stronę Kontaktową
+                  Edit Contact Page
                 </Button>
               </CardActions>
             </Card>
@@ -173,16 +171,15 @@ const CMSPage: React.FC = () => {
                   </Box>
                   <Box>
                     <Typography variant="h6" fontWeight={600}>
-                      Strona FAQ
+                      FAQ Page
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Edytuj najczęściej zadawane pytania
+                      Edit frequently asked questions
                     </Typography>
                   </Box>
                 </Box>
                 <Typography variant="body2" sx={{ mb: 2 }}>
-                  Zarządzaj pytaniami i odpowiedziami: dodawaj, edytuj i usuwaj pytania z sekcji
-                  FAQ.
+                  Manage questions and answers: add, edit and delete questions from the FAQ section.
                 </Typography>
               </CardContent>
               <CardActions sx={{ p: 2, pt: 0 }}>
@@ -193,7 +190,7 @@ const CMSPage: React.FC = () => {
                   onClick={() => navigate("/admin/cms/faq/edit")}
                   sx={{ textTransform: "none", py: 1 }}
                 >
-                  Edytuj Stronę FAQ
+                  Edit FAQ Page
                 </Button>
               </CardActions>
             </Card>
@@ -205,17 +202,17 @@ const CMSPage: React.FC = () => {
           sx={{ p: 3, mt: 4, bgcolor: "info.light", color: "info.contrastText" }}
         >
           <Typography variant="h6" gutterBottom fontWeight={600}>
-            Instrukcja
+            Instructions
           </Typography>
           <Typography variant="body2">
-            • Kliknij na tekst aby go edytować
+            • Click on text to edit it
             <br />
-            • Użyj narzędzi edycji aby zmienić rozmiar czcionki i formatowanie
+            • Use editing tools to change font size and formatting
             <br />
-            • Kafelki można usuwać klikając krzyżyk w prawym górnym rogu
+            • Tiles can be removed by clicking the X in the top right corner
             <br />
-            • Dodaj nowe kafelki klikając przycisk "+ Dodaj"
-            <br />• Pamiętaj o zapisaniu zmian przed opuszczeniem strony
+            • Add new tiles by clicking the "+ Add" button
+            <br />• Remember to save changes before leaving the page
           </Typography>
         </Paper>
       </Container>
