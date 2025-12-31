@@ -81,7 +81,7 @@ const PaymentSummary: React.FC<PaymentSummaryProps> = ({
         }}
       >
         <Typography variant="h6" fontWeight={700}>
-          RAZEM:
+          TOTAL:
         </Typography>
         <Typography variant="h5" color="primary.main" fontWeight={700}>
           {total.toFixed(2)} PLN

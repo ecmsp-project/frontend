@@ -15,7 +15,7 @@ const CreateProductPage: React.FC = () => {
     <MainLayout>
       <Container maxWidth="md" sx={{ py: 6 }}>
         <Typography variant="h4" component="h1" gutterBottom fontWeight={700} sx={{ mb: 4 }}>
-          Dodaj Nowy Produkt
+          Add New Product
         </Typography>
         <Paper elevation={3}>
           <CreateProductForm onSubmit={handleFormSubmit} />

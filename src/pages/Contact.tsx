@@ -170,7 +170,7 @@ const Contact: React.FC = () => {
                         fontWeight: 500,
                       }}
                     >
-                      {contactContent?.email || "zamowienia@sklep.pl"}
+                      {contactContent?.email || "orders@shop.pl"}
                     </Typography>
                     <Typography sx={{ fontSize: "0.875rem", color: "text.secondary" }}>
                       {contactContent?.emailDescription || "Orders"}

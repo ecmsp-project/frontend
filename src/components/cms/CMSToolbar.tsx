@@ -26,10 +26,10 @@ const CMSToolbar: React.FC<CMSToolbarProps> = ({ onSave, isDirty, isSaving = fal
       <Toolbar>
         <EditIcon sx={{ mr: 1 }} />
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Tryb Edycji
+          Edit Mode
         </Typography>
 
-        {isDirty && <Chip label="Niezapisane zmiany" color="error" size="small" sx={{ mr: 2 }} />}
+        {isDirty && <Chip label="Unsaved changes" color="error" size="small" sx={{ mr: 2 }} />}
 
         <Box sx={{ display: "flex", gap: 1 }}>
           <Button
@@ -40,7 +40,7 @@ const CMSToolbar: React.FC<CMSToolbarProps> = ({ onSave, isDirty, isSaving = fal
             disabled={isSaving}
             sx={{ color: "white" }}
           >
-            {isSaving ? "Zapisywanie..." : "Zapisz Zmiany"}
+            {isSaving ? "Saving..." : "Save Changes"}
           </Button>
           <Button
             variant="outlined"
@@ -48,7 +48,7 @@ const CMSToolbar: React.FC<CMSToolbarProps> = ({ onSave, isDirty, isSaving = fal
             onClick={() => navigate("/admin/cms")}
             sx={{ borderColor: "white", color: "white", "&:hover": { borderColor: "white" } }}
           >
-            Zamknij
+            Close
           </Button>
         </Box>
       </Toolbar>

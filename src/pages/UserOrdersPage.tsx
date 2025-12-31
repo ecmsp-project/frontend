@@ -63,7 +63,7 @@ const UserOrdersPage: React.FC = () => {
           No orders placed.
         </Typography>
         <Button variant="contained" sx={{ mt: 2 }}>
-          Rozpocznij zakupy
+          Start Shopping
         </Button>
       </Box>
     );

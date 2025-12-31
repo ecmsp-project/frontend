@@ -119,10 +119,10 @@ const EditableLink: React.FC<EditableLinkProps> = ({
               startIcon={<CloseIcon />}
               size="small"
             >
-              Anuluj
+              Cancel
             </Button>
             <Button variant="contained" onClick={handleSave} startIcon={<CheckIcon />} size="small">
-              Zapisz
+              Save
             </Button>
           </Box>
         </Box>

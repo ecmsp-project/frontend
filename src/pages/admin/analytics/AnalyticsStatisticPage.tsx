@@ -8,7 +8,7 @@ const AnalyticsStatisticPage: React.FC = () => {
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Breadcrumbs
           items={[
-            { label: "Panel administracyjny" },
+            { label: "Admin Panel" },
             { label: "Analytics" },
             { label: "Product Analysis" },
           ]}

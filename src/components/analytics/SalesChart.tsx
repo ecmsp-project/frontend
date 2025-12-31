@@ -296,7 +296,7 @@ const SalesChart: React.FC<SalesChartProps> = ({ salesData, loading }) => {
               </Typography>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
                 <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                  PLN/szt.
+                  PLN/unit
                 </Typography>
                 {trendPercentage !== 0 && (
                   <Chip

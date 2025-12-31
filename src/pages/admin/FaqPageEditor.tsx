@@ -58,7 +58,7 @@ const FaqPageEditor: React.FC = () => {
   const [showError, setShowError] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Inicjalizacja - pobierz dane z API
+  // Initialization - fetch data from API
   useEffect(() => {
     const initializeData = async () => {
       if (!isInitialized && !settings?.faqPage) {
@@ -67,18 +67,18 @@ const FaqPageEditor: React.FC = () => {
           setSettings({
             ...settings,
             hero: {
-              title: "Witaj w E-COMMERCE",
-              subtitle: "Odkryj najlepsze produkty w najlepszych cenach",
-              primaryButtonText: "Rozpocznij Zakupy",
+              title: "Welcome to E-COMMERCE",
+              subtitle: "Discover the best products at the best prices",
+              primaryButtonText: "Start Shopping",
               secondaryButtonText: "Learn More",
             },
             features: [],
             categories: [],
-            categoriesTitle: "Popularne Kategorie",
+            categoriesTitle: "Popular Categories",
             categoriesSubtitle: "Discover our best product categories",
             footer: {
               shopName: "E-COMMERCE",
-              shopDescription: "Opis sklepu",
+              shopDescription: "Shop description",
               customerServiceHours: [],
               customerServicePhone: "",
               socialMedia: {
@@ -91,9 +91,9 @@ const FaqPageEditor: React.FC = () => {
             },
             headerShopName: "E-COMMERCE",
             contactPage: {
-              pageTitle: "Kontakt",
-              pageSubtitle: "Potrzebujesz pomocy?",
-              sectionTitle: "Dane kontaktowe",
+              pageTitle: "Contact",
+              pageSubtitle: "Need help?",
+              sectionTitle: "Contact Information",
               phone: "",
               phoneHours: "",
               email: "",
@@ -105,18 +105,18 @@ const FaqPageEditor: React.FC = () => {
           console.error("Failed to load FAQ data from CMS, using defaults:", error);
           setSettings({
             hero: {
-              title: "Witaj w E-COMMERCE",
-              subtitle: "Odkryj najlepsze produkty w najlepszych cenach",
-              primaryButtonText: "Rozpocznij Zakupy",
+              title: "Welcome to E-COMMERCE",
+              subtitle: "Discover the best products at the best prices",
+              primaryButtonText: "Start Shopping",
               secondaryButtonText: "Learn More",
             },
             features: [],
             categories: [],
-            categoriesTitle: "Popularne Kategorie",
+            categoriesTitle: "Popular Categories",
             categoriesSubtitle: "Discover our best product categories",
             footer: {
               shopName: "E-COMMERCE",
-              shopDescription: "Opis sklepu",
+              shopDescription: "Shop description",
               customerServiceHours: [],
               customerServicePhone: "",
               socialMedia: {
@@ -129,9 +129,9 @@ const FaqPageEditor: React.FC = () => {
             },
             headerShopName: "E-COMMERCE",
             contactPage: {
-              pageTitle: "Kontakt",
-              pageSubtitle: "Potrzebujesz pomocy?",
-              sectionTitle: "Dane kontaktowe",
+              pageTitle: "Contact",
+              pageSubtitle: "Need help?",
+              sectionTitle: "Contact Information",
               phone: "",
               phoneHours: "",
               email: "",
@@ -193,7 +193,7 @@ const FaqPageEditor: React.FC = () => {
     if (!settings?.faqPage) return;
     const newFaqItem: FaqItem = {
       id: `faq${Date.now()}`,
-      question: "Nowe pytanie",
+      question: "New question",
       answer: "New answer",
     };
     setSettings({
@@ -335,7 +335,7 @@ const FaqPageEditor: React.FC = () => {
               </Box>
             ))}
 
-            {/* Przycisk dodawania nowego FAQ */}
+            {/* Button for adding new FAQ */}
             <Card
               elevation={0}
               sx={{

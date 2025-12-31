@@ -6,9 +6,9 @@ const AddProductPage: React.FC = () => {
   return (
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Breadcrumbs items={[{ label: "Panel administracyjny" }, { label: "Dodaj Produkt" }]} />
+        <Breadcrumbs items={[{ label: "Admin Panel" }, { label: "Add Product" }]} />
         <Typography variant="h4" gutterBottom>
-          Dodaj Produkt
+          Add Product
         </Typography>
         Not implemented yet
       </Container>

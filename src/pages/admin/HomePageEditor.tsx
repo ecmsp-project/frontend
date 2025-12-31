@@ -314,7 +314,7 @@ const SortableCategoryItem: React.FC<SortableCategoryItemProps> = ({
             </Tooltip>
 
             {category.subCategoryCount > 0 && (
-              <Tooltip title="Liczba podkategorii">
+              <Tooltip title="Number of subcategories">
                 <Box
                   sx={{
                     display: "flex",
@@ -330,7 +330,7 @@ const SortableCategoryItem: React.FC<SortableCategoryItemProps> = ({
                     {category.subCategoryCount}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    podkat.
+                    subcategories.
                   </Typography>
                 </Box>
               </Tooltip>
@@ -345,28 +345,28 @@ const SortableCategoryItem: React.FC<SortableCategoryItemProps> = ({
 // Mock initial data
 const defaultSettings = {
   hero: {
-    title: "Witaj w E-COMMERCE",
-    subtitle: "Odkryj najlepsze produkty w najlepszych cenach",
-    primaryButtonText: "Rozpocznij Zakupy",
+    title: "Welcome to E-COMMERCE",
+    subtitle: "Discover the best products at the best prices",
+    primaryButtonText: "Start Shopping",
     secondaryButtonText: "Learn More",
   },
   features: [
     {
       id: "f1",
       icon: "TrendingUpIcon",
-      title: "Najlepsze Ceny",
-      description: "Konkurencyjne ceny na rynku",
+      title: "Best Prices",
+      description: "Competitive market prices",
     },
     {
       id: "f2",
       icon: "LocalShippingIcon",
-      title: "Darmowa Dostawa",
+      title: "Free Shipping",
       description: "For orders over 100 PLN",
     },
     {
       id: "f3",
       icon: "VerifiedUserIcon",
-      title: "Bezpieczne Zakupy",
+      title: "Secure Shopping",
       description: "Money-back guarantee",
     },
   ],
@@ -414,7 +414,7 @@ const defaultSettings = {
       color: "#795548",
     },
   ],
-  categoriesTitle: "Popularne Kategorie",
+  categoriesTitle: "Popular Categories",
   categoriesSubtitle: "Discover our best product categories",
   footer: {
     shopName: "E-COMMERCE",
@@ -432,12 +432,12 @@ const defaultSettings = {
   },
   headerShopName: "E-COMMERCE",
   contactPage: {
-    pageTitle: "Kontakt",
-    pageSubtitle: "Potrzebujesz pomocy?",
-    sectionTitle: "Dane kontaktowe",
+    pageTitle: "Contact",
+    pageSubtitle: "Need help?",
+    sectionTitle: "Contact Information",
     phone: "22 299 00 89",
     phoneHours: "Monday - Friday 9:00 AM - 7:00 PM",
-    email: "zamowienia@sklep.pl",
+    email: "orders@shop.pl",
     emailDescription: "Orders",
   },
 };
@@ -453,7 +453,7 @@ const HomePageEditor: React.FC = () => {
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Sensors dla drag and drop
+  // Sensors for drag and drop
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -543,7 +543,7 @@ const HomePageEditor: React.FC = () => {
       sessionStorage.removeItem("homepage_cache");
       sessionStorage.removeItem("homepage_categories");
 
-      // Zaktualizuj lokalny stan
+      // Update local state
       const updatedSettings = {
         ...settings,
         selectedCategoryIds: selectedCategoryIds,
@@ -732,8 +732,8 @@ const HomePageEditor: React.FC = () => {
                         const newFeature = {
                           id: `f${Date.now()}`,
                           icon: "TrendingUpIcon",
-                          title: "Nowy Kafelek",
-                          description: "Opis kafelka",
+                          title: "New Tile",
+                          description: "Tile description",
                         };
                         setSettings({ ...settings, features: [...settings.features, newFeature] });
                         setDirty(true);
@@ -742,7 +742,7 @@ const HomePageEditor: React.FC = () => {
                       <Box>
                         <AddIcon sx={{ fontSize: 48, color: "success.main", mb: 2 }} />
                         <Typography variant="h6" color="success.main">
-                          Dodaj Kafelek
+                          Add Tile
                         </Typography>
                       </Box>
                     </Card>
@@ -940,7 +940,7 @@ const HomePageEditor: React.FC = () => {
                         setDirty(true);
                       }}
                       icon={<FacebookIcon fontSize="small" />}
-                      label="Link do Facebook"
+                      label="Facebook Link"
                       isEditMode={true}
                     />
                   </Box>
@@ -968,7 +968,7 @@ const HomePageEditor: React.FC = () => {
                         setDirty(true);
                       }}
                       icon={<TwitterIcon fontSize="small" />}
-                      label="Link do Twitter"
+                      label="Twitter Link"
                       isEditMode={true}
                     />
                   </Box>
@@ -996,7 +996,7 @@ const HomePageEditor: React.FC = () => {
                         setDirty(true);
                       }}
                       icon={<InstagramIcon fontSize="small" />}
-                      label="Link do Instagram"
+                      label="Instagram Link"
                       isEditMode={true}
                     />
                   </Box>
@@ -1024,7 +1024,7 @@ const HomePageEditor: React.FC = () => {
                         setDirty(true);
                       }}
                       icon={<LinkedInIcon fontSize="small" />}
-                      label="Link do LinkedIn"
+                      label="LinkedIn Link"
                       isEditMode={true}
                     />
                   </Box>
@@ -1219,7 +1219,7 @@ const HomePageEditor: React.FC = () => {
                               </Typography>
                               <Typography variant="caption" color="text.secondary">
                                 {category.subCategoryCount}{" "}
-                                {category.subCategoryCount === 1 ? "podkategoria" : "podkategorii"}
+                                {category.subCategoryCount === 1 ? "subcategory" : "subcategories"}
                               </Typography>
                             </>
                           )}

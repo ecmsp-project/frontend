@@ -112,9 +112,9 @@ const SalesStatisticsPage: React.FC = () => {
         {/* Breadcrumbs */}
         <Breadcrumbs
           items={[
-            { label: "Panel administracyjny", path: "/admin" },
+            { label: "Admin Panel", path: "/admin" },
             { label: "Analytics", path: "/admin/analytics" },
-            { label: "Statystyki" },
+            { label: "Statistics" },
           ]}
         />
 
@@ -190,7 +190,7 @@ const SalesStatisticsPage: React.FC = () => {
                     disabled={!selectedVariant.hasSalesData}
                   />
                   <Tab
-                    label="Stan magazynowy"
+                    label="Stock level"
                     value="stock"
                     icon={<InventoryIcon />}
                     iconPosition="start"
@@ -290,7 +290,7 @@ const SalesStatisticsPage: React.FC = () => {
                 </Box>
               </Box>
               <Typography variant="h5" gutterBottom color="text.secondary">
-                Zacznij od wyszukania produktu
+                Start by searching for a product
               </Typography>
               <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
                 Use the search above to find a product and display its statistics

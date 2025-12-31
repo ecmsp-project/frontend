@@ -125,7 +125,7 @@ const ProductPage: React.FC = () => {
     return (
       <MainLayout>
         <Container maxWidth="lg" sx={{ py: 8 }}>
-          <Alert severity="error">{error || "Nie znaleziono produktu"}</Alert>
+          <Alert severity="error">{error || "Product not found"}</Alert>
         </Container>
       </MainLayout>
     );
@@ -253,7 +253,7 @@ const ProductPage: React.FC = () => {
             {descriptionPoints.length > 0 && (
               <Paper elevation={1} sx={{ p: 4, mb: 4 }}>
                 <Typography variant="h5" gutterBottom fontWeight={600}>
-                  Opis produktu
+                  Product Description
                 </Typography>
                 <List dense>
                   {descriptionPoints.map((point, index) => (
@@ -278,7 +278,7 @@ const ProductPage: React.FC = () => {
                   {variant.price.toFixed(2)} PLN
                 </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  Stan magazynowy: {variant.stockQuantity}
+                  Stock level: {variant.stockQuantity}
                 </Typography>
 
                 {selectablePropertyNames.map((propertyName) => {
@@ -310,7 +310,7 @@ const ProductPage: React.FC = () => {
                 })}
 
                 <Typography variant="subtitle2" fontWeight={600} gutterBottom>
-                  Liczba sztuk
+                  Number of units
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
                   <IconButton
@@ -353,7 +353,7 @@ const ProductPage: React.FC = () => {
                     "&:hover": { bgcolor: "#e65c00" },
                   }}
                 >
-                  DODAJ DO KOSZYKA
+                  ADD TO CART
                 </Button>
                 <Button variant="contained" color="primary" fullWidth size="large">
                   BUY AND PAY

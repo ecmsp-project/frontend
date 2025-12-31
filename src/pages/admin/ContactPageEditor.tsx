@@ -27,7 +27,7 @@ const ContactPageEditor: React.FC = () => {
   const [showError, setShowError] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Inicjalizacja - pobierz dane z API
+  // Initialization - fetch data from API
   useEffect(() => {
     const initializeData = async () => {
       if (!isInitialized && !settings?.contactPage) {
@@ -36,18 +36,18 @@ const ContactPageEditor: React.FC = () => {
           setSettings({
             ...settings,
             hero: {
-              title: "Witaj w E-COMMERCE",
-              subtitle: "Odkryj najlepsze produkty w najlepszych cenach",
-              primaryButtonText: "Rozpocznij Zakupy",
+              title: "Welcome to E-COMMERCE",
+              subtitle: "Discover the best products at the best prices",
+              primaryButtonText: "Start Shopping",
               secondaryButtonText: "Learn More",
             },
             features: [],
             categories: [],
-            categoriesTitle: "Popularne Kategorie",
+            categoriesTitle: "Popular Categories",
             categoriesSubtitle: "Discover our best product categories",
             footer: {
               shopName: "E-COMMERCE",
-              shopDescription: "Opis sklepu",
+              shopDescription: "Shop description",
               customerServiceHours: [],
               customerServicePhone: "",
               socialMedia: {
@@ -65,18 +65,18 @@ const ContactPageEditor: React.FC = () => {
           console.error("Failed to load contact data from CMS, using defaults:", error);
           setSettings({
             hero: {
-              title: "Witaj w E-COMMERCE",
-              subtitle: "Odkryj najlepsze produkty w najlepszych cenach",
-              primaryButtonText: "Rozpocznij Zakupy",
+              title: "Welcome to E-COMMERCE",
+              subtitle: "Discover the best products at the best prices",
+              primaryButtonText: "Start Shopping",
               secondaryButtonText: "Learn More",
             },
             features: [],
             categories: [],
-            categoriesTitle: "Popularne Kategorie",
+            categoriesTitle: "Popular Categories",
             categoriesSubtitle: "Discover our best product categories",
             footer: {
               shopName: "E-COMMERCE",
-              shopDescription: "Opis sklepu",
+              shopDescription: "Shop description",
               customerServiceHours: [],
               customerServicePhone: "",
               socialMedia: {

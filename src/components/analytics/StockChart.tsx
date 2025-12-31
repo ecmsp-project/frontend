@@ -100,7 +100,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
           No stock data
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Nie znaleziono danych o stanie magazynowym dla wybranego produktu
+        No stock information found for the selected product.
         </Typography>
       </Paper>
     );
@@ -244,7 +244,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
           {}
           {payload.map((entry: any, index: number) => (
             <Typography key={index} variant="body2" sx={{ color: entry.color }}>
-              Stan magazynowy: <strong>{entry.value} szt.</strong>
+              Stock level: <strong>{entry.value} units</strong>
             </Typography>
           ))}
         </Paper>
@@ -260,12 +260,12 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
         <Alert severity={getAlertSeverity()} sx={{ mb: 3 }} icon={<WarningIcon />}>
           <AlertTitle>
             {daysToDepletion && daysToDepletion < 14
-              ? "Krytyczny stan magazynowy!"
+              ? "Critical stock level!"
               : daysToDepletion && daysToDepletion < 30
-                ? "Niski stan magazynowy"
-                : "Informacja o stanie magazynowym"}
+                ? "Low stock level"
+                : "Information about stock level"}
           </AlertTitle>
-          Szacowana data wyczerpania produktu:{" "}
+          Estimated depletion date:{" "}
           <strong>{format(depletionDate, "dd MMMM yyyy", { locale: pl })}</strong>
           {daysToDepletion !== null && (
             <>
@@ -514,11 +514,11 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
                   <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                     <TrendingDownIcon sx={{ mr: 1, fontSize: 28 }} />
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                      Minimalny stan
+                      Minimum stock
                     </Typography>
                   </Box>
                   <Typography variant="h4" fontWeight="bold">
-                    {integrationResult.minStock} szt.
+                    {integrationResult.minStock} units
                   </Typography>
                 </CardContent>
               </Card>
@@ -540,11 +540,11 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
                   <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                     <TrendingUpIcon sx={{ mr: 1, fontSize: 28 }} />
                     <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                      Maksymalny stan
+                      Maximum stock
                     </Typography>
                   </Box>
                   <Typography variant="h4" fontWeight="bold">
-                    {integrationResult.maxStock} szt.
+                    {integrationResult.maxStock} units
                   </Typography>
                 </CardContent>
               </Card>
@@ -596,7 +596,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
               <Line
                 type="monotone"
                 dataKey="stockLevel"
-                name="Stan magazynowy"
+                name="Stock level"
                 stroke="#2196f3"
                 strokeWidth={3}
                 dot={{ fill: "#2196f3", r: 4 }}
@@ -638,7 +638,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
               <Area
                 type="monotone"
                 dataKey="stockLevel"
-                name="Stan magazynowy"
+                name="Stock level"
                 stroke="#2196f3"
                 strokeWidth={2}
                 fill="url(#colorStock)"

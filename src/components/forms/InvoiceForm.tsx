@@ -269,7 +269,7 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
                   </Grid>
                   <Grid size={{ xs: 12, sm: 8 }}>
                     <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                      Ulica *
+                      Street *
                     </Typography>
                     <Field
                       as={TextField}
@@ -395,7 +395,7 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6 }}>
                       <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                        Nazwisko *
+                        Last Name *
                       </Typography>
                       <Field
                         as={TextField}
@@ -440,7 +440,7 @@ const InvoiceForm = forwardRef<InvoiceFormRef, InvoiceFormProps>(
                     </Grid>
                     <Grid size={{ xs: 12, sm: 8 }}>
                       <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                        Ulica *
+                        Street *
                       </Typography>
                       <Field
                         as={TextField}
