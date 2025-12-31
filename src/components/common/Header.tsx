@@ -656,10 +656,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
                   <ListItemIcon>
                     <AdminPanelSettingsIcon fontSize="small" sx={{ color: "primary.main" }} />
                   </ListItemIcon>
-                  <ListItemText
-                    primary="Users"
-                    primaryTypographyProps={{ fontWeight: 500 }}
-                  />
+                  <ListItemText primary="Users" primaryTypographyProps={{ fontWeight: 500 }} />
                   {expandedSections.Users ? (
                     <ExpandLess fontSize="small" />
                   ) : (

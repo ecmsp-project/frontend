@@ -63,7 +63,10 @@ const UserSettingsPage: React.FC = () => {
               control={<Switch defaultChecked />}
               label="Email notifications about orders"
             />
-            <FormControlLabel control={<Switch defaultChecked />} label="Newsletter with promotions" />
+            <FormControlLabel
+              control={<Switch defaultChecked />}
+              label="Newsletter with promotions"
+            />
             <FormControlLabel control={<Switch />} label="SMS Notifications" />
           </Box>
         </Paper>

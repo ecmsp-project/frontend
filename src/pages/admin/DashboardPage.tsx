@@ -7,9 +7,7 @@ const DashboardPage: React.FC = () => {
   return (
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Breadcrumbs
-          items={[{ label: "Admin Panel" }, { label: "Admin Dashboard" }]}
-        />
+        <Breadcrumbs items={[{ label: "Admin Panel" }, { label: "Admin Dashboard" }]} />
         <Typography variant="h4" gutterBottom>
           Admin Dashboard
         </Typography>

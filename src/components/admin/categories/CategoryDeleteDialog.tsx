@@ -74,7 +74,8 @@ const CategoryDeleteDialog: React.FC<CategoryDeleteDialogProps> = ({
 
         <Alert severity="info" sx={{ mb: 2 }}>
           <Typography variant="body2">
-            <strong>Information:</strong> Subcategories of this category will be moved to the parent category (they will not be deleted).
+            <strong>Information:</strong> Subcategories of this category will be moved to the parent
+            category (they will not be deleted).
           </Typography>
         </Alert>
 
@@ -107,7 +108,8 @@ const CategoryDeleteDialog: React.FC<CategoryDeleteDialogProps> = ({
         {category.subCategoryCount > 0 && (
           <Alert severity="warning" sx={{ mb: 2 }}>
             <Typography variant="body2">
-              This category has <strong>{category.subCategoryCount}</strong> subcategories. They will be moved to{" "}
+              This category has <strong>{category.subCategoryCount}</strong> subcategories. They
+              will be moved to{" "}
               {category.parentCategoryName ? (
                 <>
                   category <strong>{category.parentCategoryName}</strong>
@@ -123,14 +125,16 @@ const CategoryDeleteDialog: React.FC<CategoryDeleteDialogProps> = ({
         {category.productCount > 0 && (
           <Alert severity="warning" sx={{ mb: 2 }}>
             <Typography variant="body2">
-              This category contains <strong>{category.productCount}</strong> products. Make sure that deleting this category will not negatively affect these products.
+              This category contains <strong>{category.productCount}</strong> products. Make sure
+              that deleting this category will not negatively affect these products.
             </Typography>
           </Alert>
         )}
 
         <Alert severity="warning">
           <Typography variant="body2">
-            <strong>Note:</strong> The DELETE endpoint may not be fully implemented yet on the backend. If deletion fails, check the implementation in CategoryController.
+            <strong>Note:</strong> The DELETE endpoint may not be fully implemented yet on the
+            backend. If deletion fails, check the implementation in CategoryController.
           </Typography>
         </Alert>
 

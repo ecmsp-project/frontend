@@ -100,7 +100,7 @@ const StockChart: React.FC<StockChartProps> = ({ stockData, loading }) => {
           No stock data
         </Typography>
         <Typography variant="body2" color="text.secondary">
-        No stock information found for the selected product.
+          No stock information found for the selected product.
         </Typography>
       </Paper>
     );
