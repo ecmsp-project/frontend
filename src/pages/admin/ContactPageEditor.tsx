@@ -322,7 +322,8 @@ const ContactPageEditor: React.FC = () => {
           </Grid>
 
           <Alert severity="info" sx={{ mb: 3 }}>
-            The contact form is not editable in edit mode. You can only edit informational texts and contact information.
+            The contact form is not editable in edit mode. You can only edit informational texts and
+            contact information.
           </Alert>
         </Container>
       </Box>

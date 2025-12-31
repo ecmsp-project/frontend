@@ -7,11 +7,7 @@ const AnalyticsStatisticPage: React.FC = () => {
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Breadcrumbs
-          items={[
-            { label: "Admin Panel" },
-            { label: "Analytics" },
-            { label: "Product Analysis" },
-          ]}
+          items={[{ label: "Admin Panel" }, { label: "Analytics" }, { label: "Product Analysis" }]}
         />
         <Typography variant="h4" gutterBottom>
           Product Analysis

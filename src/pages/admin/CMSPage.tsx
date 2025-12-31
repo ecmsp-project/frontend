@@ -75,7 +75,8 @@ const CMSPage: React.FC = () => {
                   </Box>
                 </Box>
                 <Typography variant="body2" sx={{ mb: 2 }}>
-                  Customize the home page appearance: texts, images, feature tiles and displayed product categories.
+                  Customize the home page appearance: texts, images, feature tiles and displayed
+                  product categories.
                 </Typography>
               </CardContent>
               <CardActions sx={{ p: 2, pt: 0 }}>
@@ -127,7 +128,8 @@ const CMSPage: React.FC = () => {
                   </Box>
                 </Box>
                 <Typography variant="body2" sx={{ mb: 2 }}>
-                  Update contact information: address, phone, email and customer service office hours.
+                  Update contact information: address, phone, email and customer service office
+                  hours.
                 </Typography>
               </CardContent>
               <CardActions sx={{ p: 2, pt: 0 }}>

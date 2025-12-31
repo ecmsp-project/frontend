@@ -223,9 +223,7 @@ const UserManagementPage: React.FC = () => {
                         ))}
                         <Tooltip
                           title={
-                            !canManageUsers
-                              ? "No permission to manage user roles"
-                              : "Add role"
+                            !canManageUsers ? "No permission to manage user roles" : "Add role"
                           }
                         >
                           <span>
@@ -246,9 +244,7 @@ const UserManagementPage: React.FC = () => {
                       </Box>
                     </TableCell>
                     <TableCell>
-                      <Tooltip
-                        title={!canManageUsers ? "No permission to delete users" : "Delete"}
-                      >
+                      <Tooltip title={!canManageUsers ? "No permission to delete users" : "Delete"}>
                         <span>
                           <IconButton
                             color="error"

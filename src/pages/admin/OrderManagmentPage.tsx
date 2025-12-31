@@ -84,10 +84,7 @@ const OrderManagementPage: React.FC = () => {
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Breadcrumbs
-          items={[
-            { label: "Admin Panel", path: "/admin" },
-            { label: "Order Management" },
-          ]}
+          items={[{ label: "Admin Panel", path: "/admin" }, { label: "Order Management" }]}
         />
         <Typography variant="h4" gutterBottom>
           Order Management

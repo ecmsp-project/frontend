@@ -150,7 +150,9 @@ const RoleManagementPage: React.FC = () => {
             >
               <TableRow>
                 <TableCell sx={{ color: "white", fontWeight: 600 }}>Role Name</TableCell>
-                <TableCell sx={{ color: "white", fontWeight: 600 }}>Number of Permissions</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: 600 }}>
+                  Number of Permissions
+                </TableCell>
                 <TableCell sx={{ color: "white", fontWeight: 600 }}>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -178,9 +180,7 @@ const RoleManagementPage: React.FC = () => {
                   <TableCell>
                     <Tooltip
                       title={
-                        !canManageRoles
-                          ? "No permission to edit permissions"
-                          : "Edit permissions"
+                        !canManageRoles ? "No permission to edit permissions" : "Edit permissions"
                       }
                     >
                       <span>

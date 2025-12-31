@@ -104,11 +104,7 @@ const EditableText: React.FC<EditableTextProps> = ({
           <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
             <FormControl size="small" sx={{ minWidth: 120 }}>
               <InputLabel>Size</InputLabel>
-              <Select
-                value={fontSize}
-                onChange={(e) => setFontSize(e.target.value)}
-                label="Size"
-              >
+              <Select value={fontSize} onChange={(e) => setFontSize(e.target.value)} label="Size">
                 <MenuItem value="12">12px</MenuItem>
                 <MenuItem value="14">14px</MenuItem>
                 <MenuItem value="16">16px</MenuItem>
