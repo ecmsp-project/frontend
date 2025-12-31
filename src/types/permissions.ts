@@ -1,0 +1,24 @@
+export type Permission =
+  | "WRITE_PRODUCTS"
+  | "DELETE_PRODUCTS"
+  | "READ_ORDERS"
+  | "WRITE_ORDERS"
+  | "CANCEL_ORDERS"
+  | "READ_USERS"
+  | "MANAGE_USERS"
+  | "MANAGE_ROLES"
+  | "PROCESS_PAYMENTS"
+  | "REFUND_PAYMENTS";
+
+export const PERMISSIONS = {
+  WRITE_PRODUCTS: "WRITE_PRODUCTS" as Permission,
+  DELETE_PRODUCTS: "DELETE_PRODUCTS" as Permission,
+  READ_ORDERS: "READ_ORDERS" as Permission,
+  WRITE_ORDERS: "WRITE_ORDERS" as Permission,
+  CANCEL_ORDERS: "CANCEL_ORDERS" as Permission,
+  READ_USERS: "READ_USERS" as Permission,
+  MANAGE_USERS: "MANAGE_USERS" as Permission,
+  MANAGE_ROLES: "MANAGE_ROLES" as Permission,
+  PROCESS_PAYMENTS: "PROCESS_PAYMENTS" as Permission,
+  REFUND_PAYMENTS: "REFUND_PAYMENTS" as Permission,
+};
