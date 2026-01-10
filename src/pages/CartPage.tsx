@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { getVariantDetails } from "../api/product-service";
 import Breadcrumbs from "../components/common/Breadcrumbs.tsx";
 import MainLayout from "../components/layout/MainLayout.tsx";
 import { useCartContext, type CartItem } from "../contexts/CartContext";
@@ -23,7 +24,6 @@ import {
   Alert,
   Paper,
   alpha,
-  Chip,
   useTheme,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -36,10 +36,26 @@ const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
   const theme = useTheme();
 
   const [localQuantity, setLocalQuantity] = useState(String(item.quantity));
+  const [productName, setProductName] = useState(item.name || "");
 
   useEffect(() => {
     setLocalQuantity(String(item.quantity));
   }, [item.quantity]);
+
+  useEffect(() => {
+    if (item.name === null) {
+      getVariantDetails(item.id)
+        .then((variant) => {
+          setProductName(variant.variant.name);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch variant name:", err);
+          setProductName(item.name);
+        });
+    } else {
+      setProductName(item.name);
+    }
+  }, [item.id, item.name]);
 
   const handleQuantityChange = async (delta: number) => {
     try {
@@ -117,7 +133,7 @@ const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
               variant="h6"
               fontWeight={600}
               sx={{
-                mb: 0.5,
+                mb: 1.5,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 display: "-webkit-box",
@@ -125,20 +141,11 @@ const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
                 WebkitBoxOrient: "vertical",
               }}
             >
-              {item.name}
+              {productName}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
               {item.price.toFixed(2)} PLN / pcs.
             </Typography>
-            <Chip
-              label={`${item.quantity} pcs.`}
-              size="small"
-              sx={{
-                bgcolor: alpha("#1976d2", 0.1),
-                color: "primary.main",
-                fontWeight: 600,
-              }}
-            />
           </Box>
 
           <Box

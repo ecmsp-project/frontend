@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { addCartProduct } from "../api/cart-service";
 import Breadcrumbs from "../components/common/Breadcrumbs";
 import MainLayout from "../components/layout/MainLayout";
 import CategoryFilter from "../components/search/CategoryFilter";
@@ -6,10 +7,9 @@ import PriceFilter from "../components/search/PriceFilter";
 import ProductListItem from "../components/search/ProductListItem";
 import SearchFilters from "../components/search/SearchFilters";
 import SortFilter from "../components/search/SortFilter";
-import { useProductContext } from "../contexts/ProductContext.tsx";
 import { useCartContext } from "../contexts/CartContext";
+import { useProductContext } from "../contexts/ProductContext.tsx";
 import { useProductSearch } from "../hooks/useProductSearch";
-import { addCartProduct } from "../api/cart-service";
 import type { ProductRepresentationDTO } from "../types/products.ts";
 import { Box, Typography, Container, CircularProgress, Menu, Pagination } from "@mui/material";
 
