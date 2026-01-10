@@ -1,17 +1,19 @@
 import React from "react";
 import type { ProductRepresentationDTO } from "../../types/products";
-import { Box, Typography, Paper, Button } from "@mui/material";
+import { Box, Typography, Paper, Button, CircularProgress } from "@mui/material";
 
 interface ProductListItemProps {
   product: ProductRepresentationDTO;
   onAddToCart?: (product: ProductRepresentationDTO) => void;
   onProductClick?: (product: ProductRepresentationDTO) => void;
+  isAddingToCart?: boolean;
 }
 
 const ProductListItem: React.FC<ProductListItemProps> = ({
   product,
   onAddToCart,
   onProductClick,
+  isAddingToCart = false,
 }) => {
   const imageUrl = product.variantDetail.variantImages?.[0]?.url || "";
 
@@ -74,9 +76,20 @@ const ProductListItem: React.FC<ProductListItemProps> = ({
           variant="contained"
           color="primary"
           size="small"
-          onClick={() => onAddToCart?.(product)}
+          disabled={isAddingToCart}
+          onClick={(e) => {
+            e.stopPropagation();
+            onAddToCart?.(product);
+          }}
         >
-          Add to Cart
+          {isAddingToCart ? (
+            <>
+              <CircularProgress size={16} sx={{ mr: 1 }} />
+              Adding...
+            </>
+          ) : (
+            "Add to Cart"
+          )}
         </Button>
       </Box>
     </Paper>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { getVariantDetails } from "../api/product-service";
 import Breadcrumbs from "../components/common/Breadcrumbs.tsx";
 import MainLayout from "../components/layout/MainLayout.tsx";
 import { useCartContext, type CartItem } from "../contexts/CartContext";
@@ -23,7 +24,6 @@ import {
   Alert,
   Paper,
   alpha,
-  Chip,
   useTheme,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -31,15 +31,31 @@ import { useNavigate } from "react-router-dom";
 const SHIPPING_COST = 19.99;
 const FREE_SHIPPING_THRESHOLD = 500;
 
-const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
+const CartProductCard: React.FC<{ item: CartItem; onClick: () => void }> = ({ item, onClick }) => {
   const { updateProductQuantity, overwriteProductQuantity, removeProduct } = useCartContext();
   const theme = useTheme();
 
   const [localQuantity, setLocalQuantity] = useState(String(item.quantity));
+  const [productName, setProductName] = useState(item.name || "");
 
   useEffect(() => {
     setLocalQuantity(String(item.quantity));
   }, [item.quantity]);
+
+  useEffect(() => {
+    if (item.name === null) {
+      getVariantDetails(item.id)
+        .then((variant) => {
+          setProductName(variant.variant.name);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch variant name:", err);
+          setProductName(item.name);
+        });
+    } else {
+      setProductName(item.name);
+    }
+  }, [item.id, item.name]);
 
   const handleQuantityChange = async (delta: number) => {
     try {
@@ -116,29 +132,28 @@ const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
               component="div"
               variant="h6"
               fontWeight={600}
+              onClick={onClick}
               sx={{
-                mb: 0.5,
+                mb: 1.5,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 display: "-webkit-box",
                 WebkitLineClamp: 2,
                 WebkitBoxOrient: "vertical",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                "&:hover": {
+                  textDecoration: "underline",
+                  textDecorationColor: "primary.main",
+                  color: "primary.main",
+                },
               }}
             >
-              {item.name}
+              {productName}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
               {item.price.toFixed(2)} PLN / pcs.
             </Typography>
-            <Chip
-              label={`${item.quantity} pcs.`}
-              size="small"
-              sx={{
-                bgcolor: alpha("#1976d2", 0.1),
-                color: "primary.main",
-                fontWeight: 600,
-              }}
-            />
           </Box>
 
           <Box
@@ -164,7 +179,10 @@ const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
                 size="small"
                 aria-label="decrease quantity"
                 disabled={item.quantity <= 1}
-                onClick={() => handleQuantityChange(-1)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleQuantityChange(-1);
+                }}
                 sx={{
                   "&:hover": { bgcolor: alpha(theme.palette.error.main, 0.1) },
                   "&.Mui-disabled": { opacity: 0.3 },
@@ -176,6 +194,7 @@ const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
                 value={localQuantity}
                 size="small"
                 variant="standard"
+                onClick={(e) => e.stopPropagation()}
                 sx={{
                   width: 50,
                   "& .MuiInput-underline:before": { display: "none" },
@@ -193,7 +212,10 @@ const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
               <IconButton
                 size="small"
                 aria-label="increase quantity"
-                onClick={() => handleQuantityChange(1)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleQuantityChange(1);
+                }}
                 sx={{
                   "&:hover": { bgcolor: alpha(theme.palette.success.main, 0.1) },
                 }}
@@ -223,7 +245,10 @@ const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
               </Typography>
               <IconButton
                 aria-label="delete"
-                onClick={handleDelete}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete();
+                }}
                 sx={{
                   color: "error.main",
                   bgcolor: alpha(theme.palette.error.main, 0.1),
@@ -265,27 +290,6 @@ const CartPage: React.FC = () => {
     navigate(`/order/${orderId}`);
   };
 
-  if (loading) {
-    return (
-      <MainLayout>
-        <Container maxWidth="lg" sx={{ py: 4, textAlign: "center" }}>
-          <CircularProgress />
-          <Typography sx={{ mt: 2 }}>Loading cart...</Typography>
-        </Container>
-      </MainLayout>
-    );
-  }
-
-  if (error) {
-    return (
-      <MainLayout>
-        <Container maxWidth="lg" sx={{ py: 4 }}>
-          <Alert severity="error">{error}</Alert>
-        </Container>
-      </MainLayout>
-    );
-  }
-
   return (
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -296,189 +300,210 @@ const CartPage: React.FC = () => {
           </Typography>
         </Box>
 
-        <Grid container spacing={4}>
-          <Grid size={{ xs: 12, md: 8 }}>
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ mb: 1 }}>
-                Products in Cart
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {safeCartItems.length} {safeCartItems.length === 1 ? "product" : "products"}
-              </Typography>
-            </Box>
+        {loading && (
+          <Box sx={{ textAlign: "center", py: 4 }}>
+            <CircularProgress />
+            <Typography sx={{ mt: 2 }}>Loading cart...</Typography>
+          </Box>
+        )}
 
-            {safeCartItems.length > 0 ? (
-              <>
-                {safeCartItems.map((item) => {
-                  if (!item || !item.id) return null;
-                  return <CartProductCard key={item.id} item={item} />;
-                })}
+        {error && !loading && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
+        )}
 
-                {FREE_SHIPPING_THRESHOLD - subtotal > 0 && (
-                  <Paper
-                    elevation={0}
-                    sx={{
-                      mt: 3,
-                      p: 3,
-                      bgcolor: alpha(theme.palette.primary.main, 0.05),
-                      border: "2px solid",
-                      borderColor: alpha(theme.palette.primary.main, 0.2),
-                      borderRadius: 3,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 2,
-                    }}
-                  >
-                    <LocalShippingIcon color="primary" sx={{ fontSize: 40 }} />
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="h6" fontWeight={600} color="primary.main" gutterBottom>
-                        Free shipping within reach!
+        {!loading && (
+          <Grid container spacing={4}>
+            <Grid size={{ xs: 12, md: 8 }}>
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="h6" sx={{ mb: 1 }}>
+                  Products in Cart
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {safeCartItems.length} {safeCartItems.length === 1 ? "product" : "products"}
+                </Typography>
+              </Box>
+
+              {safeCartItems.length > 0 ? (
+                <>
+                  {safeCartItems.map((item) => {
+                    if (!item || !item.id) return null;
+                    return (
+                      <CartProductCard
+                        key={item.id}
+                        item={item}
+                        onClick={() => navigate(`/product/${item.id}`)}
+                      />
+                    );
+                  })}
+
+                  {FREE_SHIPPING_THRESHOLD - subtotal > 0 && (
+                    <Paper
+                      elevation={0}
+                      sx={{
+                        mt: 3,
+                        p: 3,
+                        bgcolor: alpha(theme.palette.primary.main, 0.05),
+                        border: "2px solid",
+                        borderColor: alpha(theme.palette.primary.main, 0.2),
+                        borderRadius: 3,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 2,
+                      }}
+                    >
+                      <LocalShippingIcon color="primary" sx={{ fontSize: 40 }} />
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="h6" fontWeight={600} color="primary.main" gutterBottom>
+                          Free shipping within reach!
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Add products worth{" "}
+                          <strong>{(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)} PLN</strong>{" "}
+                          more and get free shipping!
+                        </Typography>
+                      </Box>
+                    </Paper>
+                  )}
+
+                  {shipping === 0 && (
+                    <Paper
+                      elevation={0}
+                      sx={{
+                        mt: 3,
+                        p: 2,
+                        bgcolor: alpha(theme.palette.success.main, 0.1),
+                        border: "1px solid",
+                        borderColor: "success.main",
+                        borderRadius: 2,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <LocalShippingIcon color="success" />
+                      <Typography variant="body2" color="success.main" fontWeight={600}>
+                        Congratulations! You have free shipping!
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Add products worth{" "}
-                        <strong>{(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)} PLN</strong> more
-                        and get free shipping!
-                      </Typography>
-                    </Box>
-                  </Paper>
-                )}
+                    </Paper>
+                  )}
+                </>
+              ) : (
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 6,
+                    textAlign: "center",
+                    bgcolor: alpha(theme.palette.grey[500], 0.05),
+                    borderRadius: 3,
+                    border: "2px dashed",
+                    borderColor: "divider",
+                  }}
+                >
+                  <ShoppingCartIcon sx={{ fontSize: 80, color: "text.secondary", mb: 2 }} />
+                  <Typography variant="h5" color="text.secondary" gutterBottom>
+                    Your cart is empty
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Add products to your cart to continue shopping
+                  </Typography>
+                </Paper>
+              )}
+            </Grid>
 
-                {shipping === 0 && (
-                  <Paper
-                    elevation={0}
-                    sx={{
-                      mt: 3,
-                      p: 2,
-                      bgcolor: alpha(theme.palette.success.main, 0.1),
-                      border: "1px solid",
-                      borderColor: "success.main",
-                      borderRadius: 2,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                    }}
-                  >
-                    <LocalShippingIcon color="success" />
-                    <Typography variant="body2" color="success.main" fontWeight={600}>
-                      Congratulations! You have free shipping!
-                    </Typography>
-                  </Paper>
-                )}
-              </>
-            ) : (
-              <Paper
-                elevation={0}
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Card
+                elevation={4}
                 sx={{
-                  p: 6,
-                  textAlign: "center",
-                  bgcolor: alpha(theme.palette.grey[500], 0.05),
+                  p: 3,
+                  position: "sticky",
+                  top: 20,
                   borderRadius: 3,
-                  border: "2px dashed",
+                  background: `linear-gradient(135deg, ${alpha("#fff", 0.95)} 0%, ${alpha("#f5f5f5", 0.95)} 100%)`,
+                  border: "1px solid",
                   borderColor: "divider",
                 }}
               >
-                <ShoppingCartIcon sx={{ fontSize: 80, color: "text.secondary", mb: 2 }} />
-                <Typography variant="h5" color="text.secondary" gutterBottom>
-                  Your cart is empty
+                <Typography variant="h5" gutterBottom fontWeight={700} sx={{ mb: 2 }}>
+                  Summary
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Add products to your cart to continue shopping
-                </Typography>
-              </Paper>
-            )}
-          </Grid>
+                <Divider sx={{ mb: 3 }} />
 
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Card
-              elevation={4}
-              sx={{
-                p: 3,
-                position: "sticky",
-                top: 20,
-                borderRadius: 3,
-                background: `linear-gradient(135deg, ${alpha("#fff", 0.95)} 0%, ${alpha("#f5f5f5", 0.95)} 100%)`,
-                border: "1px solid",
-                borderColor: "divider",
-              }}
-            >
-              <Typography variant="h5" gutterBottom fontWeight={700} sx={{ mb: 2 }}>
-                Summary
-              </Typography>
-              <Divider sx={{ mb: 3 }} />
+                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+                  <Typography variant="body1" color="text.secondary">
+                    Product value:
+                  </Typography>
+                  <Typography variant="body1" fontWeight={600}>
+                    {subtotal.toFixed(2)} PLN
+                  </Typography>
+                </Box>
 
-              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-                <Typography variant="body1" color="text.secondary">
-                  Product value:
-                </Typography>
-                <Typography variant="body1" fontWeight={600}>
-                  {subtotal.toFixed(2)} PLN
-                </Typography>
-              </Box>
+                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
+                  <Typography variant="body1" color="text.secondary">
+                    Shipping cost:
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    fontWeight={600}
+                    color={shipping === 0 ? "success.main" : "text.primary"}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 0.5,
+                    }}
+                  >
+                    {shipping === 0 && <LocalShippingIcon fontSize="small" />}
+                    {shipping === 0 ? "GRATIS" : `${shipping.toFixed(2)} PLN`}
+                  </Typography>
+                </Box>
 
-              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
-                <Typography variant="body1" color="text.secondary">
-                  Shipping cost:
-                </Typography>
-                <Typography
-                  variant="body1"
-                  fontWeight={600}
-                  color={shipping === 0 ? "success.main" : "text.primary"}
+                <Divider sx={{ mb: 3 }} />
+
+                <Box
                   sx={{
                     display: "flex",
-                    alignItems: "center",
-                    gap: 0.5,
+                    justifyContent: "space-between",
+                    mb: 3,
+                    p: 2,
+                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                    borderRadius: 2,
                   }}
                 >
-                  {shipping === 0 && <LocalShippingIcon fontSize="small" />}
-                  {shipping === 0 ? "GRATIS" : `${shipping.toFixed(2)} PLN`}
-                </Typography>
-              </Box>
+                  <Typography variant="h6" fontWeight={700}>
+                    TOTAL:
+                  </Typography>
+                  <Typography variant="h5" color="primary.main" fontWeight={700}>
+                    {total.toFixed(2)} PLN
+                  </Typography>
+                </Box>
 
-              <Divider sx={{ mb: 3 }} />
-
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  mb: 3,
-                  p: 2,
-                  bgcolor: alpha(theme.palette.primary.main, 0.1),
-                  borderRadius: 2,
-                }}
-              >
-                <Typography variant="h6" fontWeight={700}>
-                  TOTAL:
-                </Typography>
-                <Typography variant="h5" color="primary.main" fontWeight={700}>
-                  {total.toFixed(2)} PLN
-                </Typography>
-              </Box>
-
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                size="large"
-                onClick={handleCheckout}
-                disabled={safeCartItems.length === 0}
-                sx={{
-                  py: 1.5,
-                  borderRadius: 2,
-                  fontWeight: 600,
-                  fontSize: "1rem",
-                  textTransform: "none",
-                  boxShadow: 2,
-                  "&:hover": {
-                    boxShadow: 3,
-                  },
-                  transition: "box-shadow 0.2s ease",
-                }}
-              >
-                Proceed to Checkout
-              </Button>
-            </Card>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  size="large"
+                  onClick={handleCheckout}
+                  disabled={safeCartItems.length === 0}
+                  sx={{
+                    py: 1.5,
+                    borderRadius: 2,
+                    fontWeight: 600,
+                    fontSize: "1rem",
+                    textTransform: "none",
+                    boxShadow: 2,
+                    "&:hover": {
+                      boxShadow: 3,
+                    },
+                    transition: "box-shadow 0.2s ease",
+                  }}
+                >
+                  Proceed to Checkout
+                </Button>
+              </Card>
+            </Grid>
           </Grid>
-        </Grid>
+        )}
       </Container>
     </MainLayout>
   );

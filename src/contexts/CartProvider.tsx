@@ -5,34 +5,10 @@ import {
   addCartProduct,
   subtractCartProduct,
   overwriteCartProduct,
+  clearCart,
 } from "../api/cart-service";
+import { getVariantDetails } from "../api/product-service";
 import { CartContext, type CartItem } from "./CartContext";
-
-const USE_MOCK_DATA = true;
-
-const productMocks: CartItem[] = [
-  {
-    id: 1,
-    name: "Wireless Headphones PRO",
-    price: 599.99,
-    quantity: 2,
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
-  },
-  {
-    id: 2,
-    name: "Smartwatch V3",
-    price: 999.0,
-    quantity: 1,
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop",
-  },
-  {
-    id: 3,
-    name: "Cotton T-Shirt (M)",
-    price: 79.5,
-    quantity: 3,
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop",
-  },
-];
 
 export default function CartProvider({ children }: { children: ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -42,41 +18,53 @@ export default function CartProvider({ children }: { children: ReactNode }) {
 
   const refetchCart = useCallback(async () => {
     // Don't refetch if cart was manually cleared
-    if (hasBeenCleared && USE_MOCK_DATA) {
+    if (hasBeenCleared) {
       return;
     }
 
     setLoading(true);
+    setError(null);
     try {
-      if (USE_MOCK_DATA) {
-        await new Promise((resolve) => setTimeout(resolve, 300));
-        // Only set products if cart hasn't been cleared
-        if (!hasBeenCleared) {
-          setCartItems([...productMocks]);
-        }
-        setError(null);
-      } else {
-        const fetchedCart = await fetchCartProducts();
-        const rawItems = fetchedCart.productDtos || [];
+      const fetchedCart = await fetchCartProducts();
+      const rawItems = fetchedCart.productDtos || [];
 
-        const completeItems: CartItem[] = rawItems
-          .map((rawItem) => {
-            const productDetails = productMocks.find((mock) => mock.id === rawItem.productId);
-            if (productDetails) {
-              return {
-                ...productDetails,
-                quantity: rawItem.quantity,
-              };
-            }
-            return null;
-          })
-          .filter((item): item is CartItem => item !== null);
+      // Map each cart item (productId is variantId) to CartItem by fetching variant details
+      const completeItems: CartItem[] = await Promise.all(
+        rawItems.map(async (rawItem) => {
+          try {
+            // productId in cart is actually variantId
+            const variantDetails = await getVariantDetails(rawItem.productId);
+            const variant = variantDetails.variant;
+            const mainImage =
+              variant.variantImages?.find((img) => img.isMain) || variant.variantImages?.[0];
 
-        setCartItems(completeItems);
-        setError(null);
-      }
+            return {
+              id: rawItem.productId,
+              name: variant.name,
+              price: variant.price,
+              quantity: rawItem.quantity,
+              image: mainImage?.url || "",
+            };
+          } catch (err) {
+            console.error(
+              `Failed to fetch variant details for variantId ${rawItem.productId}:`,
+              err,
+            );
+            // Return a placeholder item if variant fetch fails
+            return {
+              id: rawItem.productId,
+              name: `Product ${rawItem.productId}`,
+              price: 0,
+              quantity: rawItem.quantity,
+              image: "",
+            };
+          }
+        }),
+      );
+
+      setCartItems(completeItems);
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching cart:", err);
       setError("Failed to fetch cart items");
     } finally {
       setLoading(false);
@@ -84,17 +72,16 @@ export default function CartProvider({ children }: { children: ReactNode }) {
   }, [hasBeenCleared]);
 
   const removeProduct = useCallback(
-    async (productId: number) => {
+    async (productId: string) => {
+      // Optimistic update
       setCartItems((prevItems) => prevItems.filter((item) => item.id !== productId));
-
-      if (USE_MOCK_DATA) {
-        return;
-      }
 
       try {
         await deleteCartProduct(productId);
+        // No refetch needed - optimistic update is sufficient
       } catch (err) {
         console.error("Error removing product:", err);
+        // Revert optimistic update on error
         await refetchCart();
         throw new Error("Failed to remove product from cart.");
       }
@@ -103,22 +90,19 @@ export default function CartProvider({ children }: { children: ReactNode }) {
   );
 
   const updateProductQuantity = useCallback(
-    async (productId: number, quantity: number, delta: number) => {
+    async (productId: string, quantity: number, delta: number) => {
       const newQuantity = quantity + delta;
       if (newQuantity <= 0) {
         await removeProduct(productId);
         return;
       }
 
+      // Optimistic update
       setCartItems((prevItems) =>
         prevItems.map((item) =>
           item.id === productId ? { ...item, quantity: newQuantity } : item,
         ),
       );
-
-      if (USE_MOCK_DATA) {
-        return;
-      }
 
       try {
         if (delta > 0) {
@@ -126,8 +110,10 @@ export default function CartProvider({ children }: { children: ReactNode }) {
         } else {
           await subtractCartProduct(productId, 1);
         }
+        // No refetch needed - optimistic update is sufficient
       } catch (err) {
         console.error("Error updating quantity:", err);
+        // Revert optimistic update on error
         await refetchCart();
         throw new Error("Failed to update quantity in cart.");
       }
@@ -136,26 +122,25 @@ export default function CartProvider({ children }: { children: ReactNode }) {
   );
 
   const overwriteProductQuantity = useCallback(
-    async (productId: number, newQuantity: number) => {
+    async (productId: string, newQuantity: number) => {
       if (newQuantity <= 0) {
         await removeProduct(productId);
         return;
       }
 
+      // Optimistic update
       setCartItems((prevItems) =>
         prevItems.map((item) =>
           item.id === productId ? { ...item, quantity: newQuantity } : item,
         ),
       );
 
-      if (USE_MOCK_DATA) {
-        return;
-      }
-
       try {
         await overwriteCartProduct(productId, newQuantity);
+        // No refetch needed - optimistic update is sufficient
       } catch (err) {
         console.error("Error updating quantity:", err);
+        // Revert optimistic update on error
         await refetchCart();
         throw new Error("Failed to update quantity in cart.");
       }
@@ -163,19 +148,11 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     [refetchCart, removeProduct],
   );
 
-  const clearCart = useCallback(async () => {
+  const clearFullCart = useCallback(async () => {
     setCartItems([]);
-    setHasBeenCleared(true); // Mark as cleared so refetchCart doesn't restore products
-    // TODO: Implement API call to clear cart when not using mock data
-    // if (!USE_MOCK_DATA) {
-    //   try {
-    //     await clearCartAPI();
-    //   } catch (err) {
-    //     console.error("Error clearing cart:", err);
-    //     throw new Error("Failed to clear cart.");
-    //   }
-    // }
-  }, []);
+    setHasBeenCleared(true);
+    await clearCart(cartItems.map((item) => item.id));
+  }, [cartItems]);
 
   useEffect(() => {
     refetchCart();
@@ -190,7 +167,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     updateProductQuantity,
     overwriteProductQuantity,
     removeProduct,
-    clearCart,
+    clearFullCart,
   };
 
   return <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>;

@@ -1,7 +1,7 @@
-import type { Cart, DeleteProductRequest, ProductDtos } from "../types/cart.ts";
+import type { CartDto, CartProductDto } from "../types/cart.ts";
 import { API_BASE_URL, apiCall } from "./utils.ts";
 
-export const fetchCartProducts = async (): Promise<Cart> => {
+export const fetchCartProducts = async (): Promise<CartDto> => {
   const jwtToken = localStorage.getItem("token");
 
   if (!jwtToken) {
@@ -28,14 +28,14 @@ export const fetchCartProducts = async (): Promise<Cart> => {
   }
 };
 
-export const addCartProduct = async (productId: number, quantity: number): Promise<void> => {
+export const addCartProduct = async (productId: string, quantity: number): Promise<CartDto> => {
   const jwtToken = localStorage.getItem("token");
 
   if (!jwtToken) {
     throw new Error("Authorization token not found. Please log in.");
   }
 
-  const addBody: ProductDtos = { productId, quantity };
+  const addBody: CartProductDto = { productId, quantity };
 
   try {
     const response = await apiCall(`${API_BASE_URL}/api/cart/addProduct`, {
@@ -50,20 +50,25 @@ export const addCartProduct = async (productId: number, quantity: number): Promi
     if (!response.ok) {
       throw new Error(`Failed to add product to cart: ${response.status} ${response.statusText}`);
     }
+
+    return await response.json();
   } catch (error) {
     console.error(`API Error adding product ${productId} to cart:`, error);
     throw error;
   }
 };
 
-export const subtractCartProduct = async (productId: number, quantity: number): Promise<void> => {
+export const subtractCartProduct = async (
+  productId: string,
+  quantity: number,
+): Promise<CartDto> => {
   const jwtToken = localStorage.getItem("token");
 
   if (!jwtToken) {
     throw new Error("Authorization token not found. Please log in.");
   }
 
-  const addBody: ProductDtos = { productId, quantity };
+  const subtractBody: CartProductDto = { productId, quantity };
 
   try {
     const response = await apiCall(`${API_BASE_URL}/api/cart/subtractProduct`, {
@@ -72,26 +77,33 @@ export const subtractCartProduct = async (productId: number, quantity: number): 
         Authorization: `Bearer ${jwtToken}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(addBody),
+      body: JSON.stringify(subtractBody),
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to add product to cart: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to subtract product from cart: ${response.status} ${response.statusText}`,
+      );
     }
+
+    return await response.json();
   } catch (error) {
-    console.error(`API Error adding product ${productId} to cart:`, error);
+    console.error(`API Error subtracting product ${productId} from cart:`, error);
     throw error;
   }
 };
 
-export const overwriteCartProduct = async (productId: number, quantity: number): Promise<void> => {
+export const overwriteCartProduct = async (
+  productId: string,
+  quantity: number,
+): Promise<CartDto> => {
   const jwtToken = localStorage.getItem("token");
 
   if (!jwtToken) {
     throw new Error("Authorization token not found. Please log in.");
   }
 
-  const addBody: ProductDtos = { productId, quantity };
+  const updateBody: CartProductDto = { productId, quantity };
 
   try {
     const response = await apiCall(`${API_BASE_URL}/api/cart/updateQuantity`, {
@@ -100,26 +112,30 @@ export const overwriteCartProduct = async (productId: number, quantity: number):
         Authorization: `Bearer ${jwtToken}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(addBody),
+      body: JSON.stringify(updateBody),
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to add product to cart: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to update product quantity in cart: ${response.status} ${response.statusText}`,
+      );
     }
+
+    return await response.json();
   } catch (error) {
-    console.error(`API Error adding product ${productId} to cart:`, error);
+    console.error(`API Error updating product ${productId} quantity in cart:`, error);
     throw error;
   }
 };
 
-export const deleteCartProduct = async (productId: number): Promise<void> => {
+export const deleteCartProduct = async (productId: string): Promise<CartDto> => {
   const jwtToken = localStorage.getItem("token");
 
   if (!jwtToken) {
     throw new Error("Authorization token not found. Please log in.");
   }
 
-  const deleteBody: DeleteProductRequest = { productId };
+  const deleteBody: CartProductDto = { productId, quantity: 0 };
 
   try {
     const response = await apiCall(`${API_BASE_URL}/api/cart/deleteProduct`, {
@@ -136,8 +152,18 @@ export const deleteCartProduct = async (productId: number): Promise<void> => {
         `Failed to delete product from cart: ${response.status} ${response.statusText}`,
       );
     }
+
+    return await response.json();
   } catch (error) {
     console.error(`API Error deleting product ${productId} from cart:`, error);
     throw error;
   }
+};
+
+export const clearCart = async (productIds: string[]): Promise<CartDto> => {
+  productIds.forEach(async (productId) => {
+    await deleteCartProduct(productId);
+  });
+
+  return await fetchCartProducts();
 };
