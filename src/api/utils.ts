@@ -1,7 +1,5 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8600";
 
-export const jwtToken = localStorage.getItem("token");
-
 const apiCall = async (url: string, options: RequestInit = {}) => {
   const defaultOptions: RequestInit = {
     credentials: "include",

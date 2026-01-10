@@ -1,7 +1,8 @@
 import type { Role } from "../types/users.ts";
-import { API_BASE_URL, apiCall, jwtToken } from "./utils.ts";
+import { API_BASE_URL, apiCall } from "./utils.ts";
 
 export const fetchRoles = async (): Promise<Role[]> => {
+  const jwtToken = localStorage.getItem("token");
   if (!jwtToken) {
     throw new Error("Authorization token not found. Please log in.");
   }
@@ -27,6 +28,7 @@ export const fetchRoles = async (): Promise<Role[]> => {
 };
 
 export const addRole = async (role: Role): Promise<void> => {
+  const jwtToken = localStorage.getItem("token");
   if (!jwtToken) {
     throw new Error("Authorization token not found. Please log in.");
   }
@@ -51,6 +53,7 @@ export const addRole = async (role: Role): Promise<void> => {
 };
 
 export const updateRole = async (role: Role): Promise<void> => {
+  const jwtToken = localStorage.getItem("token");
   if (!jwtToken) {
     throw new Error("Authorization token not found. Please log in.");
   }
@@ -75,6 +78,7 @@ export const updateRole = async (role: Role): Promise<void> => {
 };
 
 export const deleteRole = async (roleName: string): Promise<void> => {
+  const jwtToken = localStorage.getItem("token");
   if (!jwtToken) {
     throw new Error("Authorization token not found. Please log in.");
   }
@@ -98,6 +102,7 @@ export const deleteRole = async (roleName: string): Promise<void> => {
 };
 
 export const addUsersToRole = async (roleName: string, userIds: string[]): Promise<void> => {
+  const jwtToken = localStorage.getItem("token");
   if (!jwtToken) {
     throw new Error("Authorization token not found. Please log in.");
   }
@@ -123,6 +128,7 @@ export const addUsersToRole = async (roleName: string, userIds: string[]): Promi
 };
 
 export const deleteUsersFromRole = async (roleName: string, userIds: string[]): Promise<void> => {
+  const jwtToken = localStorage.getItem("token");
   if (!jwtToken) {
     throw new Error("Authorization token not found. Please log in.");
   }
@@ -150,6 +156,7 @@ export const deleteUsersFromRole = async (roleName: string, userIds: string[]): 
 };
 
 export const fetchRolesPermissions = async (): Promise<string[]> => {
+  const jwtToken = localStorage.getItem("token");
   if (!jwtToken) {
     throw new Error("Authorization token not found. Please log in.");
   }

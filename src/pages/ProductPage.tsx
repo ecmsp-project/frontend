@@ -104,9 +104,10 @@ const ProductPage: React.FC = () => {
           })
       : ["https://via.placeholder.com/600x600?text=No+Image"];
 
+  // Zawsze pokazuj REQUIRED i INFO, SELECTABLE tylko gdy showMoreParams jest true
   const displayedParams = showMoreParams
     ? [...selectableProperties, ...requiredProperties, ...infoProperties]
-    : [...requiredProperties, ...selectableProperties];
+    : [...requiredProperties, ...infoProperties];
 
   const descriptionPoints = variant?.description
     ? variant.description.split("\n").filter((line) => line.trim())
@@ -250,7 +251,7 @@ const ProductPage: React.FC = () => {
                     );
                   })}
                 </List>
-                {(selectableProperties.length > 0 || infoProperties.length > 0) && (
+                {selectableProperties.length > 0 && (
                   <Button
                     variant="text"
                     onClick={() => setShowMoreParams(!showMoreParams)}
