@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
+import { addCartProduct } from "../api/cart-service";
 import Breadcrumbs from "../components/common/Breadcrumbs";
 import Gallery from "../components/common/Gallery";
 import MainLayout from "../components/layout/MainLayout.tsx";
+import { useCartContext } from "../contexts/CartContext";
 import { useProductContext } from "../contexts/ProductContext";
 import { useProductPage } from "../hooks/useProductPage";
 import AddIcon from "@mui/icons-material/Add";
@@ -29,8 +31,10 @@ import { useSearchParams } from "react-router-dom";
 
 const ProductPage: React.FC = () => {
   const [quantity, setQuantity] = useState(1);
+  const [addingToCart, setAddingToCart] = useState(false);
   const [searchParams] = useSearchParams();
   const { categories } = useProductContext();
+  const { refetchCart } = useCartContext();
 
   const {
     variant,
@@ -108,6 +112,22 @@ const ProductPage: React.FC = () => {
   const descriptionPoints = variant?.description
     ? variant.description.split("\n").filter((line) => line.trim())
     : [];
+
+  const handleAddToCart = async () => {
+    if (!variant) return;
+
+    setAddingToCart(true);
+    try {
+      // productId in cart is actually variantId
+      await addCartProduct(variant.variantId, quantity);
+      await refetchCart();
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+      alert("Failed to add product to cart. Please try again.");
+    } finally {
+      setAddingToCart(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -348,13 +368,15 @@ const ProductPage: React.FC = () => {
                   fullWidth
                   size="large"
                   startIcon={<ShoppingCartIcon />}
+                  onClick={handleAddToCart}
+                  disabled={addingToCart || variant.stockQuantity === 0}
                   sx={{
                     mb: 1,
                     bgcolor: "#ff6600",
                     "&:hover": { bgcolor: "#e65c00" },
                   }}
                 >
-                  ADD TO CART
+                  {addingToCart ? "ADDING..." : "ADD TO CART"}
                 </Button>
                 <Button variant="contained" color="primary" fullWidth size="large">
                   BUY AND PAY

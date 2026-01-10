@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
 
 export interface CartItem {
-  id: number;
+  id: string;
   name: string;
   price: number;
   quantity: number;
@@ -13,10 +13,10 @@ interface CartContextType {
   loading: boolean;
   error: string | null;
   refetchCart: () => Promise<void>;
-  updateProductQuantity: (productId: number, quantity: number, delta: number) => Promise<void>;
-  overwriteProductQuantity: (productId: number, newQuantity: number) => Promise<void>;
-  removeProduct: (productId: number) => Promise<void>;
-  clearCart: () => Promise<void>;
+  updateProductQuantity: (productId: string, quantity: number, delta: number) => Promise<void>;
+  overwriteProductQuantity: (productId: string, newQuantity: number) => Promise<void>;
+  removeProduct: (productId: string) => Promise<void>;
+  clearFullCart: () => Promise<void>;
 }
 
 export const CartContext = createContext<CartContextType | undefined>(undefined);

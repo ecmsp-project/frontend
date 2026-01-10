@@ -42,6 +42,8 @@ export default function IndividualUserProvider({ children }: { children: ReactNo
         localStorage.removeItem("token");
         localStorage.removeItem("permissions");
         setPermissions([]);
+        // Dispatch custom event to notify CartProvider about token removal
+        window.dispatchEvent(new Event("token-changed"));
       }
     } finally {
       setLoading(false);
@@ -79,6 +81,8 @@ export default function IndividualUserProvider({ children }: { children: ReactNo
     setCurrentUser(null);
     setPermissions([]);
     setError(null);
+    // Dispatch custom event to notify CartProvider about token removal
+    window.dispatchEvent(new Event("token-changed"));
   }, []);
 
   const contextValue = {
