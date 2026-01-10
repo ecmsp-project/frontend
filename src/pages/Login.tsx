@@ -35,6 +35,7 @@ const Login: React.FC = () => {
     try {
       const loginData = await login(email, password);
       localStorage.setItem("token", loginData.token);
+      console.log('login', localStorage.getItem("token"));
       await refreshCurrentUser();
       navigate("/");
     } catch (error) {

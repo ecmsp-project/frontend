@@ -8,23 +8,34 @@ import type {
   GetProductsRequestDTO,
   GetProductsResponseDTO,
   GetVariantResponseDTO,
-  ProductCreateRequestDTO,
   ProductCreateResponseDTO,
+  ProductCreateRequestDTO,
+  VariantCreateGrpcRequestDTO,
+  VariantCreateResponseDTO,
+  CategoryPropertyGroupResponse,
   VariantPropertyResponseDTO,
 } from "../types/products";
-import { apiCall } from "./utils";
+import { API_BASE_URL, apiCall } from "./utils";
 
 const PRODUCT_SERVICE_URL = "http://localhost:8400";
 const PRODUCT_API = `${PRODUCT_SERVICE_URL}/api/products`;
 const VARIANT_API = `${PRODUCT_SERVICE_URL}/api/variant`;
 const CATEGORY_API = `${PRODUCT_SERVICE_URL}/api/categories`;
+const PROPERTIES_API = `${PRODUCT_SERVICE_URL}/api/properties`;
+const PRODUCT_GRPC_API = `${API_BASE_URL}/api/products/grpc`;
+const VARIANT_GRPC_API = `${API_BASE_URL}/api/variants/grpc`;
 
 export const createProduct = async (
-  productData: ProductCreateRequestDTO,
+    productData: ProductCreateRequestDTO,
 ): Promise<ProductCreateResponseDTO> => {
+  const jwtToken = localStorage.getItem("token");
   try {
-    const response = await apiCall(PRODUCT_API, {
+    const response = await apiCall(PRODUCT_GRPC_API, {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(productData),
     });
 
@@ -116,7 +127,7 @@ export const getCategoryById = async (categoryId: string): Promise<CategoryFromA
 // 2. SPLIT: parentCategoryId + childCategoryId (insert between parent and specific child)
 // 3. SPLIT_ALL: only parentCategoryId (insert between parent and all children)
 export const createCategory = async (
-  categoryData: CategoryCreateRequestDTO,
+    categoryData: CategoryCreateRequestDTO,
 ): Promise<CategoryCreateResponseDTO> => {
   try {
     const response = await apiCall(CATEGORY_API, {
@@ -138,8 +149,8 @@ export const createCategory = async (
 // Update category (name and/or parent)
 // Note: This endpoint is not yet implemented in CategoryController, only in service
 export const updateCategory = async (
-  categoryId: string,
-  categoryData: CategoryUpdateRequestDTO,
+    categoryId: string,
+    categoryData: CategoryUpdateRequestDTO,
 ): Promise<CategoryFromAPI> => {
   try {
     const response = await apiCall(`${CATEGORY_API}/${categoryId}`, {
@@ -177,8 +188,8 @@ export const deleteCategory = async (categoryId: string): Promise<void> => {
 };
 
 export const getProductsByCategory = async (
-  categoryId: string,
-  request: GetProductsRequestDTO,
+    categoryId: string,
+    request: GetProductsRequestDTO,
 ): Promise<GetProductsResponseDTO> => {
   try {
     const url = new URL(PRODUCT_API);
@@ -201,8 +212,8 @@ export const getProductsByCategory = async (
 };
 
 export const searchProducts = async (
-  query: string,
-  request: GetProductsRequestDTO,
+    query: string,
+    request: GetProductsRequestDTO,
 ): Promise<GetProductsResponseDTO> => {
   try {
     const url = new URL(`${PRODUCT_API}/search`);
@@ -216,6 +227,8 @@ export const searchProducts = async (
     if (!response.ok) {
       throw new Error(`Failed to search products: ${response.status} ${response.statusText}`);
     }
+
+    console.log(response.json());
 
     return await response.json();
   } catch (error) {
@@ -232,11 +245,15 @@ export const getAllVariantDetails = async (variantId: string): Promise<GetVarian
 
     if (!response.ok) {
       throw new Error(
-        `Failed to get all variant details: ${response.status} ${response.statusText}`,
+          `Failed to get all variant details: ${response.status} ${response.statusText}`,
       );
     }
 
-    return await response.json();
+    const res = await response.json();
+
+    console.log("bajojajo222", res);
+
+    return res;
   } catch (error) {
     console.error("API Error getting all variant details:", error);
     throw error;
@@ -253,7 +270,11 @@ export const getVariantDetails = async (variantId: string): Promise<GetVariantRe
       throw new Error(`Failed to get variant details: ${response.status} ${response.statusText}`);
     }
 
-    return await response.json();
+    const res = await response.json();
+
+    console.log("bajojajo222", res);
+
+    return res;
   } catch (error) {
     console.error("API Error getting variant details:", error);
     throw error;
@@ -261,7 +282,7 @@ export const getVariantDetails = async (variantId: string): Promise<GetVariantRe
 };
 
 export const getVariantProperties = async (
-  variantId: string,
+    variantId: string,
 ): Promise<Record<string, VariantPropertyResponseDTO[]>> => {
   try {
     const response = await apiCall(`${VARIANT_API}/${variantId}/properties`, {
@@ -270,13 +291,110 @@ export const getVariantProperties = async (
 
     if (!response.ok) {
       throw new Error(
-        `Failed to get variant properties: ${response.status} ${response.statusText}`,
+          `Failed to get variant properties: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    const res = await response.json();
+
+    console.log("bajojajo", res);
+
+    return res;
+  } catch (error) {
+    console.error("API Error getting variant properties:", error);
+    throw error;
+  }
+};
+
+export const getCategoryProperties = async (
+    categoryId: string,
+): Promise<CategoryPropertyGroupResponse> => {
+  try {
+    const url = new URL(PROPERTIES_API);
+    url.searchParams.set("categoryId", categoryId);
+
+    const response = await apiCall(url.toString(), {
+      method: "GET",
+    });
+
+    if (!response.ok) {
+      throw new Error(
+          `Failed to get properties for category: ${response.status} ${response.statusText}`,
       );
     }
 
     return await response.json();
   } catch (error) {
-    console.error("API Error getting variant properties:", error);
+    console.error("API Error fetching category properties:", error);
+    throw error;
+  }
+};
+
+export interface CreatePropertyGrpcRequestDTO {
+  categoryId: string;
+  name: string;
+  unit: string;
+  dataType: string;
+  role: "SELECTABLE" | "REQUIRED" | "INFO";
+  defaultPropertyOptionValues: string[];
+}
+
+export interface CreatePropertyGrpcResponseDTO {
+  id: string;
+}
+
+const PROPERTIES_GRPC_API = `${API_BASE_URL}/api/properties/grpc`;
+
+export const createPropertyGrpc = async (
+  propertyData: CreatePropertyGrpcRequestDTO,
+): Promise<CreatePropertyGrpcResponseDTO> => {
+  const jwtToken = localStorage.getItem("token");
+  
+  try {
+    const response = await apiCall(PROPERTIES_GRPC_API, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(propertyData),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to create property: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("API Error creating property:", error);
+    throw error;
+  }
+};
+
+export const createVariantGrpc = async (
+    variantData: VariantCreateGrpcRequestDTO,
+): Promise<VariantCreateResponseDTO> => {
+  const jwtToken = localStorage.getItem("token");
+  console.log("createVariant", variantData);
+
+  try {
+    const response = await apiCall(VARIANT_GRPC_API, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(variantData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to create variant: ${response.status} ${response.statusText}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("API Error creating variant:", error);
     throw error;
   }
 };
