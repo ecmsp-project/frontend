@@ -22,6 +22,15 @@ export default function CartProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    // Check if token exists before trying to fetch cart
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setCartItems([]);
+      setError(null);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
@@ -65,7 +74,14 @@ export default function CartProvider({ children }: { children: ReactNode }) {
       setCartItems(completeItems);
     } catch (err) {
       console.error("Error fetching cart:", err);
-      setError("Failed to fetch cart items");
+      // Only set error if token exists (user is logged in)
+      // If token doesn't exist, it's not an error - just empty cart
+      if (token) {
+        setError("Failed to fetch cart items");
+      } else {
+        setCartItems([]);
+        setError(null);
+      }
     } finally {
       setLoading(false);
     }
@@ -154,10 +170,35 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     await clearCart(cartItems.map((item) => item.id));
   }, [cartItems]);
 
+  // Initial fetch on mount
   useEffect(() => {
     refetchCart();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Listen for token changes (login/logout)
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "token") {
+        // Token was added or removed, refetch cart
+        refetchCart();
+      }
+    };
+
+    // Listen for storage events (works across tabs)
+    window.addEventListener("storage", handleStorageChange);
+
+    // Also listen for custom event (for same-tab token changes)
+    const handleTokenChange = () => {
+      refetchCart();
+    };
+    window.addEventListener("token-changed", handleTokenChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("token-changed", handleTokenChange);
+    };
+  }, [refetchCart]);
 
   const contextValue = {
     cartItems,

@@ -12,7 +12,7 @@ import { useNavigate, useParams } from "react-router-dom";
 const PaymentPage: React.FC = () => {
   const navigate = useNavigate();
   const { orderId } = useParams<{ orderId: string }>();
-  const { cartItems, clearCart } = useCartContext();
+  const { cartItems, clearFullCart } = useCartContext();
   const {
     subtotal,
     shipping,
@@ -30,7 +30,7 @@ const PaymentPage: React.FC = () => {
     const success = await handlePayment(values);
     if (success) {
       // Clear cart after successful payment
-      await clearCart();
+      await clearFullCart();
       // Redirect to order confirmation page with security token
       if (orderId) {
         const confirmationToken = crypto.randomUUID();

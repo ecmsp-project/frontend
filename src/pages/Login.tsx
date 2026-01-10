@@ -35,6 +35,8 @@ const Login: React.FC = () => {
     try {
       const loginData = await login(email, password);
       localStorage.setItem("token", loginData.token);
+      // Dispatch custom event to notify CartProvider about token change
+      window.dispatchEvent(new Event("token-changed"));
       await refreshCurrentUser();
       navigate("/");
     } catch (error) {
