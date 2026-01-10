@@ -12,7 +12,6 @@ const initialProductValues: ProductFormValues = {
   approximatePrice: 0,
   deliveryPrice: 0,
   description: "",
-  info: {},
 };
 
 const productValidationSchema = Yup.object({
@@ -121,26 +120,6 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({ onSubmit }) => {
                   rows={4}
                   placeholder="Detailed product description"
                 />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
-                  Dodatkowe Info (JSON)
-                </Typography>
-                <TextField
-                  fullWidth
-                  name="info"
-                  multiline
-                  rows={4}
-                  placeholder='np. {"manufacturer": "XYZ", "weight_g": 500}'
-                />
-                <Typography
-                  variant="caption"
-                  display="block"
-                  color="text.secondary"
-                  sx={{ mt: 0.5 }}
-                >
-                  Enter additional product attributes as a valid JSON object.
-                </Typography>
               </Grid>
 
               <Grid size={{ xs: 12 }}>

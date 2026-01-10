@@ -26,7 +26,7 @@ const PRODUCT_GRPC_API = `${API_BASE_URL}/api/products/grpc`;
 const VARIANT_GRPC_API = `${API_BASE_URL}/api/variants/grpc`;
 
 export const createProduct = async (
-    productData: ProductCreateRequestDTO,
+  productData: ProductCreateRequestDTO,
 ): Promise<ProductCreateResponseDTO> => {
   const jwtToken = localStorage.getItem("token");
   try {
@@ -127,7 +127,7 @@ export const getCategoryById = async (categoryId: string): Promise<CategoryFromA
 // 2. SPLIT: parentCategoryId + childCategoryId (insert between parent and specific child)
 // 3. SPLIT_ALL: only parentCategoryId (insert between parent and all children)
 export const createCategory = async (
-    categoryData: CategoryCreateRequestDTO,
+  categoryData: CategoryCreateRequestDTO,
 ): Promise<CategoryCreateResponseDTO> => {
   try {
     const response = await apiCall(CATEGORY_API, {
@@ -149,8 +149,8 @@ export const createCategory = async (
 // Update category (name and/or parent)
 // Note: This endpoint is not yet implemented in CategoryController, only in service
 export const updateCategory = async (
-    categoryId: string,
-    categoryData: CategoryUpdateRequestDTO,
+  categoryId: string,
+  categoryData: CategoryUpdateRequestDTO,
 ): Promise<CategoryFromAPI> => {
   try {
     const response = await apiCall(`${CATEGORY_API}/${categoryId}`, {
@@ -188,8 +188,8 @@ export const deleteCategory = async (categoryId: string): Promise<void> => {
 };
 
 export const getProductsByCategory = async (
-    categoryId: string,
-    request: GetProductsRequestDTO,
+  categoryId: string,
+  request: GetProductsRequestDTO,
 ): Promise<GetProductsResponseDTO> => {
   try {
     const url = new URL(PRODUCT_API);
@@ -212,8 +212,8 @@ export const getProductsByCategory = async (
 };
 
 export const searchProducts = async (
-    query: string,
-    request: GetProductsRequestDTO,
+  query: string,
+  request: GetProductsRequestDTO,
 ): Promise<GetProductsResponseDTO> => {
   try {
     const url = new URL(`${PRODUCT_API}/search`);
@@ -245,7 +245,7 @@ export const getAllVariantDetails = async (variantId: string): Promise<GetVarian
 
     if (!response.ok) {
       throw new Error(
-          `Failed to get all variant details: ${response.status} ${response.statusText}`,
+        `Failed to get all variant details: ${response.status} ${response.statusText}`,
       );
     }
 
@@ -282,7 +282,7 @@ export const getVariantDetails = async (variantId: string): Promise<GetVariantRe
 };
 
 export const getVariantProperties = async (
-    variantId: string,
+  variantId: string,
 ): Promise<Record<string, VariantPropertyResponseDTO[]>> => {
   try {
     const response = await apiCall(`${VARIANT_API}/${variantId}/properties`, {
@@ -291,7 +291,7 @@ export const getVariantProperties = async (
 
     if (!response.ok) {
       throw new Error(
-          `Failed to get variant properties: ${response.status} ${response.statusText}`,
+        `Failed to get variant properties: ${response.status} ${response.statusText}`,
       );
     }
 
@@ -307,7 +307,7 @@ export const getVariantProperties = async (
 };
 
 export const getCategoryProperties = async (
-    categoryId: string,
+  categoryId: string,
 ): Promise<CategoryPropertyGroupResponse> => {
   try {
     const url = new URL(PROPERTIES_API);
@@ -319,7 +319,7 @@ export const getCategoryProperties = async (
 
     if (!response.ok) {
       throw new Error(
-          `Failed to get properties for category: ${response.status} ${response.statusText}`,
+        `Failed to get properties for category: ${response.status} ${response.statusText}`,
       );
     }
 
@@ -349,7 +349,7 @@ export const createPropertyGrpc = async (
   propertyData: CreatePropertyGrpcRequestDTO,
 ): Promise<CreatePropertyGrpcResponseDTO> => {
   const jwtToken = localStorage.getItem("token");
-  
+
   try {
     const response = await apiCall(PROPERTIES_GRPC_API, {
       method: "POST",
@@ -362,7 +362,9 @@ export const createPropertyGrpc = async (
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Failed to create property: ${response.status} ${response.statusText} - ${errorText}`);
+      throw new Error(
+        `Failed to create property: ${response.status} ${response.statusText} - ${errorText}`,
+      );
     }
 
     return await response.json();
@@ -373,7 +375,7 @@ export const createPropertyGrpc = async (
 };
 
 export const createVariantGrpc = async (
-    variantData: VariantCreateGrpcRequestDTO,
+  variantData: VariantCreateGrpcRequestDTO,
 ): Promise<VariantCreateResponseDTO> => {
   const jwtToken = localStorage.getItem("token");
   console.log("createVariant", variantData);
