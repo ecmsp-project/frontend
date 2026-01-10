@@ -31,7 +31,7 @@ import { useNavigate } from "react-router-dom";
 const SHIPPING_COST = 19.99;
 const FREE_SHIPPING_THRESHOLD = 500;
 
-const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
+const CartProductCard: React.FC<{ item: CartItem; onClick: () => void }> = ({ item, onClick }) => {
   const { updateProductQuantity, overwriteProductQuantity, removeProduct } = useCartContext();
   const theme = useTheme();
 
@@ -132,6 +132,7 @@ const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
               component="div"
               variant="h6"
               fontWeight={600}
+              onClick={onClick}
               sx={{
                 mb: 1.5,
                 overflow: "hidden",
@@ -139,6 +140,13 @@ const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
                 display: "-webkit-box",
                 WebkitLineClamp: 2,
                 WebkitBoxOrient: "vertical",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                "&:hover": {
+                  textDecoration: "underline",
+                  textDecorationColor: "primary.main",
+                  color: "primary.main",
+                },
               }}
             >
               {productName}
@@ -171,7 +179,10 @@ const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
                 size="small"
                 aria-label="decrease quantity"
                 disabled={item.quantity <= 1}
-                onClick={() => handleQuantityChange(-1)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleQuantityChange(-1);
+                }}
                 sx={{
                   "&:hover": { bgcolor: alpha(theme.palette.error.main, 0.1) },
                   "&.Mui-disabled": { opacity: 0.3 },
@@ -183,6 +194,7 @@ const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
                 value={localQuantity}
                 size="small"
                 variant="standard"
+                onClick={(e) => e.stopPropagation()}
                 sx={{
                   width: 50,
                   "& .MuiInput-underline:before": { display: "none" },
@@ -200,7 +212,10 @@ const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
               <IconButton
                 size="small"
                 aria-label="increase quantity"
-                onClick={() => handleQuantityChange(1)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleQuantityChange(1);
+                }}
                 sx={{
                   "&:hover": { bgcolor: alpha(theme.palette.success.main, 0.1) },
                 }}
@@ -230,7 +245,10 @@ const CartProductCard: React.FC<{ item: CartItem }> = ({ item }) => {
               </Typography>
               <IconButton
                 aria-label="delete"
-                onClick={handleDelete}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete();
+                }}
                 sx={{
                   color: "error.main",
                   bgcolor: alpha(theme.palette.error.main, 0.1),
@@ -311,7 +329,13 @@ const CartPage: React.FC = () => {
                 <>
                   {safeCartItems.map((item) => {
                     if (!item || !item.id) return null;
-                    return <CartProductCard key={item.id} item={item} />;
+                    return (
+                      <CartProductCard
+                        key={item.id}
+                        item={item}
+                        onClick={() => navigate(`/product/${item.id}`)}
+                      />
+                    );
                   })}
 
                   {FREE_SHIPPING_THRESHOLD - subtotal > 0 && (
