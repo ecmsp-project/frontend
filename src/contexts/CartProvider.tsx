@@ -78,8 +78,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
 
       try {
         await deleteCartProduct(productId);
-        // Refetch to ensure consistency
-        await refetchCart();
+        // No refetch needed - optimistic update is sufficient
       } catch (err) {
         console.error("Error removing product:", err);
         // Revert optimistic update on error
@@ -111,8 +110,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
         } else {
           await subtractCartProduct(productId, 1);
         }
-        // Refetch to ensure consistency
-        await refetchCart();
+        // No refetch needed - optimistic update is sufficient
       } catch (err) {
         console.error("Error updating quantity:", err);
         // Revert optimistic update on error
@@ -139,8 +137,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
 
       try {
         await overwriteCartProduct(productId, newQuantity);
-        // Refetch to ensure consistency
-        await refetchCart();
+        // No refetch needed - optimistic update is sufficient
       } catch (err) {
         console.error("Error updating quantity:", err);
         // Revert optimistic update on error
