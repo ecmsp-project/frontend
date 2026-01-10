@@ -1,12 +1,12 @@
-export interface Cart {
-  productDtos: ProductDtos[];
+export interface CartDto {
+  productDtos: CartProductDto[];
 }
 
-export interface ProductDtos {
-  productId: number;
+export interface CartProductDto {
+  productId: string;
   quantity: number;
 }
 
 export interface DeleteProductRequest {
-  productId: number;
+  productId: string;
 }

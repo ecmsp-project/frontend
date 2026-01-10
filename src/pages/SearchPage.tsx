@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { addCartProduct } from "../api/cart-service";
 import Breadcrumbs from "../components/common/Breadcrumbs";
 import MainLayout from "../components/layout/MainLayout";
 import CategoryFilter from "../components/search/CategoryFilter";
@@ -6,6 +7,7 @@ import PriceFilter from "../components/search/PriceFilter";
 import ProductListItem from "../components/search/ProductListItem";
 import SearchFilters from "../components/search/SearchFilters";
 import SortFilter from "../components/search/SortFilter";
+import { useCartContext } from "../contexts/CartContext";
 import { useProductContext } from "../contexts/ProductContext.tsx";
 import { useProductSearch } from "../hooks/useProductSearch";
 import type { ProductRepresentationDTO } from "../types/products.ts";
@@ -13,6 +15,8 @@ import { Box, Typography, Container, CircularProgress, Menu, Pagination } from "
 
 const SearchPage: React.FC = () => {
   const { categories } = useProductContext();
+  const { refetchCart } = useCartContext();
+  const [, setAddingToCart] = useState<Record<string, boolean>>({});
   const {
     navigate,
     searchTerm,
@@ -42,6 +46,20 @@ const SearchPage: React.FC = () => {
       ? `/product/${product.variantDetail.variantId}?categoryId=${categoryId}`
       : `/product/${product.variantDetail.variantId}`;
     navigate(url);
+  };
+
+  const handleAddToCart = async (product: ProductRepresentationDTO) => {
+    const variantId = product.variantDetail.variantId;
+    setAddingToCart((prev) => ({ ...prev, [variantId]: true }));
+    try {
+      await addCartProduct(variantId, 1);
+      await refetchCart();
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+      alert("Failed to add product to cart. Please try again.");
+    } finally {
+      setAddingToCart((prev) => ({ ...prev, [variantId]: false }));
+    }
   };
 
   const categoryName = categoryId
@@ -133,6 +151,7 @@ const SearchPage: React.FC = () => {
                       key={product.variantDetail.variantId}
                       product={product}
                       onProductClick={handleProductClick}
+                      onAddToCart={handleAddToCart}
                     />
                   ))
                 ) : (
