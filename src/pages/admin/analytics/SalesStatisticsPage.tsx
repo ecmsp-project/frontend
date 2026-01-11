@@ -48,7 +48,7 @@ const SalesStatisticsPage: React.FC = () => {
       setSalesData(null);
       setStockData(null);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedVariant, dateRange, activeTab]);
 
   const loadSalesData = async (variantId: string) => {
