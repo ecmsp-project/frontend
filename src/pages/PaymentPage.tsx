@@ -7,7 +7,16 @@ import { useCartContext } from "../contexts/CartContext";
 import { usePayment, type CardFormValues } from "../hooks/usePayment.ts";
 import PaymentSummary from "./payment/PaymentSummary.tsx";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
-import { Box, Typography, Container, Grid, Alert, Card, Button, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Container,
+  Grid,
+  Alert,
+  Card,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 
 const PaymentPage: React.FC = () => {
@@ -52,7 +61,15 @@ const PaymentPage: React.FC = () => {
     return (
       <MainLayout>
         <Container maxWidth="lg" sx={{ py: 4 }}>
-          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "50vh" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: "50vh",
+            }}
+          >
             <CircularProgress size={60} sx={{ mb: 3 }} />
             <Typography variant="h6" color="text.secondary">
               Processing your payment...

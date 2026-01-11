@@ -207,7 +207,11 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, totalPrice }) => {
         <Divider sx={{ my: 3 }} />
         <OrderItemsList order={order} />
         <Divider sx={{ my: 3 }} />
-        <OrderSummary totalPrice={totalPrice} orderStatus={order.orderStatus} orderId={order.orderId} />
+        <OrderSummary
+          totalPrice={totalPrice}
+          orderStatus={order.orderStatus}
+          orderId={order.orderId}
+        />
       </Paper>
     </Box>
   );
