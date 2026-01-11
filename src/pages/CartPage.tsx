@@ -27,6 +27,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { createOrder } from "../api/order-service.ts";
 
 const SHIPPING_COST = 19.99;
 const FREE_SHIPPING_THRESHOLD = 500;
@@ -284,9 +285,21 @@ const CartPage: React.FC = () => {
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
   const total = subtotal + shipping;
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     // Generate UUID for order
-    const orderId = crypto.randomUUID();
+    const order = await createOrder({
+      items: safeCartItems.map((item) => ({
+        itemId: item.id,
+        name: item.name,
+        variantId: item.id,
+        quantity: item.quantity,
+        price: item.price,
+        imageUrl: item.image,
+        description: item.name,
+        isReturnable: true,
+      })),
+    });
+    const orderId = order.orderId
     navigate(`/order/${orderId}`);
   };
 

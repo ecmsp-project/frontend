@@ -16,6 +16,35 @@ export interface OrderDetailsResponse {
   items: OrderItemDetails[];
 }
 
+export interface OrderCreateRequest {
+  items: OrderCreateItemDto[];
+}
+
+export interface OrderCreateItemDto {
+  itemId: string;
+  name: string;
+  variantId: string;
+  quantity: number;
+  price: number;
+  imageUrl: string;
+  description: string;
+  isReturnable: boolean;
+}
+
+export interface FailedReservationVariantDto {
+  variantId: string;
+  requestedQuantity: number;
+  availableQuantity: number;
+}
+
+export interface OrderCreateResponse {
+  isSuccess: boolean;
+  orderId: string;
+  reservedVariantIds: string[];
+  failedVariants: FailedReservationVariantDto[];
+}
+
+
 export const getStatusLabel = (status: string): string => {
   return STATUS_LABELS[status as OrderStatus] || status;
 };
