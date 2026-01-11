@@ -23,7 +23,6 @@ export default function IndividualUserProvider({ children }: { children: ReactNo
       return;
     }
 
-    // Extract permissions from token
     const perms = getPermissionsFromToken(token);
     setPermissions(perms);
     localStorage.setItem("permissions", JSON.stringify(perms));
@@ -37,12 +36,10 @@ export default function IndividualUserProvider({ children }: { children: ReactNo
       console.error("Error fetching current user:", err);
       setError("Failed to load user data.");
       setCurrentUser(null);
-      // If token is invalid, remove it
       if (err instanceof Error && err.message.includes("401")) {
         localStorage.removeItem("token");
         localStorage.removeItem("permissions");
         setPermissions([]);
-        // Dispatch custom event to notify CartProvider about token removal
         window.dispatchEvent(new Event("token-changed"));
       }
     } finally {
@@ -81,7 +78,6 @@ export default function IndividualUserProvider({ children }: { children: ReactNo
     setCurrentUser(null);
     setPermissions([]);
     setError(null);
-    // Dispatch custom event to notify CartProvider about token removal
     window.dispatchEvent(new Event("token-changed"));
   }, []);
 

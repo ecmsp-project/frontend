@@ -75,7 +75,6 @@ const iconMap: { [key: string]: React.ComponentType } = {
   MenuBookIcon,
 };
 
-// Sortable Feature Item Component
 interface SortableFeatureItemProps {
   feature: any;
   onDelete: () => void;
@@ -118,7 +117,6 @@ const SortableFeatureItem: React.FC<SortableFeatureItemProps> = ({
           },
         }}
       >
-        {/* Drag Handle */}
         <Box
           {...attributes}
           {...listeners}
@@ -143,7 +141,6 @@ const SortableFeatureItem: React.FC<SortableFeatureItemProps> = ({
           <DragIndicatorIcon fontSize="small" />
         </Box>
 
-        {/* Delete Button */}
         <IconButton
           size="small"
           sx={{
@@ -194,7 +191,6 @@ const SortableFeatureItem: React.FC<SortableFeatureItemProps> = ({
   );
 };
 
-// Sortable Category Item Component
 interface SortableCategoryItemProps {
   category: CategoryFromAPI;
   index: number;
@@ -235,7 +231,6 @@ const SortableCategoryItem: React.FC<SortableCategoryItemProps> = ({
           },
         }}
       >
-        {/* Remove Button */}
         <IconButton
           size="small"
           sx={{
@@ -252,7 +247,6 @@ const SortableCategoryItem: React.FC<SortableCategoryItemProps> = ({
           <CloseIcon fontSize="small" />
         </IconButton>
 
-        {/* Category Header with Color */}
         <Box
           sx={{
             height: 120,
@@ -276,7 +270,6 @@ const SortableCategoryItem: React.FC<SortableCategoryItemProps> = ({
           />
         </Box>
 
-        {/* Category Details */}
         <Box sx={{ p: 2 }}>
           <Typography
             variant="h6"
@@ -342,7 +335,6 @@ const SortableCategoryItem: React.FC<SortableCategoryItemProps> = ({
   );
 };
 
-// Mock initial data
 const defaultSettings = {
   hero: {
     title: "Welcome to E-COMMERCE",
@@ -453,7 +445,6 @@ const HomePageEditor: React.FC = () => {
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Sensors for drag and drop
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -465,13 +456,11 @@ const HomePageEditor: React.FC = () => {
     }),
   );
 
-  // Initialization - fetch data from API or use defaults
   useEffect(() => {
     const initializeData = async () => {
       if (!isInitialized && !settings) {
         try {
           const data = await fetchHomeSettings();
-          // Konwertuj HomePageContent na GlobalSettings
           setSettings({
             ...defaultSettings,
             hero: data.hero,
@@ -524,7 +513,6 @@ const HomePageEditor: React.FC = () => {
     if (!settings) return;
     setIsSaving(true);
     try {
-      // Konwertuj GlobalSettings na HomePageContent
       const homeSettings = {
         hero: settings.hero,
         features: settings.features,
@@ -536,14 +524,11 @@ const HomePageEditor: React.FC = () => {
         selectedCategoryIds: selectedCategoryIds,
       };
 
-      // Save using the new endpoint
       await saveHomeSettings(homeSettings);
 
-      // Clear cache so updated data is visible when returning to home page
       sessionStorage.removeItem("homepage_cache");
       sessionStorage.removeItem("homepage_categories");
 
-      // Update local state
       const updatedSettings = {
         ...settings,
         selectedCategoryIds: selectedCategoryIds,
@@ -594,7 +579,6 @@ const HomePageEditor: React.FC = () => {
     return colors[index % colors.length];
   };
 
-  // Handler for dragging features
   const handleFeaturesDragEnd = (event: DragEndEvent) => {
     if (!settings) return;
 
@@ -610,7 +594,6 @@ const HomePageEditor: React.FC = () => {
     }
   };
 
-  // Handler for dragging categories
   const handleCategoriesDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -630,7 +613,6 @@ const HomePageEditor: React.FC = () => {
     <>
       <CMSToolbar onSave={handleSave} isDirty={isDirty} isSaving={isSaving} />
       <Box sx={{ pt: 8 }}>
-        {/* Hero Section */}
         <Box
           sx={{
             background: (theme) =>
@@ -673,7 +655,6 @@ const HomePageEditor: React.FC = () => {
         </Box>
 
         <Container maxWidth="lg" sx={{ mb: 8 }}>
-          {/* Features */}
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -752,7 +733,6 @@ const HomePageEditor: React.FC = () => {
             </SortableContext>
           </DndContext>
 
-          {/* Categories */}
           <Box sx={{ mb: 4 }}>
             <Typography variant="h4" component="h2" gutterBottom fontWeight={700} sx={{ mb: 1 }}>
               <EditableText
@@ -776,7 +756,6 @@ const HomePageEditor: React.FC = () => {
             </Typography>
           </Box>
 
-          {/* Category Selection Section */}
           <Box sx={{ mb: 4 }}>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
               Select categories from the system to be displayed on the home page
@@ -804,7 +783,6 @@ const HomePageEditor: React.FC = () => {
               >
                 <SortableContext items={selectedCategoryIds}>
                   <Grid container spacing={3}>
-                    {/* Selected Category Tiles */}
                     {getSelectedCategories().map((category, index) => (
                       <SortableCategoryItem
                         key={category.id}
@@ -815,7 +793,6 @@ const HomePageEditor: React.FC = () => {
                       />
                     ))}
 
-                    {/* Add Category Button */}
                     {getAvailableCategoriesToAdd().length > 0 && (
                       <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                         <Card
@@ -863,7 +840,6 @@ const HomePageEditor: React.FC = () => {
           </Box>
         </Container>
 
-        {/* Footer - edytowalna stopka */}
         <Box
           sx={{
             bgcolor: "primary.main",
@@ -875,7 +851,6 @@ const HomePageEditor: React.FC = () => {
         >
           <Container maxWidth="lg">
             <Grid container spacing={4}>
-              {/* About Section */}
               <Grid size={{ xs: 12, md: 4 }}>
                 <Typography
                   variant="h6"
@@ -914,7 +889,6 @@ const HomePageEditor: React.FC = () => {
                   />
                 </Typography>
 
-                {/* Social Media Icons */}
                 <Box sx={{ display: "flex", gap: 1, mt: 3 }}>
                   <Box
                     sx={{
@@ -1031,10 +1005,8 @@ const HomePageEditor: React.FC = () => {
                 </Box>
               </Grid>
 
-              {/* Spacer - dwie puste kolumny */}
               <Grid size={{ xs: 0, md: 4 }}></Grid>
 
-              {/* Customer Service */}
               <Grid size={{ xs: 12, md: 4 }}>
                 <Typography variant="h6" gutterBottom fontWeight={600} sx={{ mb: 2 }}>
                   Customer Service
@@ -1088,7 +1060,6 @@ const HomePageEditor: React.FC = () => {
 
             <Divider sx={{ my: 3, bgcolor: "rgba(255,255,255,0.2)" }} />
 
-            {/* Copyright */}
             <Box sx={{ display: "flex", justifyContent: "center" }}>
               <Typography variant="body2" sx={{ opacity: 0.9 }}>
                 <EditableText
@@ -1130,7 +1101,6 @@ const HomePageEditor: React.FC = () => {
         </Alert>
       </Snackbar>
 
-      {/* Category Selection Dialog */}
       <Dialog
         open={categoryDialogOpen}
         onClose={() => setCategoryDialogOpen(false)}

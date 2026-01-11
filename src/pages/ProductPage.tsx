@@ -51,7 +51,6 @@ const ProductPage: React.FC = () => {
     getAvailableValues,
   } = useProductPage();
 
-  // Get categoryId from URL params or from localStorage (if user came from category)
   const categoryIdFromUrl = searchParams.get("categoryId");
   const [productCategoryId, setProductCategoryId] = useState<string | null>(
     categoryIdFromUrl ||
@@ -104,7 +103,6 @@ const ProductPage: React.FC = () => {
           })
       : ["https://via.placeholder.com/600x600?text=No+Image"];
 
-  // Zawsze pokazuj REQUIRED i INFO, SELECTABLE tylko gdy showMoreParams jest true
   const displayedParams = showMoreParams
     ? [...selectableProperties, ...requiredProperties, ...infoProperties]
     : [...requiredProperties, ...infoProperties];
@@ -118,7 +116,6 @@ const ProductPage: React.FC = () => {
 
     setAddingToCart(true);
     try {
-      // productId in cart is actually variantId
       await addCartProduct(variant.variantId, quantity);
       await refetchCart();
     } catch (error) {

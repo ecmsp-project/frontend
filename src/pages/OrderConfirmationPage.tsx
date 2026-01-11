@@ -12,10 +12,8 @@ const OrderConfirmationPage: React.FC = () => {
   const navigate = useNavigate();
   const theme = useTheme();
 
-  // Get orderId from URL params
   const finalOrderId = orderId || "N/A";
 
-  // Check if token is present (protection against forgery)
   if (!token) {
     return (
       <MainLayout>

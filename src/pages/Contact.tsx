@@ -24,7 +24,6 @@ const Contact: React.FC = () => {
       try {
         setIsLoading(true);
 
-        // Check cache
         const cachedContact = sessionStorage.getItem(CACHE_KEY_CONTACT);
         let contactData: ContactPageContent | null = null;
 
@@ -35,7 +34,6 @@ const Contact: React.FC = () => {
           }
         }
 
-        // If there's no cache or cache is old, load from API
         if (!contactData) {
           contactData = await fetchContactSettings();
           sessionStorage.setItem(
@@ -50,7 +48,6 @@ const Contact: React.FC = () => {
         setContactContent(contactData);
       } catch (error) {
         console.error("Failed to load contact content from CMS:", error);
-        // Fallback to default values
       } finally {
         setIsLoading(false);
       }

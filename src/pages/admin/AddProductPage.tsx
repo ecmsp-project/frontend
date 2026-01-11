@@ -206,7 +206,6 @@ const AddProductPage: React.FC = () => {
     setCreatingVariant(true);
 
     try {
-      // Automatycznie dodaj zdjęcia z textarea jeśli są tam jakieś URL-e
       let allImages = [...variantForm.variantImages];
       if (imageInput.trim()) {
         const urlsFromInput = imageInput
@@ -216,34 +215,29 @@ const AddProductPage: React.FC = () => {
         allImages = [...allImages, ...urlsFromInput];
       }
 
-      // Filtrujemy puste stringi i upewniamy się że mamy tablicę stringów
       const images = allImages.filter((img) => img && img.trim().length > 0);
 
-      // Przygotuj standardowe właściwości
       const standardPropertyValues = Object.entries(propertyValues)
         .filter(([, value]) => value !== undefined && value !== "")
         .map(([propertyId, displayText]) => ({ propertyId, displayText }));
 
-      // Utwórz custom properties i pobierz ich ID
       const customPropertyValues: Array<{ propertyId: string; displayText: string }> = [];
 
       if (customProperties.length > 0 && productForm.categoryId) {
         for (const customProp of customProperties) {
           if (customProp.name.trim() && customProp.value.trim()) {
             try {
-              // Utwórz property w backendzie
               const propertyPayload: CreatePropertyGrpcRequestDTO = {
                 categoryId: productForm.categoryId,
                 name: customProp.name.trim(),
-                unit: "", // Dla INFO properties unit może być pusty
+                unit: "",
                 dataType: "TEXT",
                 role: "INFO",
-                defaultPropertyOptionValues: [], // Dla INFO properties pusta tablica
+                defaultPropertyOptionValues: [],
               };
 
               const createdProperty = await createPropertyGrpc(propertyPayload);
 
-              // Dodaj do listy z właściwym ID
               customPropertyValues.push({
                 propertyId: createdProperty.id,
                 displayText: customProp.value.trim(),
@@ -275,7 +269,7 @@ const AddProductPage: React.FC = () => {
         price: variantForm.price,
         stockQuantity: variantForm.stockQuantity,
         description: variantForm.description,
-        variantImages: images, // Używamy przefiltrowanych zdjęć
+        variantImages: images,
         propertyValues: { ...propertyValues },
       };
       setVariantsCreated((prev) => [...prev, newVariant]);

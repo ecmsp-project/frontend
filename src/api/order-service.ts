@@ -1,4 +1,8 @@
-import type { OrderCreateRequest, OrderCreateResponse, OrderDetailsResponse } from "../types/orders";
+import type {
+  OrderCreateRequest,
+  OrderCreateResponse,
+  OrderDetailsResponse,
+} from "../types/orders";
 import { API_BASE_URL, apiCall } from "./utils";
 
 export const fetchUserOrders = async (): Promise<OrderDetailsResponse[]> => {

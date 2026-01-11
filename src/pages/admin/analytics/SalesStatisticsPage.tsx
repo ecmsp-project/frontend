@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { getVariantSalesOverTime, getVariantStockOverTime } from "../../../api/statistics-service";
 import DateRangeSelector from "../../../components/analytics/DateRangeSelector";
 import SalesChart from "../../../components/analytics/SalesChart";
@@ -36,6 +36,50 @@ const SalesStatisticsPage: React.FC = () => {
     return { fromDate, toDate: today };
   });
 
+  const loadSalesData = useCallback(
+    async (variantId: string) => {
+      setSalesLoading(true);
+      setError(null);
+      try {
+        const data = await getVariantSalesOverTime(variantId, {
+          fromDate: dateRange.fromDate?.toISOString().split("T")[0],
+          toDate: dateRange.toDate?.toISOString().split("T")[0],
+          trendDays: 30,
+        });
+
+        setSalesData(data);
+      } catch (err) {
+        console.error("Error loading sales data:", err);
+        setError("Failed to load sales data. Please check the server connection.");
+      } finally {
+        setSalesLoading(false);
+      }
+    },
+    [dateRange],
+  );
+
+  const loadStockData = useCallback(
+    async (variantId: string) => {
+      setStockLoading(true);
+      setError(null);
+      try {
+        const data = await getVariantStockOverTime(variantId, {
+          fromDate: dateRange.fromDate?.toISOString().split("T")[0],
+          toDate: dateRange.toDate?.toISOString().split("T")[0],
+          trendDays: 30,
+        });
+
+        setStockData(data);
+      } catch (err) {
+        console.error("Error loading stock data:", err);
+        setError("Failed to load stock data. Please check the server connection.");
+      } finally {
+        setStockLoading(false);
+      }
+    },
+    [dateRange],
+  );
+
   // Load data when variant or date range changes
   useEffect(() => {
     if (selectedVariant) {
@@ -48,45 +92,7 @@ const SalesStatisticsPage: React.FC = () => {
       setSalesData(null);
       setStockData(null);
     }
-  }, [selectedVariant, dateRange, activeTab]);
-
-  const loadSalesData = async (variantId: string) => {
-    setSalesLoading(true);
-    setError(null);
-    try {
-      const data = await getVariantSalesOverTime(variantId, {
-        fromDate: dateRange.fromDate?.toISOString().split("T")[0],
-        toDate: dateRange.toDate?.toISOString().split("T")[0],
-        trendDays: 30,
-      });
-
-      setSalesData(data);
-    } catch (err) {
-      console.error("Error loading sales data:", err);
-      setError("Failed to load sales data. Please check the server connection.");
-    } finally {
-      setSalesLoading(false);
-    }
-  };
-
-  const loadStockData = async (variantId: string) => {
-    setStockLoading(true);
-    setError(null);
-    try {
-      const data = await getVariantStockOverTime(variantId, {
-        fromDate: dateRange.fromDate?.toISOString().split("T")[0],
-        toDate: dateRange.toDate?.toISOString().split("T")[0],
-        trendDays: 30,
-      });
-
-      setStockData(data);
-    } catch (err) {
-      console.error("Error loading stock data:", err);
-      setError("Failed to load stock data. Please check the server connection.");
-    } finally {
-      setStockLoading(false);
-    }
-  };
+  }, [selectedVariant, dateRange, activeTab, loadSalesData, loadStockData]);
 
   const handleVariantSelect = (variant: VariantInfoDTO | null) => {
     setSelectedVariant(variant);

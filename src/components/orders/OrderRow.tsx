@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
+import { getAllVariantDetails } from "../../api/product-service";
 import { type OrderDetailsResponse, type OrderItemDetails } from "../../types/orders.ts";
 import { getStatusColor, getStatusLabel } from "../../types/orders.ts";
-import { formatDate } from "../../utils/string.ts";
-import { getAllVariantDetails } from "../../api/product-service";
 import type { GetVariantResponseDTO } from "../../types/products";
+import { formatDate } from "../../utils/string.ts";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
@@ -141,7 +141,9 @@ const OrderItemRow: React.FC<OrderItemRowProps> = ({ item, index }) => {
             )}
             <ListItemText
               primary={
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5, flexWrap: "wrap" }}>
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5, flexWrap: "wrap" }}
+                >
                   <Typography variant="body2" fontWeight={600}>
                     {productName}
                   </Typography>

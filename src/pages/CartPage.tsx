@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { createOrder } from "../api/order-service.ts";
 import { getVariantDetails } from "../api/product-service";
 import Breadcrumbs from "../components/common/Breadcrumbs.tsx";
 import MainLayout from "../components/layout/MainLayout.tsx";
@@ -27,7 +28,6 @@ import {
   useTheme,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { createOrder } from "../api/order-service.ts";
 
 const SHIPPING_COST = 19.99;
 const FREE_SHIPPING_THRESHOLD = 500;
@@ -274,7 +274,6 @@ const CartPage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  // Protection against empty cart
   const safeCartItems = Array.isArray(cartItems) ? cartItems : [];
   const subtotal = safeCartItems.reduce((sum, item) => {
     if (!item || typeof item.price !== "number" || typeof item.quantity !== "number") {
@@ -286,7 +285,6 @@ const CartPage: React.FC = () => {
   const total = subtotal + shipping;
 
   const handleCheckout = async () => {
-    // Generate UUID for order
     const order = await createOrder({
       items: safeCartItems.map((item) => ({
         itemId: item.id,
@@ -299,7 +297,7 @@ const CartPage: React.FC = () => {
         isReturnable: true,
       })),
     });
-    const orderId = order.orderId
+    const orderId = order.orderId;
     navigate(`/order/${orderId}`);
   };
 
