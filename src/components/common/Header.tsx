@@ -116,6 +116,7 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
             });
           }
         } catch {
+          // Silently ignore prefetch errors
         }
       };
 

@@ -217,7 +217,14 @@ export const useProductPage = () => {
     if (!variant || variant.variantId !== variantId) {
       loadAllVariantDetails(variantId);
     }
-  }, [variantId]);
+  }, [
+    variantId,
+    allVariants,
+    loadAllVariantDetails,
+    loadVariantDetails,
+    loadVariantProperties,
+    variant,
+  ]);
 
   return {
     variant,

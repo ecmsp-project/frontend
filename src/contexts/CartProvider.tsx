@@ -156,7 +156,7 @@ export default function CartProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     refetchCart();
-  }, []);
+  }, [refetchCart]);
 
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {

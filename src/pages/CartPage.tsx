@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { createOrder } from "../api/order-service.ts";
 import { getVariantDetails } from "../api/product-service";
 import Breadcrumbs from "../components/common/Breadcrumbs.tsx";
 import MainLayout from "../components/layout/MainLayout.tsx";
@@ -27,7 +28,6 @@ import {
   useTheme,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { createOrder } from "../api/order-service.ts";
 
 const SHIPPING_COST = 19.99;
 const FREE_SHIPPING_THRESHOLD = 500;
@@ -297,7 +297,7 @@ const CartPage: React.FC = () => {
         isReturnable: true,
       })),
     });
-    const orderId = order.orderId
+    const orderId = order.orderId;
     navigate(`/order/${orderId}`);
   };
 

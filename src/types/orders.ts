@@ -44,7 +44,6 @@ export interface OrderCreateResponse {
   failedVariants: FailedReservationVariantDto[];
 }
 
-
 export const getStatusLabel = (status: string): string => {
   return STATUS_LABELS[status as OrderStatus] || status;
 };

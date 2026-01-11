@@ -137,6 +137,7 @@ export const useCheckout = (initialOrderId?: string) => {
             return;
           }
         } catch {
+          // Silently ignore parsing errors
         }
       }
 
