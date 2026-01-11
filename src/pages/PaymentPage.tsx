@@ -30,16 +30,13 @@ const PaymentPage: React.FC = () => {
     clearPaymentError();
     const success = await handlePayment(values);
     if (success) {
-      // Clear cart after successful payment
       await clearFullCart();
-      // Redirect to order confirmation page with security token
       if (orderId) {
         const paymentLink = await getPaymentLink(orderId);
         await processPayment(paymentLink);
         const confirmationToken = crypto.randomUUID();
         navigate(`/order-confirmation/${orderId}/${confirmationToken}`);
       } else {
-        // Fallback - if there's no orderId, redirect to home page
         navigate("/");
       }
     }

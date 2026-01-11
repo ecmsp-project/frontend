@@ -84,7 +84,6 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
 
   const cartItemsCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
-  // Prefetch HomePage data when not on homepage
   useEffect(() => {
     if (location.pathname !== "/") {
       const prefetchHomeData = async () => {
@@ -93,11 +92,9 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
           const CACHE_KEY_CATEGORIES = "homepage_categories";
           const CACHE_DURATION = 5 * 60 * 1000;
 
-          // Check cache
           const cachedHome = sessionStorage.getItem(CACHE_KEY_HOME);
           const cachedCategories = sessionStorage.getItem(CACHE_KEY_CATEGORIES);
 
-          // Prefetch only if there's no cache or cache is old
           if (!cachedHome || Date.now() - JSON.parse(cachedHome).timestamp > CACHE_DURATION) {
             fetchHomeSettings().then((data) => {
               sessionStorage.setItem(
@@ -119,11 +116,9 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
             });
           }
         } catch {
-          // Ignore prefetch errors
         }
       };
 
-      // Prefetch after a short delay to avoid blocking main rendering
       const timeoutId = setTimeout(prefetchHomeData, 1000);
       return () => clearTimeout(timeoutId);
     }
@@ -523,7 +518,6 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
         </Toolbar>
       </AppBar>
 
-      {/* User menu */}
       <Menu
         anchorEl={userMenuAnchor}
         open={Boolean(userMenuAnchor)}
@@ -548,7 +542,6 @@ const Header: React.FC<HeaderProps> = ({ minimalist }) => {
           },
         }}
       >
-        {/* User Panel */}
         <Box sx={{ px: 1, py: 0.5 }}>
           <Typography
             variant="caption"

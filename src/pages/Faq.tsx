@@ -5,7 +5,6 @@ import MainLayout from "../components/layout/MainLayout";
 import type { FaqPageContent } from "../types/cms";
 import { Box, Container, Link, Typography, CircularProgress } from "@mui/material";
 
-// Default FAQ data (fallback)
 const defaultFaqData = [
   {
     id: "faq1",
@@ -51,7 +50,6 @@ const Faq: React.FC = () => {
       try {
         setIsLoading(true);
 
-        // Check cache
         const cachedFaq = sessionStorage.getItem(CACHE_KEY_FAQ);
         let faqData: FaqPageContent | null = null;
 
@@ -62,7 +60,6 @@ const Faq: React.FC = () => {
           }
         }
 
-        // If there's no cache or cache is old, load from API
         if (!faqData) {
           faqData = await fetchFaqSettings();
           sessionStorage.setItem(
@@ -74,7 +71,6 @@ const Faq: React.FC = () => {
         setFaqContent(faqData);
       } catch (error) {
         console.error("Failed to load FAQ content from CMS:", error);
-        // Fallback to default values
       } finally {
         setIsLoading(false);
       }

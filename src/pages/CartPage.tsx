@@ -274,7 +274,6 @@ const CartPage: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  // Protection against empty cart
   const safeCartItems = Array.isArray(cartItems) ? cartItems : [];
   const subtotal = safeCartItems.reduce((sum, item) => {
     if (!item || typeof item.price !== "number" || typeof item.quantity !== "number") {
@@ -286,7 +285,6 @@ const CartPage: React.FC = () => {
   const total = subtotal + shipping;
 
   const handleCheckout = async () => {
-    // Generate UUID for order
     const order = await createOrder({
       items: safeCartItems.map((item) => ({
         itemId: item.id,

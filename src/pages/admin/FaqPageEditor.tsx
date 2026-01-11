@@ -58,7 +58,6 @@ const FaqPageEditor: React.FC = () => {
   const [showError, setShowError] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Initialization - fetch data from API
   useEffect(() => {
     const initializeData = async () => {
       if (!isInitialized && !settings?.faqPage) {
@@ -156,17 +155,14 @@ const FaqPageEditor: React.FC = () => {
     if (!settings || !settings.faqPage) return;
     setIsSaving(true);
     try {
-      // Konwertuj na FaqPageContent
       const faqSettings = {
         pageTitle: settings.faqPage.pageTitle,
         pageSubtitle: settings.faqPage.pageSubtitle,
         faqItems: settings.faqPage.faqItems,
       };
 
-      // Save using the new endpoint
       await saveFaqSettings(faqSettings);
 
-      // Clear FAQ cache so updated data is visible when returning to FAQ page
       sessionStorage.removeItem("faq_cache");
 
       setDirty(false);
@@ -335,7 +331,6 @@ const FaqPageEditor: React.FC = () => {
               </Box>
             ))}
 
-            {/* Button for adding new FAQ */}
             <Card
               elevation={0}
               sx={{

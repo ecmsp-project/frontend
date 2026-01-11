@@ -10,19 +10,11 @@ import { apiCall } from "./utils";
 const STATISTICS_SERVICE_URL = "http://localhost:8700";
 const STATISTICS_API = `${STATISTICS_SERVICE_URL}/api/statistics`;
 
-/**
- * Get all available variants with their sales and stock data status
- */
 export const getAvailableVariants = async (): Promise<VariantInfoDTO[]> => {
   const response = await apiCall(`${STATISTICS_API}/variants`);
   return await response.json();
 };
 
-/**
- * Get sales data over time for a specific variant
- * @param variantId - UUID of the variant
- * @param filters - Optional date range and trend configuration
- */
 export const getVariantSalesOverTime = async (
   variantId: string,
   filters?: SalesFilters,
@@ -44,11 +36,6 @@ export const getVariantSalesOverTime = async (
   return await response.json();
 };
 
-/**
- * Get stock level data over time for a specific variant
- * @param variantId - UUID of the variant
- * @param filters - Optional date range and trend configuration
- */
 export const getVariantStockOverTime = async (
   variantId: string,
   filters?: StockFilters,

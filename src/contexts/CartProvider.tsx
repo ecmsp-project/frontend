@@ -17,12 +17,10 @@ export default function CartProvider({ children }: { children: ReactNode }) {
   const [hasBeenCleared, setHasBeenCleared] = useState(false);
 
   const refetchCart = useCallback(async () => {
-    // Don't refetch if cart was manually cleared
     if (hasBeenCleared) {
       return;
     }
 
-    // Check if token exists before trying to fetch cart
     const token = localStorage.getItem("token");
     if (!token) {
       setCartItems([]);
@@ -37,11 +35,9 @@ export default function CartProvider({ children }: { children: ReactNode }) {
       const fetchedCart = await fetchCartProducts();
       const rawItems = fetchedCart.productDtos || [];
 
-      // Map each cart item (productId is variantId) to CartItem by fetching variant details
       const completeItems: CartItem[] = await Promise.all(
         rawItems.map(async (rawItem) => {
           try {
-            // productId in cart is actually variantId
             const variantDetails = await getVariantDetails(rawItem.productId);
             const variant = variantDetails.variant;
             const mainImage =
@@ -59,7 +55,6 @@ export default function CartProvider({ children }: { children: ReactNode }) {
               `Failed to fetch variant details for variantId ${rawItem.productId}:`,
               err,
             );
-            // Return a placeholder item if variant fetch fails
             return {
               id: rawItem.productId,
               name: `Product ${rawItem.productId}`,
@@ -74,8 +69,6 @@ export default function CartProvider({ children }: { children: ReactNode }) {
       setCartItems(completeItems);
     } catch (err) {
       console.error("Error fetching cart:", err);
-      // Only set error if token exists (user is logged in)
-      // If token doesn't exist, it's not an error - just empty cart
       if (token) {
         setError("Failed to fetch cart items");
       } else {
@@ -89,15 +82,12 @@ export default function CartProvider({ children }: { children: ReactNode }) {
 
   const removeProduct = useCallback(
     async (productId: string) => {
-      // Optimistic update
       setCartItems((prevItems) => prevItems.filter((item) => item.id !== productId));
 
       try {
         await deleteCartProduct(productId);
-        // No refetch needed - optimistic update is sufficient
       } catch (err) {
         console.error("Error removing product:", err);
-        // Revert optimistic update on error
         await refetchCart();
         throw new Error("Failed to remove product from cart.");
       }
@@ -113,7 +103,6 @@ export default function CartProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      // Optimistic update
       setCartItems((prevItems) =>
         prevItems.map((item) =>
           item.id === productId ? { ...item, quantity: newQuantity } : item,
@@ -126,10 +115,8 @@ export default function CartProvider({ children }: { children: ReactNode }) {
         } else {
           await subtractCartProduct(productId, 1);
         }
-        // No refetch needed - optimistic update is sufficient
       } catch (err) {
         console.error("Error updating quantity:", err);
-        // Revert optimistic update on error
         await refetchCart();
         throw new Error("Failed to update quantity in cart.");
       }
@@ -144,7 +131,6 @@ export default function CartProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      // Optimistic update
       setCartItems((prevItems) =>
         prevItems.map((item) =>
           item.id === productId ? { ...item, quantity: newQuantity } : item,
@@ -153,10 +139,8 @@ export default function CartProvider({ children }: { children: ReactNode }) {
 
       try {
         await overwriteCartProduct(productId, newQuantity);
-        // No refetch needed - optimistic update is sufficient
       } catch (err) {
         console.error("Error updating quantity:", err);
-        // Revert optimistic update on error
         await refetchCart();
         throw new Error("Failed to update quantity in cart.");
       }
@@ -170,25 +154,19 @@ export default function CartProvider({ children }: { children: ReactNode }) {
     await clearCart(cartItems.map((item) => item.id));
   }, [cartItems]);
 
-  // Initial fetch on mount
   useEffect(() => {
     refetchCart();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Listen for token changes (login/logout)
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "token") {
-        // Token was added or removed, refetch cart
         refetchCart();
       }
     };
 
-    // Listen for storage events (works across tabs)
     window.addEventListener("storage", handleStorageChange);
 
-    // Also listen for custom event (for same-tab token changes)
     const handleTokenChange = () => {
       refetchCart();
     };

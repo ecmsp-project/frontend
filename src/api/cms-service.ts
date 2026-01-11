@@ -6,8 +6,6 @@ import type {
 } from "../types/cms";
 import { API_BASE_URL, apiCall } from "./utils";
 
-// ==================== HOME PAGE ====================
-
 export const fetchHomeSettings = async (): Promise<HomePageContent> => {
   try {
     const response = await apiCall(`${API_BASE_URL}/api/settings/home`, {
@@ -54,8 +52,6 @@ export const saveHomeSettings = async (settings: HomePageContent): Promise<void>
   }
 };
 
-// ==================== FAQ PAGE ====================
-
 export const fetchFaqSettings = async (): Promise<FaqPageContent> => {
   try {
     const response = await apiCall(`${API_BASE_URL}/api/settings/faq`, {
@@ -101,8 +97,6 @@ export const saveFaqSettings = async (settings: FaqPageContent): Promise<void> =
     throw error;
   }
 };
-
-// ==================== CONTACT PAGE ====================
 
 export const fetchContactSettings = async (): Promise<ContactPageContent> => {
   try {
@@ -151,8 +145,6 @@ export const saveContactSettings = async (settings: ContactPageContent): Promise
     throw error;
   }
 };
-
-// ==================== LEGACY GLOBAL SETTINGS (deprecated) ====================
 
 export const fetchGlobalSettings = async (): Promise<GlobalSettings> => {
   const jwtToken = localStorage.getItem("token");

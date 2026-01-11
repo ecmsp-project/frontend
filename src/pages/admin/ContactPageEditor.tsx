@@ -9,7 +9,6 @@ import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import { Container, Typography, Grid, Box, Link, Alert, Snackbar } from "@mui/material";
 
-// Mock initial data
 const defaultContactSettings = {
   pageTitle: "Contact",
   pageSubtitle: "Need help? See frequently asked questions",
@@ -27,7 +26,6 @@ const ContactPageEditor: React.FC = () => {
   const [showError, setShowError] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Initialization - fetch data from API
   useEffect(() => {
     const initializeData = async () => {
       if (!isInitialized && !settings?.contactPage) {
@@ -112,7 +110,6 @@ const ContactPageEditor: React.FC = () => {
     if (!settings || !settings.contactPage) return;
     setIsSaving(true);
     try {
-      // Konwertuj na ContactPageContent
       const contactSettingsData = {
         pageTitle: settings.contactPage.pageTitle,
         pageSubtitle: settings.contactPage.pageSubtitle,
@@ -123,10 +120,8 @@ const ContactPageEditor: React.FC = () => {
         emailDescription: settings.contactPage.emailDescription,
       };
 
-      // Save using the new endpoint
       await saveContactSettings(contactSettingsData);
 
-      // Clear Contact cache so updated data is visible when returning to Contact page
       sessionStorage.removeItem("contact_cache");
 
       setDirty(false);
