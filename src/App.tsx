@@ -89,10 +89,7 @@ export default function App() {
                               <Route path="/product/:id" element={<ProductPage />} />
                               <Route path="/cart" element={<CartPage />} />
                               <Route path="/order/:orderId" element={<CheckoutPage />} />
-                              <Route
-                                path="/payment/:paymentId/:orderId"
-                                element={<PaymentPage />}
-                              />
+                              <Route path="/payment/:orderId" element={<PaymentPage />} />
                               <Route
                                 path="/order-confirmation/:orderId/:token"
                                 element={<OrderConfirmationPage />}

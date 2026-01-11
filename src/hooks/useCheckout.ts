@@ -218,8 +218,7 @@ export const useCheckout = (initialOrderId?: string) => {
       return;
     }
 
-    const paymentId = crypto.randomUUID();
-    navigate(`/payment/${paymentId}/${orderId}`);
+    navigate(`/payment/${orderId}`);
   };
 
   const getShippingDataForInvoice = ():

@@ -4,8 +4,10 @@ import { getStatusColor, getStatusLabel } from "../../types/orders.ts";
 import { formatDate } from "../../utils/string.ts";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import PaymentIcon from "@mui/icons-material/Payment";
 import {
   Box,
+  Button,
   Chip,
   Collapse,
   Divider,
@@ -18,6 +20,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const calculateTotalPrice = (items: OrderItemDetails[]): number => {
   return items.reduce((sum, item) => sum + item.quantity * item.price, 0);
@@ -147,9 +150,14 @@ const OrderItemsList: React.FC<OrderItemsListProps> = ({ order }) => {
 
 interface OrderSummaryProps {
   totalPrice: number;
+  orderStatus: string;
+  orderId: string;
 }
 
-const OrderSummary: React.FC<OrderSummaryProps> = ({ totalPrice }) => {
+const OrderSummary: React.FC<OrderSummaryProps> = ({ totalPrice, orderStatus, orderId }) => {
+  const navigate = useNavigate();
+  const isPending = orderStatus === "ORDER_STATUS_PENDING";
+
   return (
     <Box
       sx={{
@@ -168,6 +176,20 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ totalPrice }) => {
           {totalPrice.toFixed(2)} PLN
         </Typography>
       </Box>
+      {isPending && (
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<PaymentIcon />}
+          onClick={() => navigate(`/payment/${orderId}`)}
+          sx={{
+            textTransform: "none",
+            fontWeight: 600,
+          }}
+        >
+          Pay Now
+        </Button>
+      )}
     </Box>
   );
 };
@@ -185,7 +207,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, totalPrice }) => {
         <Divider sx={{ my: 3 }} />
         <OrderItemsList order={order} />
         <Divider sx={{ my: 3 }} />
-        <OrderSummary totalPrice={totalPrice} />
+        <OrderSummary totalPrice={totalPrice} orderStatus={order.orderStatus} orderId={order.orderId} />
       </Paper>
     </Box>
   );
