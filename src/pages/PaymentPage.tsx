@@ -8,6 +8,7 @@ import PaymentSummary from "./payment/PaymentSummary.tsx";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import { Box, Typography, Container, Grid, Alert, Card, Button } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
+import { getPaymentLink, processPayment } from "../api/payment-service.ts";
 
 const PaymentPage: React.FC = () => {
   const navigate = useNavigate();
@@ -33,6 +34,8 @@ const PaymentPage: React.FC = () => {
       await clearFullCart();
       // Redirect to order confirmation page with security token
       if (orderId) {
+        const paymentLink = await getPaymentLink(orderId);
+        await processPayment(paymentLink);
         const confirmationToken = crypto.randomUUID();
         navigate(`/order-confirmation/${orderId}/${confirmationToken}`);
       } else {
