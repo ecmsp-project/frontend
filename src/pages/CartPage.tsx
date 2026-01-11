@@ -267,7 +267,7 @@ const CartProductCard: React.FC<{ item: CartItem; onClick: () => void }> = ({ it
 };
 
 const CartPage: React.FC = () => {
-  const { cartItems, loading, error, clearFullCart } = useCartContext();
+  const { cartItems, loading, error } = useCartContext();
   const theme = useTheme();
   const navigate = useNavigate();
 
