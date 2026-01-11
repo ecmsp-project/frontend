@@ -33,8 +33,6 @@ export const useProductPage = () => {
     (propertyName: string): string[] => {
       if (!allVariants.length) return [];
 
-      // Zwracamy WSZYSTKIE możliwe wartości dla danej właściwości ze WSZYSTKICH wariantów
-      // niezależnie od aktualnych wyborów, aby umożliwić przejście między wszystkimi wariantami
       const availableValues = new Set<string>();
       allVariants.forEach((variant) => {
         if (variant[propertyName]) {
@@ -135,18 +133,13 @@ export const useProductPage = () => {
         [propertyName]: value,
       };
 
-      // Najpierw próbujemy znaleźć dokładne dopasowanie
       let newVariantId = findVariantId(newSelections);
 
-      // Jeśli nie ma dokładnego dopasowania, szukamy wariantu który ma wybraną wartość dla zmienionej właściwości
-      // i zachowuje inne wybrane wartości (jeśli są dostępne)
       if (!newVariantId) {
         const matchingVariant = allVariants.find((variant) => {
-          // Sprawdzamy czy wariant ma wybraną wartość dla zmienionej właściwości
           if (variant[propertyName] !== value) {
             return false;
           }
-          // Sprawdzamy czy wariant ma wszystkie inne wybrane wartości (jeśli są)
           return Object.keys(newSelections).every(
             (key) => !newSelections[key] || variant[key] === newSelections[key],
           );
@@ -154,13 +147,11 @@ export const useProductPage = () => {
         newVariantId = matchingVariant?.variantId || null;
       }
 
-      // Jeśli nadal nie znaleźliśmy wariantu, szukamy dowolnego wariantu z wybraną wartością dla zmienionej właściwości
       if (!newVariantId) {
         const matchingVariant = allVariants.find((variant) => variant[propertyName] === value);
         newVariantId = matchingVariant?.variantId || null;
       }
 
-      // Jeśli nie znaleźliśmy wariantu, nie aktualizujemy stanu
       if (!newVariantId || newVariantId === variantId) {
         return;
       }
@@ -176,8 +167,6 @@ export const useProductPage = () => {
         });
       }
 
-      // Aktualizujemy wybrane właściwości na podstawie znalezionego wariantu
-      // To zapewnia, że wyświetlane wartości są zawsze zgodne z aktualnym wariantem
       if (newVariantData) {
         const updatedSelections: SelectedProperties = {};
         selectablePropertyNames.forEach((propName) => {
@@ -228,8 +217,14 @@ export const useProductPage = () => {
     if (!variant || variant.variantId !== variantId) {
       loadAllVariantDetails(variantId);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [variantId]);
+  }, [
+    variantId,
+    allVariants,
+    loadAllVariantDetails,
+    loadVariantDetails,
+    loadVariantProperties,
+    variant,
+  ]);
 
   return {
     variant,

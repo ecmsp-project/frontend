@@ -34,7 +34,6 @@ interface CheckoutStorageData {
   isDiscountApplied: boolean;
 }
 
-// Helper function to load data from sessionStorage
 const loadCheckoutDataFromStorage = (
   orderId: string | null,
 ): Partial<CheckoutStorageData> | null => {
@@ -57,7 +56,6 @@ export const useCheckout = (initialOrderId?: string) => {
   const { cartItems } = useCartContext();
   const navigate = useNavigate();
 
-  // Load data from sessionStorage synchronously on initialization
   const savedData = loadCheckoutDataFromStorage(initialOrderId || null);
 
   const [shippingModalOpen, setShippingModalOpen] = useState(false);
@@ -75,18 +73,14 @@ export const useCheckout = (initialOrderId?: string) => {
   );
   const [orderId, setOrderId] = useState<string | null>(initialOrderId || null);
 
-  // Use orderId from URL if provided and load data from storage
   useEffect(() => {
     if (initialOrderId) {
-      // Set orderId if not already set
       if (!orderId) {
         setOrderId(initialOrderId);
       }
 
-      // Load data from storage when initialOrderId changes (e.g., when returning from PaymentPage)
       const newSavedData = loadCheckoutDataFromStorage(initialOrderId);
       if (newSavedData) {
-        // Update only if data is different from current (avoid unnecessary updates)
         if (
           newSavedData.shippingData &&
           JSON.stringify(newSavedData.shippingData) !== JSON.stringify(shippingData)
@@ -115,18 +109,14 @@ export const useCheckout = (initialOrderId?: string) => {
     }
   }, [initialOrderId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Save data to sessionStorage when it changes (but not on first render if data is already in storage)
   useEffect(() => {
     if (orderId) {
-      // Check if this is the first render with data from storage
       const storageKey = getStorageKey(orderId);
       const existingData = sessionStorage.getItem(storageKey);
 
-      // If data already exists and is the same as current, don't save (avoid unnecessary saves)
       if (existingData) {
         try {
           const parsed: CheckoutStorageData = JSON.parse(existingData);
-          // Compare only key fields to avoid saving if nothing changed
           if (
             JSON.stringify(parsed.shippingData) === JSON.stringify(shippingData) &&
             JSON.stringify(parsed.invoiceData) === JSON.stringify(invoiceData) &&
@@ -134,10 +124,10 @@ export const useCheckout = (initialOrderId?: string) => {
             parsed.discountCode === discountCode &&
             parsed.isDiscountApplied === isDiscountApplied
           ) {
-            return; // Don't save if data is identical
+            return;
           }
         } catch {
-          // If cannot parse, save new data
+          // Silently ignore parsing errors
         }
       }
 
@@ -174,13 +164,11 @@ export const useCheckout = (initialOrderId?: string) => {
   const handleShippingSubmit = (values: ShippingFormValues) => {
     setShippingData(values);
     setShippingModalOpen(false);
-    // Data will be automatically saved by useEffect
   };
 
   const handleInvoiceSubmit = (values: InvoiceFormValues) => {
     setInvoiceData(values);
     setInvoiceModalOpen(false);
-    // Data will be automatically saved by useEffect
   };
 
   const handleInvoiceChange = (checked: boolean) => {
@@ -249,7 +237,6 @@ export const useCheckout = (initialOrderId?: string) => {
   };
 
   return {
-    // State
     shippingModalOpen,
     invoiceModalOpen,
     wantsInvoice,
@@ -265,12 +252,10 @@ export const useCheckout = (initialOrderId?: string) => {
     discountError,
     canPay: !!shippingData.firstName,
 
-    // Setters
     setShippingModalOpen,
     setInvoiceModalOpen,
     setDiscountCode,
 
-    // Handlers
     handleShippingSubmit,
     handleInvoiceSubmit,
     handleInvoiceChange,

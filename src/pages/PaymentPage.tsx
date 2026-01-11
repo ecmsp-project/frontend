@@ -33,18 +33,14 @@ const PaymentPage: React.FC = () => {
     clearPaymentError();
     const success = await handlePayment(values);
     if (success) {
-      // Set redirecting flag to prevent showing empty cart message
       setIsRedirecting(true);
-      // Clear cart before navigation
       await clearFullCart();
-      // Redirect to order confirmation page with security token
       if (orderId) {
         const paymentLink = await getPaymentLink(orderId);
         await processPayment(paymentLink);
         const confirmationToken = crypto.randomUUID();
         navigate(`/order-confirmation/${orderId}/${confirmationToken}`);
       } else {
-        // Fallback - if there's no orderId, redirect to home page
         navigate("/");
       }
     }
@@ -56,7 +52,6 @@ const PaymentPage: React.FC = () => {
     }
   };
 
-  // Show loading screen while redirecting after successful payment
   if (isRedirecting) {
     return (
       <MainLayout>
@@ -83,8 +78,6 @@ const PaymentPage: React.FC = () => {
     );
   }
 
-  // Don't show empty cart message if we're processing payment or have an orderId
-  // (user might be returning to pay for a pending order)
   if (cartItems.length === 0 && !isProcessing && !orderId) {
     return (
       <MainLayout>

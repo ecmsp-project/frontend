@@ -107,10 +107,8 @@ const CategoryManagementPage: React.FC = () => {
 
       const result = await createCategory(requestData);
 
-      // Set newly added category ID for highlighting
       setNewlyAddedCategoryId(result.id);
 
-      // Clear highlight after 6 seconds (3 animations * 2 seconds)
       setTimeout(() => {
         setNewlyAddedCategoryId(null);
       }, 6000);
@@ -130,7 +128,6 @@ const CategoryManagementPage: React.FC = () => {
       handleCloseDeleteDialog();
     } catch (err) {
       console.error("Error deleting category:", err);
-      // Note: Backend endpoint may not be implemented yet
       alert("Error: Category deletion endpoint may not be implemented yet on the backend.");
       throw err;
     }

@@ -67,7 +67,6 @@ export const getRootCategories = async (): Promise<GetCategoriesResponse> => {
   }
 };
 
-// Get all categories (flat list)
 export const getAllCategories = async (): Promise<GetCategoriesResponse> => {
   try {
     const response = await apiCall(CATEGORY_API, {
@@ -85,7 +84,6 @@ export const getAllCategories = async (): Promise<GetCategoriesResponse> => {
   }
 };
 
-// Get subcategories of a specific category
 export const getSubcategories = async (categoryId: string): Promise<GetCategoriesResponse> => {
   try {
     const response = await apiCall(`${CATEGORY_API}/${categoryId}/subcategories`, {
@@ -103,7 +101,6 @@ export const getSubcategories = async (categoryId: string): Promise<GetCategorie
   }
 };
 
-// Get single category by ID
 export const getCategoryById = async (categoryId: string): Promise<CategoryFromAPI> => {
   try {
     const response = await apiCall(`${CATEGORY_API}/${categoryId}`, {
@@ -121,11 +118,6 @@ export const getCategoryById = async (categoryId: string): Promise<CategoryFromA
   }
 };
 
-// Create new category
-// Supports 3 modes:
-// 1. LEAF: only parentCategoryId (add as leaf)
-// 2. SPLIT: parentCategoryId + childCategoryId (insert between parent and specific child)
-// 3. SPLIT_ALL: only parentCategoryId (insert between parent and all children)
 export const createCategory = async (
   categoryData: CategoryCreateRequestDTO,
 ): Promise<CategoryCreateResponseDTO> => {
@@ -146,8 +138,6 @@ export const createCategory = async (
   }
 };
 
-// Update category (name and/or parent)
-// Note: This endpoint is not yet implemented in CategoryController, only in service
 export const updateCategory = async (
   categoryId: string,
   categoryData: CategoryUpdateRequestDTO,
@@ -169,9 +159,6 @@ export const updateCategory = async (
   }
 };
 
-// Delete category
-// Note: This endpoint is not yet implemented in CategoryController, only in service
-// When implemented, subcategories will be moved to the parent of deleted category
 export const deleteCategory = async (categoryId: string): Promise<void> => {
   try {
     const response = await apiCall(`${CATEGORY_API}/${categoryId}`, {

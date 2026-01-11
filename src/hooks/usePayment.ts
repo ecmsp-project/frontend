@@ -30,12 +30,10 @@ export const usePayment = () => {
   const total = useMemo(() => subtotal + shipping, [subtotal, shipping]);
 
   const validateCard = (values: CardFormValues): boolean => {
-    // Normalize data for comparison
     const normalizedCardNumber = values.cardNumber.replace(/\s/g, "");
     const normalizedExpiry = values.expiryDate.replace(/\//g, "");
     const normalizedName = values.cardholderName.toUpperCase().trim();
 
-    // Check if card matches the mocked one
     if (
       normalizedCardNumber === VALID_CARD.cardNumber &&
       normalizedExpiry === VALID_CARD.expiryDate.replace(/\//g, "") &&
@@ -53,7 +51,6 @@ export const usePayment = () => {
     setPaymentError(null);
 
     try {
-      // Simulate delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       if (!validateCard(values)) {
@@ -62,7 +59,6 @@ export const usePayment = () => {
         return false;
       }
 
-      // Payment succeeded
       setIsProcessing(false);
       return true;
     } catch (err) {
