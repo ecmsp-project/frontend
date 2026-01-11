@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { type OrderDetailsResponse, type OrderItemDetails } from "../../types/orders.ts";
 import { getStatusColor, getStatusLabel } from "../../types/orders.ts";
 import { formatDate } from "../../utils/string.ts";
+import { getAllVariantDetails } from "../../api/product-service";
+import type { GetVariantResponseDTO } from "../../types/products";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
@@ -18,6 +20,8 @@ import {
   TableCell,
   TableRow,
   Typography,
+  CircularProgress,
+  Avatar,
 } from "@mui/material";
 
 const calculateTotalPrice = (items: OrderItemDetails[]): number => {
@@ -62,6 +66,34 @@ interface OrderItemRowProps {
 }
 
 const OrderItemRow: React.FC<OrderItemRowProps> = ({ item, index }) => {
+  const [variantData, setVariantData] = useState<GetVariantResponseDTO | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchVariantData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await getAllVariantDetails(item.variantId);
+        setVariantData(data);
+      } catch (err) {
+        console.error("Error fetching variant details:", err);
+        setError("Failed to load product details");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (item.variantId) {
+      fetchVariantData();
+    }
+  }, [item.variantId]);
+
+  const productName = variantData?.variant?.name || `Product #${index + 1}`;
+  const variantImages = variantData?.variant?.variantImages || [];
+  const firstImage = variantImages.length > 0 ? variantImages[0].url : null;
+
   return (
     <Box>
       <ListItem
@@ -73,55 +105,91 @@ const OrderItemRow: React.FC<OrderItemRowProps> = ({ item, index }) => {
           px: 2,
         }}
       >
-        <ListItemText
-          primary={
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
-              <Typography variant="body2" fontWeight={600}>
-                Product #{index + 1}
-              </Typography>
-              <Chip
-                label={`${item.quantity}x`}
-                size="small"
-                sx={{ height: 20, fontSize: "0.7rem" }}
+        {loading ? (
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, width: "100%" }}>
+            <CircularProgress size={20} />
+            <Typography variant="body2" color="text.secondary">
+              Loading product details...
+            </Typography>
+          </Box>
+        ) : error ? (
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, width: "100%" }}>
+            <Typography variant="body2" color="error">
+              {error}
+            </Typography>
+          </Box>
+        ) : (
+          <>
+            {firstImage && (
+              <Avatar
+                src={firstImage}
+                alt={productName}
+                variant="rounded"
+                sx={{
+                  width: 64,
+                  height: 64,
+                  mr: 2,
+                  flexShrink: 0,
+                }}
+                imgProps={{
+                  onError: (e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = "none";
+                  },
+                }}
               />
-              {item.isReturnable && (
-                <Chip
-                  label="Returnable"
-                  size="small"
-                  color="success"
-                  sx={{ height: 20, fontSize: "0.7rem" }}
-                />
-              )}
-            </Box>
-          }
-          secondary={
-            <Box sx={{ mt: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
-                <strong>Product ID:</strong> {item.itemId}
+            )}
+            <ListItemText
+              primary={
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5, flexWrap: "wrap" }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {productName}
+                  </Typography>
+                  <Chip
+                    label={`${item.quantity}x`}
+                    size="small"
+                    sx={{ height: 20, fontSize: "0.7rem" }}
+                  />
+                  {item.isReturnable && (
+                    <Chip
+                      label="Returnable"
+                      size="small"
+                      color="success"
+                      sx={{ height: 20, fontSize: "0.7rem" }}
+                    />
+                  )}
+                </Box>
+              }
+              secondary={
+                <Box sx={{ mt: 1 }}>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
+                    <strong>Product ID:</strong> {item.itemId}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
+                    <strong>Variant ID:</strong> {item.variantId}
+                  </Typography>
+                  {item.description && (
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ display: "block", mt: 0.5 }}
+                    >
+                      <strong>Description:</strong> {item.description}
+                    </Typography>
+                  )}
+                </Box>
+              }
+            />
+            <Box sx={{ textAlign: "right", ml: 2, flexShrink: 0 }}>
+              <Typography variant="body2" fontWeight={600} color="primary">
+                {(item.price * item.quantity).toFixed(2)} PLN
               </Typography>
-              <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
-                <strong>Variant ID:</strong> {item.variantId}
+              <Typography variant="caption" color="text.secondary">
+                {item.price.toFixed(2)} PLN / pcs.
               </Typography>
-              {item.description && (
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ display: "block", mt: 0.5 }}
-                >
-                  <strong>Description:</strong> {item.description}
-                </Typography>
-              )}
             </Box>
-          }
-        />
-        <Box sx={{ textAlign: "right", ml: 2 }}>
-          <Typography variant="body2" fontWeight={600} color="primary">
-            {(item.price * item.quantity).toFixed(2)} PLN
-          </Typography>
-          <Typography variant="caption" color="text.secondary">
-            {item.price.toFixed(2)} PLN / pcs.
-          </Typography>
-        </Box>
+          </>
+        )}
       </ListItem>
     </Box>
   );
