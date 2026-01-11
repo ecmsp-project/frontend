@@ -32,7 +32,6 @@ interface CheckoutStorageData {
   shippingData: ShippingFormValues;
   invoiceData: InvoiceFormValues;
   wantsInvoice: boolean;
-  paymentMethod: "card" | "cod";
   discountCode: string;
   isDiscountApplied: boolean;
 }
@@ -66,9 +65,6 @@ export const useCheckout = (initialOrderId?: string) => {
   const [shippingModalOpen, setShippingModalOpen] = useState(false);
   const [invoiceModalOpen, setInvoiceModalOpen] = useState(false);
   const [wantsInvoice, setWantsInvoice] = useState(savedData?.wantsInvoice || false);
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "cod">(
-    savedData?.paymentMethod || "card",
-  );
   const [discountCode, setDiscountCode] = useState(savedData?.discountCode || "");
   const [isDiscountApplied, setIsDiscountApplied] = useState(savedData?.isDiscountApplied || false);
   const [discountError, setDiscountError] = useState<string | null>(null);
@@ -108,9 +104,6 @@ export const useCheckout = (initialOrderId?: string) => {
         if (newSavedData.wantsInvoice !== undefined && newSavedData.wantsInvoice !== wantsInvoice) {
           setWantsInvoice(newSavedData.wantsInvoice);
         }
-        if (newSavedData.paymentMethod && newSavedData.paymentMethod !== paymentMethod) {
-          setPaymentMethod(newSavedData.paymentMethod);
-        }
         if (newSavedData.discountCode && newSavedData.discountCode !== discountCode) {
           setDiscountCode(newSavedData.discountCode);
         }
@@ -140,7 +133,6 @@ export const useCheckout = (initialOrderId?: string) => {
             JSON.stringify(parsed.shippingData) === JSON.stringify(shippingData) &&
             JSON.stringify(parsed.invoiceData) === JSON.stringify(invoiceData) &&
             parsed.wantsInvoice === wantsInvoice &&
-            parsed.paymentMethod === paymentMethod &&
             parsed.discountCode === discountCode &&
             parsed.isDiscountApplied === isDiscountApplied
           ) {
@@ -155,21 +147,12 @@ export const useCheckout = (initialOrderId?: string) => {
         shippingData,
         invoiceData,
         wantsInvoice,
-        paymentMethod,
         discountCode,
         isDiscountApplied,
       };
       sessionStorage.setItem(storageKey, JSON.stringify(dataToSave));
     }
-  }, [
-    orderId,
-    shippingData,
-    invoiceData,
-    wantsInvoice,
-    paymentMethod,
-    discountCode,
-    isDiscountApplied,
-  ]);
+  }, [orderId, shippingData, invoiceData, wantsInvoice, discountCode, isDiscountApplied]);
 
   const subtotal = useMemo(
     () => cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
@@ -240,15 +223,8 @@ export const useCheckout = (initialOrderId?: string) => {
       return;
     }
 
-    if (paymentMethod === "card") {
-      // Redirect to card payment page with orderId in URL
-      const paymentId = crypto.randomUUID();
-      navigate(`/payment/${paymentId}/${orderId}`);
-    } else {
-      // Cash on delivery - redirect directly to confirmation with token
-      const confirmationToken = crypto.randomUUID();
-      navigate(`/order-confirmation/${orderId}/${confirmationToken}`);
-    }
+    const paymentId = crypto.randomUUID();
+    navigate(`/payment/${paymentId}/${orderId}`);
   };
 
   const getShippingDataForInvoice = ():
@@ -283,7 +259,6 @@ export const useCheckout = (initialOrderId?: string) => {
     shippingModalOpen,
     invoiceModalOpen,
     wantsInvoice,
-    paymentMethod,
     discountCode,
     shippingData,
     invoiceData,
@@ -300,7 +275,6 @@ export const useCheckout = (initialOrderId?: string) => {
     // Setters
     setShippingModalOpen,
     setInvoiceModalOpen,
-    setPaymentMethod,
     setDiscountCode,
 
     // Handlers
