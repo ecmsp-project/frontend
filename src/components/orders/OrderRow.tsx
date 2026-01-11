@@ -6,7 +6,6 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
   Box,
-  Button,
   Chip,
   Collapse,
   Divider,
@@ -147,11 +146,10 @@ const OrderItemsList: React.FC<OrderItemsListProps> = ({ order }) => {
 };
 
 interface OrderSummaryProps {
-  order: OrderDetailsResponse;
   totalPrice: number;
 }
 
-const OrderSummary: React.FC<OrderSummaryProps> = ({ order, totalPrice }) => {
+const OrderSummary: React.FC<OrderSummaryProps> = ({ totalPrice }) => {
   return (
     <Box
       sx={{
@@ -170,19 +168,6 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ order, totalPrice }) => {
           {totalPrice.toFixed(2)} PLN
         </Typography>
       </Box>
-      <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-        <Button variant="outlined" size="medium">
-          Generate Invoice
-        </Button>
-        <Button variant="outlined" size="medium" color="info">
-          Tracking Details
-        </Button>
-        {getStatusColor(order.orderStatus) === "error" && (
-          <Button variant="outlined" size="medium" color="warning">
-            Manage Return
-          </Button>
-        )}
-      </Box>
     </Box>
   );
 };
@@ -200,7 +185,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, totalPrice }) => {
         <Divider sx={{ my: 3 }} />
         <OrderItemsList order={order} />
         <Divider sx={{ my: 3 }} />
-        <OrderSummary order={order} totalPrice={totalPrice} />
+        <OrderSummary totalPrice={totalPrice} />
       </Paper>
     </Box>
   );
