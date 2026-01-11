@@ -23,7 +23,6 @@ const CheckoutPage: React.FC = () => {
     shippingData,
     invoiceData,
     subtotal,
-    shipping,
     total,
     totalBeforeDiscount,
     discountAmount,
@@ -93,7 +92,6 @@ const CheckoutPage: React.FC = () => {
           <Grid size={{ xs: 12, md: 4 }}>
             <OrderSummary
               subtotal={subtotal}
-              shipping={shipping}
               total={total}
               totalBeforeDiscount={totalBeforeDiscount}
               discountAmount={discountAmount}

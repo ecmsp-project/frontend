@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { getPaymentLink, processPayment } from "../api/payment-service.ts";
 import Breadcrumbs from "../components/common/Breadcrumbs.tsx";
 import CardForm, { type CardFormRef } from "../components/forms/CardForm.tsx";
 import MainLayout from "../components/layout/MainLayout.tsx";
@@ -8,21 +9,13 @@ import PaymentSummary from "./payment/PaymentSummary.tsx";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import { Box, Typography, Container, Grid, Alert, Card, Button } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
-import { getPaymentLink, processPayment } from "../api/payment-service.ts";
 
 const PaymentPage: React.FC = () => {
   const navigate = useNavigate();
   const { orderId } = useParams<{ orderId: string }>();
   const { cartItems, clearFullCart } = useCartContext();
-  const {
-    subtotal,
-    shipping,
-    total,
-    paymentError,
-    isProcessing,
-    handlePayment,
-    clearPaymentError,
-  } = usePayment();
+  const { subtotal, total, paymentError, isProcessing, handlePayment, clearPaymentError } =
+    usePayment();
   const cardFormRef = useRef<CardFormRef>(null);
   const [isFormValid, setIsFormValid] = useState(false);
 
@@ -116,7 +109,6 @@ const PaymentPage: React.FC = () => {
           <Grid size={{ xs: 12, md: 4 }}>
             <PaymentSummary
               subtotal={subtotal}
-              shipping={shipping}
               total={total}
               canPay={isFormValid}
               isProcessing={isProcessing}

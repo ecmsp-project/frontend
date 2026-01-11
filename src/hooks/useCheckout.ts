@@ -4,8 +4,6 @@ import type { ShippingFormValues } from "../components/forms/ShippingForm.tsx";
 import { useCartContext } from "../contexts/CartContext";
 import { useNavigate } from "react-router-dom";
 
-const SHIPPING_COST = 19.99;
-const FREE_SHIPPING_THRESHOLD = 500;
 const DISCOUNT_CODE = "RABAT20";
 const DISCOUNT_PERCENTAGE = 0.2; // 20%
 
@@ -159,10 +157,7 @@ export const useCheckout = (initialOrderId?: string) => {
     [cartItems],
   );
 
-  const shipping = useMemo(
-    () => (subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST),
-    [subtotal],
-  );
+  const shipping = 0; // Always free shipping
 
   const discountAmount = useMemo(() => {
     if (!isDiscountApplied) return 0;
@@ -264,7 +259,6 @@ export const useCheckout = (initialOrderId?: string) => {
     invoiceData,
     orderId,
     subtotal,
-    shipping,
     total,
     totalBeforeDiscount,
     discountAmount,

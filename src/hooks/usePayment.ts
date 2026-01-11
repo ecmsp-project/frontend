@@ -8,9 +8,6 @@ const VALID_CARD = {
   cvv: "123",
 };
 
-const SHIPPING_COST = 19.99;
-const FREE_SHIPPING_THRESHOLD = 500;
-
 export interface CardFormValues {
   cardNumber: string;
   cardholderName: string;
@@ -28,10 +25,7 @@ export const usePayment = () => {
     [cartItems],
   );
 
-  const shipping = useMemo(
-    () => (subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST),
-    [subtotal],
-  );
+  const shipping = 0; // Always free shipping
 
   const total = useMemo(() => subtotal + shipping, [subtotal, shipping]);
 
@@ -85,7 +79,6 @@ export const usePayment = () => {
 
   return {
     subtotal,
-    shipping,
     total,
     paymentError,
     isProcessing,
