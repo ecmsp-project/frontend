@@ -4,8 +4,6 @@ import type { ShippingFormValues } from "../components/forms/ShippingForm.tsx";
 import { useCartContext } from "../contexts/CartContext";
 import { useNavigate } from "react-router-dom";
 
-const SHIPPING_COST = 19.99;
-const FREE_SHIPPING_THRESHOLD = 500;
 const DISCOUNT_CODE = "RABAT20";
 const DISCOUNT_PERCENTAGE = 0.2; // 20%
 
@@ -32,7 +30,6 @@ interface CheckoutStorageData {
   shippingData: ShippingFormValues;
   invoiceData: InvoiceFormValues;
   wantsInvoice: boolean;
-  paymentMethod: "card" | "cod";
   discountCode: string;
   isDiscountApplied: boolean;
 }
@@ -64,9 +61,6 @@ export const useCheckout = (initialOrderId?: string) => {
   const [shippingModalOpen, setShippingModalOpen] = useState(false);
   const [invoiceModalOpen, setInvoiceModalOpen] = useState(false);
   const [wantsInvoice, setWantsInvoice] = useState(savedData?.wantsInvoice || false);
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "cod">(
-    savedData?.paymentMethod || "card",
-  );
   const [discountCode, setDiscountCode] = useState(savedData?.discountCode || "");
   const [isDiscountApplied, setIsDiscountApplied] = useState(savedData?.isDiscountApplied || false);
   const [discountError, setDiscountError] = useState<string | null>(null);
@@ -102,9 +96,6 @@ export const useCheckout = (initialOrderId?: string) => {
         if (newSavedData.wantsInvoice !== undefined && newSavedData.wantsInvoice !== wantsInvoice) {
           setWantsInvoice(newSavedData.wantsInvoice);
         }
-        if (newSavedData.paymentMethod && newSavedData.paymentMethod !== paymentMethod) {
-          setPaymentMethod(newSavedData.paymentMethod);
-        }
         if (newSavedData.discountCode && newSavedData.discountCode !== discountCode) {
           setDiscountCode(newSavedData.discountCode);
         }
@@ -130,7 +121,6 @@ export const useCheckout = (initialOrderId?: string) => {
             JSON.stringify(parsed.shippingData) === JSON.stringify(shippingData) &&
             JSON.stringify(parsed.invoiceData) === JSON.stringify(invoiceData) &&
             parsed.wantsInvoice === wantsInvoice &&
-            parsed.paymentMethod === paymentMethod &&
             parsed.discountCode === discountCode &&
             parsed.isDiscountApplied === isDiscountApplied
           ) {
@@ -145,31 +135,19 @@ export const useCheckout = (initialOrderId?: string) => {
         shippingData,
         invoiceData,
         wantsInvoice,
-        paymentMethod,
         discountCode,
         isDiscountApplied,
       };
       sessionStorage.setItem(storageKey, JSON.stringify(dataToSave));
     }
-  }, [
-    orderId,
-    shippingData,
-    invoiceData,
-    wantsInvoice,
-    paymentMethod,
-    discountCode,
-    isDiscountApplied,
-  ]);
+  }, [orderId, shippingData, invoiceData, wantsInvoice, discountCode, isDiscountApplied]);
 
   const subtotal = useMemo(
     () => cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
     [cartItems],
   );
 
-  const shipping = useMemo(
-    () => (subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST),
-    [subtotal],
-  );
+  const shipping = 0; // Always free shipping
 
   const discountAmount = useMemo(() => {
     if (!isDiscountApplied) return 0;
@@ -228,13 +206,7 @@ export const useCheckout = (initialOrderId?: string) => {
       return;
     }
 
-    if (paymentMethod === "card") {
-      const paymentId = crypto.randomUUID();
-      navigate(`/payment/${paymentId}/${orderId}`);
-    } else {
-      const confirmationToken = crypto.randomUUID();
-      navigate(`/order-confirmation/${orderId}/${confirmationToken}`);
-    }
+    navigate(`/payment/${orderId}`);
   };
 
   const getShippingDataForInvoice = ():
@@ -268,13 +240,11 @@ export const useCheckout = (initialOrderId?: string) => {
     shippingModalOpen,
     invoiceModalOpen,
     wantsInvoice,
-    paymentMethod,
     discountCode,
     shippingData,
     invoiceData,
     orderId,
     subtotal,
-    shipping,
     total,
     totalBeforeDiscount,
     discountAmount,
@@ -284,7 +254,6 @@ export const useCheckout = (initialOrderId?: string) => {
 
     setShippingModalOpen,
     setInvoiceModalOpen,
-    setPaymentMethod,
     setDiscountCode,
 
     handleShippingSubmit,

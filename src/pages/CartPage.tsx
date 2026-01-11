@@ -29,9 +29,6 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const SHIPPING_COST = 19.99;
-const FREE_SHIPPING_THRESHOLD = 500;
-
 const CartProductCard: React.FC<{ item: CartItem; onClick: () => void }> = ({ item, onClick }) => {
   const { updateProductQuantity, overwriteProductQuantity, removeProduct } = useCartContext();
   const theme = useTheme();
@@ -281,7 +278,7 @@ const CartPage: React.FC = () => {
     }
     return sum + item.price * item.quantity;
   }, 0);
-  const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+  const shipping = 0; // Always free shipping
   const total = subtotal + shipping;
 
   const handleCheckout = async () => {
@@ -349,56 +346,25 @@ const CartPage: React.FC = () => {
                     );
                   })}
 
-                  {FREE_SHIPPING_THRESHOLD - subtotal > 0 && (
-                    <Paper
-                      elevation={0}
-                      sx={{
-                        mt: 3,
-                        p: 3,
-                        bgcolor: alpha(theme.palette.primary.main, 0.05),
-                        border: "2px solid",
-                        borderColor: alpha(theme.palette.primary.main, 0.2),
-                        borderRadius: 3,
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 2,
-                      }}
-                    >
-                      <LocalShippingIcon color="primary" sx={{ fontSize: 40 }} />
-                      <Box sx={{ flex: 1 }}>
-                        <Typography variant="h6" fontWeight={600} color="primary.main" gutterBottom>
-                          Free shipping within reach!
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Add products worth{" "}
-                          <strong>{(FREE_SHIPPING_THRESHOLD - subtotal).toFixed(2)} PLN</strong>{" "}
-                          more and get free shipping!
-                        </Typography>
-                      </Box>
-                    </Paper>
-                  )}
-
-                  {shipping === 0 && (
-                    <Paper
-                      elevation={0}
-                      sx={{
-                        mt: 3,
-                        p: 2,
-                        bgcolor: alpha(theme.palette.success.main, 0.1),
-                        border: "1px solid",
-                        borderColor: "success.main",
-                        borderRadius: 2,
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 1,
-                      }}
-                    >
-                      <LocalShippingIcon color="success" />
-                      <Typography variant="body2" color="success.main" fontWeight={600}>
-                        Congratulations! You have free shipping!
-                      </Typography>
-                    </Paper>
-                  )}
+                  <Paper
+                    elevation={0}
+                    sx={{
+                      mt: 3,
+                      p: 2,
+                      bgcolor: alpha(theme.palette.success.main, 0.1),
+                      border: "1px solid",
+                      borderColor: "success.main",
+                      borderRadius: 2,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <LocalShippingIcon color="success" />
+                    <Typography variant="body2" color="success.main" fontWeight={600}>
+                      Free shipping on all orders!
+                    </Typography>
+                  </Paper>
                 </>
               ) : (
                 <Paper
@@ -457,15 +423,15 @@ const CartPage: React.FC = () => {
                   <Typography
                     variant="body1"
                     fontWeight={600}
-                    color={shipping === 0 ? "success.main" : "text.primary"}
+                    color="success.main"
                     sx={{
                       display: "flex",
                       alignItems: "center",
                       gap: 0.5,
                     }}
                   >
-                    {shipping === 0 && <LocalShippingIcon fontSize="small" />}
-                    {shipping === 0 ? "GRATIS" : `${shipping.toFixed(2)} PLN`}
+                    <LocalShippingIcon fontSize="small" />
+                    GRATIS
                   </Typography>
                 </Box>
 

@@ -4,7 +4,6 @@ import { Box, Typography, Card, Divider, Button, alpha, useTheme } from "@mui/ma
 
 interface PaymentSummaryProps {
   subtotal: number;
-  shipping: number;
   total: number;
   canPay: boolean;
   isProcessing: boolean;
@@ -13,7 +12,6 @@ interface PaymentSummaryProps {
 
 const PaymentSummary: React.FC<PaymentSummaryProps> = ({
   subtotal,
-  shipping,
   total,
   canPay,
   isProcessing,
@@ -55,15 +53,15 @@ const PaymentSummary: React.FC<PaymentSummaryProps> = ({
         <Typography
           variant="h6"
           fontWeight={600}
-          color={shipping === 0 ? "success.main" : "text.primary"}
+          color="success.main"
           sx={{
             display: "flex",
             alignItems: "center",
             gap: 0.5,
           }}
         >
-          {shipping === 0 && <LocalShippingIcon fontSize="small" />}
-          {shipping === 0 ? "GRATIS" : `${shipping.toFixed(2)} PLN`}
+          <LocalShippingIcon fontSize="small" />
+          GRATIS
         </Typography>
       </Box>
 

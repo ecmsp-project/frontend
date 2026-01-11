@@ -7,29 +7,33 @@ import { useCartContext } from "../contexts/CartContext";
 import { usePayment, type CardFormValues } from "../hooks/usePayment.ts";
 import PaymentSummary from "./payment/PaymentSummary.tsx";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
-import { Box, Typography, Container, Grid, Alert, Card, Button } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Container,
+  Grid,
+  Alert,
+  Card,
+  Button,
+  CircularProgress,
+} from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 
 const PaymentPage: React.FC = () => {
   const navigate = useNavigate();
   const { orderId } = useParams<{ orderId: string }>();
   const { cartItems, clearFullCart } = useCartContext();
-  const {
-    subtotal,
-    shipping,
-    total,
-    paymentError,
-    isProcessing,
-    handlePayment,
-    clearPaymentError,
-  } = usePayment();
+  const { subtotal, total, paymentError, isProcessing, handlePayment, clearPaymentError } =
+    usePayment();
   const cardFormRef = useRef<CardFormRef>(null);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const handleSubmit = async (values: CardFormValues) => {
     clearPaymentError();
     const success = await handlePayment(values);
     if (success) {
+      setIsRedirecting(true);
       await clearFullCart();
       if (orderId) {
         const paymentLink = await getPaymentLink(orderId);
@@ -48,7 +52,33 @@ const PaymentPage: React.FC = () => {
     }
   };
 
-  if (cartItems.length === 0) {
+  if (isRedirecting) {
+    return (
+      <MainLayout>
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              minHeight: "50vh",
+            }}
+          >
+            <CircularProgress size={60} sx={{ mb: 3 }} />
+            <Typography variant="h6" color="text.secondary">
+              Processing your payment...
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              Redirecting to confirmation page
+            </Typography>
+          </Box>
+        </Container>
+      </MainLayout>
+    );
+  }
+
+  if (cartItems.length === 0 && !isProcessing && !orderId) {
     return (
       <MainLayout>
         <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -113,7 +143,6 @@ const PaymentPage: React.FC = () => {
           <Grid size={{ xs: 12, md: 4 }}>
             <PaymentSummary
               subtotal={subtotal}
-              shipping={shipping}
               total={total}
               canPay={isFormValid}
               isProcessing={isProcessing}

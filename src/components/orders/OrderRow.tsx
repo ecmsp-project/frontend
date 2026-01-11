@@ -6,6 +6,7 @@ import type { GetVariantResponseDTO } from "../../types/products";
 import { formatDate } from "../../utils/string.ts";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import PaymentIcon from "@mui/icons-material/Payment";
 import {
   Box,
   Button,
@@ -23,6 +24,7 @@ import {
   CircularProgress,
   Avatar,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const calculateTotalPrice = (items: OrderItemDetails[]): number => {
   return items.reduce((sum, item) => sum + item.quantity * item.price, 0);
@@ -217,11 +219,15 @@ const OrderItemsList: React.FC<OrderItemsListProps> = ({ order }) => {
 };
 
 interface OrderSummaryProps {
-  order: OrderDetailsResponse;
   totalPrice: number;
+  orderStatus: string;
+  orderId: string;
 }
 
-const OrderSummary: React.FC<OrderSummaryProps> = ({ order, totalPrice }) => {
+const OrderSummary: React.FC<OrderSummaryProps> = ({ totalPrice, orderStatus, orderId }) => {
+  const navigate = useNavigate();
+  const isPending = orderStatus === "ORDER_STATUS_PENDING";
+
   return (
     <Box
       sx={{
@@ -240,19 +246,20 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ order, totalPrice }) => {
           {totalPrice.toFixed(2)} PLN
         </Typography>
       </Box>
-      <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-        <Button variant="outlined" size="medium">
-          Generate Invoice
+      {isPending && (
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<PaymentIcon />}
+          onClick={() => navigate(`/payment/${orderId}`)}
+          sx={{
+            textTransform: "none",
+            fontWeight: 600,
+          }}
+        >
+          Pay Now
         </Button>
-        <Button variant="outlined" size="medium" color="info">
-          Tracking Details
-        </Button>
-        {getStatusColor(order.orderStatus) === "error" && (
-          <Button variant="outlined" size="medium" color="warning">
-            Manage Return
-          </Button>
-        )}
-      </Box>
+      )}
     </Box>
   );
 };
@@ -270,7 +277,11 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ order, totalPrice }) => {
         <Divider sx={{ my: 3 }} />
         <OrderItemsList order={order} />
         <Divider sx={{ my: 3 }} />
-        <OrderSummary order={order} totalPrice={totalPrice} />
+        <OrderSummary
+          totalPrice={totalPrice}
+          orderStatus={order.orderStatus}
+          orderId={order.orderId}
+        />
       </Paper>
     </Box>
   );

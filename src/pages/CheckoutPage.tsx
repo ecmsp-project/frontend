@@ -6,7 +6,6 @@ import { useCheckout } from "../hooks/useCheckout.ts";
 import DiscountSection from "./checkout/DiscountSection.tsx";
 import InvoiceModal from "./checkout/InvoiceModal.tsx";
 import OrderSummary from "./checkout/OrderSummary.tsx";
-import PaymentMethodSection from "./checkout/PaymentMethodSection.tsx";
 import ShippingModal from "./checkout/ShippingModal.tsx";
 import ShippingSection from "./checkout/ShippingSection.tsx";
 import { Box, Typography, Container, Grid, Button } from "@mui/material";
@@ -20,12 +19,10 @@ const CheckoutPage: React.FC = () => {
     shippingModalOpen,
     invoiceModalOpen,
     wantsInvoice,
-    paymentMethod,
     discountCode,
     shippingData,
     invoiceData,
     subtotal,
-    shipping,
     total,
     totalBeforeDiscount,
     discountAmount,
@@ -34,7 +31,6 @@ const CheckoutPage: React.FC = () => {
     canPay,
     setShippingModalOpen,
     setInvoiceModalOpen,
-    setPaymentMethod,
     setDiscountCode,
     handleShippingSubmit,
     handleInvoiceSubmit,
@@ -83,12 +79,6 @@ const CheckoutPage: React.FC = () => {
               onInvoiceChange={handleInvoiceChange}
               onEditInvoice={() => setInvoiceModalOpen(true)}
             />
-
-            <PaymentMethodSection
-              paymentMethod={paymentMethod}
-              onPaymentMethodChange={setPaymentMethod}
-            />
-
             <DiscountSection
               discountCode={discountCode}
               isDiscountApplied={isDiscountApplied}
@@ -102,7 +92,6 @@ const CheckoutPage: React.FC = () => {
           <Grid size={{ xs: 12, md: 4 }}>
             <OrderSummary
               subtotal={subtotal}
-              shipping={shipping}
               total={total}
               totalBeforeDiscount={totalBeforeDiscount}
               discountAmount={discountAmount}

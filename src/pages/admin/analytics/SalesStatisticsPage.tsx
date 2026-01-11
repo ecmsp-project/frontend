@@ -28,7 +28,6 @@ const SalesStatisticsPage: React.FC = () => {
   const [stockLoading, setStockLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Date range state - default to last 90 days
   const [dateRange, setDateRange] = useState<DateRange>(() => {
     const today = new Date();
     const fromDate = new Date();
@@ -80,7 +79,6 @@ const SalesStatisticsPage: React.FC = () => {
     [dateRange],
   );
 
-  // Load data when variant or date range changes
   useEffect(() => {
     if (selectedVariant) {
       if (activeTab === "sales") {
@@ -115,7 +113,6 @@ const SalesStatisticsPage: React.FC = () => {
   return (
     <MainLayout>
       <Container maxWidth="lg" sx={{ py: 4 }}>
-        {/* Breadcrumbs */}
         <Breadcrumbs
           items={[
             { label: "Admin Panel", path: "/admin" },
@@ -124,7 +121,6 @@ const SalesStatisticsPage: React.FC = () => {
           ]}
         />
 
-        {/* Header */}
         <Box sx={{ mb: 4 }}>
           <Typography
             variant="h4"
@@ -138,7 +134,6 @@ const SalesStatisticsPage: React.FC = () => {
           </Typography>
         </Box>
 
-        {/* Search Section - Sticky */}
         <Paper
           elevation={3}
           sx={{
@@ -157,7 +152,6 @@ const SalesStatisticsPage: React.FC = () => {
           />
         </Paper>
 
-        {/* Date Range Selector */}
         {selectedVariant && (
           <Fade in>
             <Box sx={{ mb: 3 }}>
@@ -166,7 +160,6 @@ const SalesStatisticsPage: React.FC = () => {
           </Fade>
         )}
 
-        {/* Error Alert */}
         {error && (
           <Fade in>
             <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError(null)}>
@@ -175,11 +168,9 @@ const SalesStatisticsPage: React.FC = () => {
           </Fade>
         )}
 
-        {/* Tabs and Charts Section */}
         {selectedVariant ? (
           <Grow in timeout={500}>
             <Box>
-              {/* Tabs */}
               <Paper elevation={2} sx={{ mb: 3 }}>
                 <Tabs
                   value={activeTab}
@@ -205,7 +196,6 @@ const SalesStatisticsPage: React.FC = () => {
                 </Tabs>
               </Paper>
 
-              {/* Chart Content */}
               {activeTab === "sales" ? (
                 <Fade in key="sales">
                   <Box>
@@ -262,7 +252,6 @@ const SalesStatisticsPage: React.FC = () => {
             </Box>
           </Grow>
         ) : (
-          /* Empty State */
           <Fade in>
             <Paper
               sx={{

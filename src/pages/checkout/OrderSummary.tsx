@@ -4,7 +4,6 @@ import { Box, Typography, Card, Divider, Button, alpha, useTheme } from "@mui/ma
 
 interface OrderSummaryProps {
   subtotal: number;
-  shipping: number;
   total: number;
   totalBeforeDiscount?: number;
   discountAmount?: number;
@@ -15,7 +14,6 @@ interface OrderSummaryProps {
 
 const OrderSummary: React.FC<OrderSummaryProps> = ({
   subtotal,
-  shipping,
   total,
   totalBeforeDiscount,
   discountAmount = 0,
@@ -59,15 +57,15 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
         <Typography
           variant="h6"
           fontWeight={600}
-          color={shipping === 0 ? "success.main" : "text.primary"}
+          color="success.main"
           sx={{
             display: "flex",
             alignItems: "center",
             gap: 0.5,
           }}
         >
-          {shipping === 0 && <LocalShippingIcon fontSize="small" />}
-          {shipping === 0 ? "GRATIS" : `${shipping.toFixed(2)} PLN`}
+          <LocalShippingIcon fontSize="small" />
+          GRATIS
         </Typography>
       </Box>
 
